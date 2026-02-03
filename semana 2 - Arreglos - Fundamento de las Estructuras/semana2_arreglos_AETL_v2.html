@@ -1,0 +1,2784 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 2: Arreglos - Fundamento de las Estructuras | AETL</title>
+    <link rel="stylesheet" href="aetl-styles.css">
+    <style>
+	:root {
+    --primary: #003a63;
+    --secondary: #005b96;
+    --accent: #f2a900;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --gray: #6c757d;
+    --border-radius: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.7;
+    color: var(--dark);
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+    min-height: 100vh;
+}
+
+/* =====================================================
+   HEADER INSTITUCIONAL
+   ===================================================== */
+
+.header-institucional {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,58,99,0.3);
+}
+
+.header-institucional .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.header-institucional .escudo {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.header-institucional h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.header-institucional .subtitulo {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.header-institucional .badge-semana {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+
+/* =====================================================
+   BARRA DE PROGRESO
+   ===================================================== */
+
+.progress-container {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e0e0e0;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+    transition: transform 0.3s;
+    text-decoration: none;
+}
+
+.progress-step:hover {
+    transform: scale(1.1);
+}
+
+.progress-step .step-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: white;
+    border: 3px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.progress-step.active .step-icon {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,91,150,0.4);
+}
+
+.progress-step.completed .step-icon {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.progress-step .step-label {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.progress-step.active .step-label {
+    color: var(--secondary);
+}
+
+/* =====================================================
+   NAVEGACIÓN
+   ===================================================== */
+
+.nav-container {
+    background: var(--primary);
+    padding: 0.8rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--accent);
+}
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* =====================================================
+   SECCIONES DE FASE
+   ===================================================== */
+
+.fase-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.fase-header {
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fase-header.comprende { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.fase-header.aplica { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.fase-header.reflexiona { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.fase-header.valida { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.fase-header.profundiza { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+.fase-header .fase-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fase-header .fase-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.fase-header .fase-info .bloom-tag {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.fase-content {
+    padding: 2rem;
+}
+
+/* =====================================================
+   OBJETIVOS
+   ===================================================== */
+
+.objetivos-box {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d1e8fa 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.objetivos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.objetivos-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.objetivos-box li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.objetivos-box li::before {
+    content: '🎯';
+    position: absolute;
+    left: 0;
+}
+
+/* =====================================================
+   CAJAS CONTEXTUALES
+   ===================================================== */
+
+.context-box {
+    padding: 1.2rem 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border-left: 4px solid;
+}
+
+.context-box.tip {
+    background: linear-gradient(135deg, #e3f9e5 0%, #c8f7dc 100%);
+    border-color: var(--success);
+}
+
+.context-box.warning {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border-color: var(--warning);
+}
+
+.context-box.danger {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border-color: var(--danger);
+}
+
+.context-box.success {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: var(--success);
+}
+
+.context-box.info {
+    background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+    border-color: var(--info);
+}
+
+.context-box .box-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* =====================================================
+   RETOS IA
+   ===================================================== */
+
+.reto-ia {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.reto-ia-header {
+    background: linear-gradient(90deg, var(--accent) 0%, #e89900 100%);
+    color: var(--primary);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reto-ia-header .reto-numero {
+    background: var(--primary);
+    color: var(--accent);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.reto-ia-header h4 {
+    flex: 1;
+    font-size: 1.1rem;
+}
+
+.reto-ia-body {
+    padding: 1.5rem;
+}
+
+.reto-ia .rol-ia {
+    background: rgba(242,169,0,0.15);
+    border: 1px solid var(--accent);
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.reto-ia .rol-ia strong {
+    color: var(--accent);
+}
+
+.prompt-box {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: var(--border-radius);
+    padding: 1.2rem;
+    margin: 1rem 0;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    color: #c9d1d9;
+}
+
+.prompt-box::before {
+    content: '📝 PROMPT';
+    display: block;
+    color: var(--accent);
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.entregable-box {
+    background: rgba(40,167,69,0.15);
+    border: 1px dashed var(--success);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+}
+
+.entregable-box::before {
+    content: '📦 ENTREGABLE ESPERADO';
+    display: block;
+    color: var(--success);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKPOINT METACOGNITIVO
+   ===================================================== */
+
+.checkpoint {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checkpoint h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkpoint .pregunta {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 0.8rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    padding-left: 3rem;
+}
+
+.checkpoint .pregunta::before {
+    content: '❓';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+}
+
+/* =====================================================
+   DIAGRAMA ASCII
+   ===================================================== */
+
+.ascii-diagram {
+    background: #1e1e1e;
+    color: #00ff00;
+    font-family: 'Consolas', 'Monaco', monospace;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: pre;
+}
+
+/* =====================================================
+   ESCENARIO INMERSIVO
+   ===================================================== */
+
+.escenario-inmersivo {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.escenario-inmersivo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.1;
+}
+
+.escenario-inmersivo h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.escenario-inmersivo .personaje {
+    background: rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    border-left: 3px solid var(--accent);
+}
+
+.escenario-inmersivo .dialogo {
+    font-style: italic;
+    margin: 1rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(255,255,255,0.3);
+}
+
+/* =====================================================
+   FUNDAMENTOS TEÓRICOS
+   ===================================================== */
+
+.fundamentos-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.fundamentos-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.constructo-card {
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius);
+    margin: 1rem;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.constructo-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.constructo-card .card-header {
+    padding: 1rem 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.constructo-card:nth-child(1) .card-header { background: #e8f4fd; color: var(--primary); }
+.constructo-card:nth-child(2) .card-header { background: #fff3e0; color: #e65100; }
+.constructo-card:nth-child(3) .card-header { background: #e8f5e9; color: #2e7d32; }
+.constructo-card:nth-child(4) .card-header { background: #f3e5f5; color: #7b1fa2; }
+.constructo-card:nth-child(5) .card-header { background: #fce4ec; color: #c2185b; }
+
+.constructo-card .card-body {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.constructo-card .referencia {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 0.8rem;
+}
+
+.constructo-card .operacional {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--accent);
+}
+
+/* =====================================================
+   GLOSARIO
+   ===================================================== */
+
+.glosario-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.glosario-header {
+    background: var(--dark);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.glosario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.termino-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--secondary);
+}
+
+.termino-card.aetl {
+    border-left-color: var(--accent);
+}
+
+.termino-card dt {
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.termino-card dd {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+/* =====================================================
+   EVALUACIÓN
+   ===================================================== */
+
+.evaluacion-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.evaluacion-header {
+    background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.criterio-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.criterio-item:last-child {
+    border-bottom: none;
+}
+
+.criterio-item .fase-badge {
+    background: var(--secondary);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 1rem;
+    min-width: 100px;
+    text-align: center;
+}
+
+.criterio-item .puntos {
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    margin-left: auto;
+}
+
+/* =====================================================
+   REFERENCIAS
+   ===================================================== */
+
+.referencias-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.referencias-section h3 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+}
+
+.referencia-item {
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed #e0e0e0;
+    font-size: 0.95rem;
+}
+
+.referencia-item:last-child {
+    border-bottom: none;
+}
+
+/* =====================================================
+   CÓDIGO
+   ===================================================== */
+
+code {
+    background: #f1f3f4;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.9em;
+    color: #d63384;
+}
+
+pre code {
+    display: block;
+    padding: 1rem;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    overflow-x: auto;
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.footer {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.footer .modelo-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* =====================================================
+   TABLAS
+   ===================================================== */
+
+.tabla-comparativa {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.tabla-comparativa th {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.tabla-comparativa td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tabla-comparativa tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-comparativa tr:hover {
+    background: #f8f9fa;
+}
+
+.tabla-comparativa .highlight {
+    background: rgba(242, 169, 0, 0.1);
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .header-institucional h1 {
+        font-size: 1.4rem;
+    }
+
+    .progress-step .step-label {
+        display: none;
+    }
+
+    .fase-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .criterio-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .criterio-item .puntos {
+        margin-left: 0;
+    }
+
+    .glosario-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =====================================================
+   ANIMACIONES
+   ===================================================== */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+/* =====================================================
+   PRINT STYLES
+   ===================================================== */
+
+@media print {
+    .progress-container, .nav-container {
+        display: none;
+    }
+
+    .fase-section {
+        break-inside: avoid;
+    }
+
+    body {
+        background: white;
+    }
+
+    .reto-ia {
+        break-inside: avoid;
+    }
+}
+
+/* =====================================================
+   UTILIDADES
+   ===================================================== */
+
+.text-center { text-align: center; }
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--gray); }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+
+.p-1 { padding: 0.5rem; }
+.p-2 { padding: 1rem; }
+.p-3 { padding: 1.5rem; }
+.p-4 { padding: 2rem; }
+
+.flex { display: flex; }
+.flex-column { flex-direction: column; }
+.align-center { align-items: center; }
+.justify-center { justify-content: center; }
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 1rem; }
+
+        /* Estilos adicionales para las mejoras */
+        .prerrequisitos-box {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border: 2px solid var(--accent);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .prerrequisitos-box h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .prerrequisitos-box ul {
+            margin-left: 1.5rem;
+        }
+        
+        .prerrequisitos-box li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .conexion-semana-anterior {
+            background: linear-gradient(135deg, #e8f4fd 0%, #bbdefb 100%);
+            border-left: 4px solid var(--secondary);
+            padding: 1.2rem 1.5rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .conexion-semana-anterior h4 {
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .reto-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-left: 0.5rem;
+        }
+        
+        .reto-badge.esencial {
+            background: var(--success);
+            color: white;
+        }
+        
+        .reto-badge.avanzado {
+            background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+            color: white;
+        }
+        
+        .invariantes-box {
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+            border: 2px dashed #c2185b;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .invariantes-box h4 {
+            color: #880e4f;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .invariantes-box ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .invariantes-box li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+            font-family: 'Consolas', monospace;
+            background: rgba(255,255,255,0.5);
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .invariantes-box li::before {
+            content: '✓';
+            position: absolute;
+            left: 0.5rem;
+            color: #c2185b;
+            font-weight: bold;
+        }
+        
+        .invariantes-box .nota-ia {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.7);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        
+        .errores-comunes {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-left: 4px solid var(--danger);
+            padding: 1.5rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            margin: 1.5rem 0;
+        }
+        
+        .errores-comunes h4 {
+            color: #b71c1c;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .errores-comunes .error-item {
+            background: white;
+            padding: 0.8rem 1rem;
+            border-radius: 4px;
+            margin-bottom: 0.8rem;
+            border-left: 3px solid var(--danger);
+        }
+        
+        .errores-comunes .error-item strong {
+            color: var(--danger);
+        }
+        
+        .diagrama-descripcion {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin-top: -1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            border-top: 2px solid #00ff00;
+        }
+        
+        .diagrama-descripcion strong {
+            color: var(--primary);
+        }
+        
+        .lenguaje-sugerido {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 1px solid var(--secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .lenguaje-sugerido h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .lenguaje-opcion {
+            background: white;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .lenguaje-opcion:last-child {
+            margin-bottom: 0;
+        }
+        
+        .lenguaje-opcion h5 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .leyenda-retos {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            flex-wrap: wrap;
+        }
+        
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Institucional -->
+    <header class="header-institucional">
+        <div class="logo-container">
+            <div class="escudo">UAN</div>
+            <div>
+                <h1>Universidad Autónoma de Nayarit</h1>
+                <p class="subtitulo">Área Económico-Administrativa · Licenciatura en Sistemas Computacionales</p>
+            </div>
+        </div>
+        <h2 style="margin-top: 1rem; font-size: 1.4rem;">Estructura de Datos Básica</h2>
+        <span class="badge-semana">📅 SEMANA 2: Arreglos - Fundamento de las Estructuras</span>
+    </header>
+
+    <!-- Barra de Progreso -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <a href="#comprende" class="progress-step active">
+                <div class="step-icon">🧠</div>
+                <span class="step-label">Comprende</span>
+            </a>
+            <a href="#aplica" class="progress-step">
+                <div class="step-icon">🔧</div>
+                <span class="step-label">Aplica</span>
+            </a>
+            <a href="#reflexiona" class="progress-step">
+                <div class="step-icon">🪞</div>
+                <span class="step-label">Reflexiona</span>
+            </a>
+            <a href="#valida" class="progress-step">
+                <div class="step-icon">✅</div>
+                <span class="step-label">Valida</span>
+            </a>
+            <a href="#profundiza" class="progress-step">
+                <div class="step-icon">🚀</div>
+                <span class="step-label">Profundiza</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="nav-container">
+        <div class="nav-links">
+            <a href="#escenario">🎬 Escenario</a>
+            <a href="#comprende">🧠 Comprende</a>
+            <a href="#aplica">🔧 Aplica</a>
+            <a href="#reflexiona">🪞 Reflexiona</a>
+            <a href="#valida">✅ Valida</a>
+            <a href="#profundiza">🚀 Profundiza</a>
+            <a href="#evaluacion">📊 Evaluación</a>
+            <a href="#glosario">📖 Glosario</a>
+            <a href="#referencias">📑 Referencias</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- Prerrequisitos -->
+        <div class="prerrequisitos-box">
+            <h4>📋 Para tener éxito esta semana</h4>
+            <p>Antes de comenzar, asegúrate de sentirte cómodo con estos conceptos fundamentales:</p>
+            <ul>
+                <li><strong>Ciclos for:</strong> Saber escribir un ciclo que recorra de 0 a n-1 y entender cuándo se ejecuta cada iteración</li>
+                <li><strong>Acceso por índice:</strong> Comprender la sintaxis <code>arreglo[i]</code> y que los índices empiezan en 0</li>
+                <li><strong>Análisis de complejidad (Semana 1):</strong> Identificar O(1), O(n), O(n²) en código simple</li>
+                <li><strong>Variables y asignación:</strong> Entender la diferencia entre <code>a = b</code> y <code>a == b</code></li>
+            </ul>
+            <p style="margin-top: 1rem; font-style: italic;">💡 Si alguno de estos conceptos te genera dudas, dedica 15-20 minutos a repasarlos antes de continuar. Esto te ahorrará frustración más adelante.</p>
+        </div>
+
+        <!-- Conexión con Semana Anterior -->
+        <div class="conexion-semana-anterior">
+            <h4>🔗 Conexión con la Semana 1: Análisis de Complejidad</h4>
+            <p>La semana pasada aprendiste a <strong>predecir</strong> el comportamiento de algoritmos usando Big O. Esta semana aplicarás ese conocimiento directamente:</p>
+            <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                <li>Analizarás por qué <code>arr[i]</code> es O(1) usando aritmética de direcciones</li>
+                <li>Entenderás por qué insertar al inicio es O(n) mientras que al final es O(1)</li>
+                <li>Descubrirás el <strong>análisis amortizado</strong> que mencionamos brevemente en la Semana 1</li>
+            </ul>
+            <p style="margin-top: 0.5rem;"><strong>El caso de MegaStore que verás hoy es exactamente el tipo de problema de complejidad que diagnosticaste con DataStream la semana pasada.</strong></p>
+        </div>
+
+        <!-- Leyenda de Retos -->
+        <div class="leyenda-retos">
+            <div class="leyenda-item">
+                <span class="reto-badge esencial">Esencial</span>
+                <span>Retos fundamentales que todos deben completar (1, 2, 3, 7)</span>
+            </div>
+            <div class="leyenda-item">
+                <span class="reto-badge avanzado">Avanzado</span>
+                <span>Retos de profundización para ir más allá (9, 10)</span>
+            </div>
+        </div>
+
+        <!-- Escenario Inmersivo -->
+        <section id="escenario" class="escenario-inmersivo">
+            <h3>🎬 ESCENARIO: El Misterio del Catálogo que Crece</h3>
+            
+            <div class="personaje">
+                <strong>Contexto:</strong> Has sido contratado como desarrollador junior en <em>MegaStore Online</em>, una plataforma de e-commerce que está experimentando un crecimiento explosivo. Tu primer día, el arquitecto de software, Carlos, te asigna a investigar un problema urgente.
+            </div>
+
+            <div class="dialogo">
+                "Nuestro catálogo de productos empezó con 1,000 artículos hace dos años. Ahora tenemos 500,000 y el sistema se congela cada vez que agregamos productos nuevos. Lo extraño es que buscar productos sigue siendo instantáneo, pero agregar uno nuevo a veces tarda 30 segundos. ¿Cómo puede ser que una operación sea rápida y otra lenta si ambas trabajan con la misma lista?"
+            </div>
+
+            <div class="personaje">
+                <strong>El programador anterior dejó una nota:</strong> "Usé un arreglo estático de tamaño 1,000 porque era suficiente. Cuando se llenó, implementé una función que crea un arreglo nuevo con un espacio extra cada vez que necesitamos agregar algo."
+            </div>
+
+            <div class="dialogo">
+                Carlos suspira: "Ahí está el problema... pero necesito que entiendas exactamente POR QUÉ esa decisión fue tan costosa y cómo los arreglos dinámicos bien implementados resuelven esto."
+            </div>
+
+            <div style="background: rgba(242,169,0,0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                <strong>🎯 Tu misión esta semana:</strong> Dominar los arreglos como estructura fundamental. Entenderás cómo la memoria realmente almacena datos, por qué el acceso es O(1) pero la inserción puede ser O(n), y cómo los arreglos dinámicos inteligentes logran inserción O(1) amortizado. Al final, podrás diseñar tu propio <code>ArregloDinámico</code> que no congele sistemas.
+            </div>
+        </section>
+
+        <!-- Errores Comunes Esta Semana -->
+        <div class="errores-comunes">
+            <h4>🐛 Errores Comunes Esta Semana (que la IA podría no detectar)</h4>
+            <div class="error-item">
+                <strong>Off-by-one:</strong> Usar <code>i <= tamaño</code> en lugar de <code>i < tamaño</code>, o acceder a <code>arr[tamaño]</code> que está fuera del rango válido.
+            </div>
+            <div class="error-item">
+                <strong>Olvidar actualizar tamaño:</strong> Agregar un elemento pero no incrementar <code>tamaño++</code>, causando que el elemento "desaparezca".
+            </div>
+            <div class="error-item">
+                <strong>Desplazar en orden incorrecto:</strong> Al insertar, sobrescribir elementos antes de moverlos (debe ser de derecha a izquierda).
+            </div>
+            <div class="error-item">
+                <strong>Comparar capacidad con tamaño:</strong> Confundir <code>if (tamaño == capacidad)</code> con <code>if (tamaño >= capacidad)</code> puede causar overflow.
+            </div>
+        </div>
+
+        <!-- FASE 1: COMPRENDE -->
+        <section id="comprende" class="fase-section">
+            <div class="fase-header comprende">
+                <div class="fase-icon">🧠</div>
+                <div class="fase-info">
+                    <h2>FASE 1: COMPRENDE</h2>
+                    <span class="bloom-tag">Nivel Bloom: Recordar / Comprender</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li>Explicar cómo se almacenan los arreglos en memoria y por qué el acceso es O(1)</li>
+                        <li>Distinguir entre arreglos estáticos y dinámicos, identificando sus ventajas y limitaciones</li>
+                        <li>Describir las operaciones fundamentales: acceso, búsqueda, inserción y eliminación</li>
+                        <li>Identificar la complejidad temporal de cada operación según la posición</li>
+                    </ul>
+                </div>
+
+                <h3>El Arreglo: La Estructura Más Fundamental</h3>
+                
+                <p>Un <strong>arreglo</strong> (array) es una colección de elementos del mismo tipo almacenados en posiciones <em>contiguas</em> de memoria. Esta contigüidad es la clave de su poder y, a la vez, de sus limitaciones.</p>
+
+                <div class="context-box tip">
+                    <div class="box-title">💡 Analogía: El Estacionamiento Numerado</div>
+                    <p>Imagina un estacionamiento con 100 espacios numerados del 0 al 99. Cada espacio tiene exactamente el mismo tamaño. Si sabes el número de espacio, llegas directamente sin buscar. Eso es un arreglo: acceso directo por índice.</p>
+                </div>
+
+                <h3>Modelo de Memoria</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    ARREGLO EN MEMORIA: arr = [10, 20, 30, 40, 50]          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   Dirección base: 1000 (ejemplo)                                           │
+│   Tamaño de cada elemento: 4 bytes (entero)                                │
+│                                                                             │
+│   MEMORIA:                                                                  │
+│   ┌────────┬────────┬────────┬────────┬────────┬────────┬────────┐        │
+│   │  ...   │   10   │   20   │   30   │   40   │   50   │  ...   │        │
+│   └────────┴────────┴────────┴────────┴────────┴────────┴────────┘        │
+│      996     1000     1004     1008     1012     1016     1020             │
+│             arr[0]   arr[1]   arr[2]   arr[3]   arr[4]                     │
+│                                                                             │
+│   FÓRMULA DE ACCESO:                                                       │
+│   ┌─────────────────────────────────────────────────────────────┐         │
+│   │  dirección(arr[i]) = dirección_base + (i × tamaño_elemento) │         │
+│   └─────────────────────────────────────────────────────────────┘         │
+│                                                                             │
+│   Ejemplo: arr[3] = 1000 + (3 × 4) = 1012  →  Valor: 40                   │
+│                                                                             │
+│   ¡UNA operación matemática! No importa si i=0 o i=999,999               │
+│   siempre es el mismo cálculo → O(1)                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Este diagrama muestra cómo un arreglo de 5 enteros se almacena en memoria contigua. Cada celda ocupa 4 bytes, por lo que las direcciones aumentan de 4 en 4. La fórmula de acceso permite calcular la dirección exacta de cualquier elemento con una simple multiplicación y suma, independientemente del tamaño del arreglo. Por eso acceder al elemento 0 o al elemento 999,999 toma exactamente el mismo tiempo: O(1).
+                </div>
+
+                <h3>Arreglo Estático vs. Dinámico</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    ARREGLO ESTÁTICO vs. ARREGLO DINÁMICO                   │
+├───────────────────────────────┬─────────────────────────────────────────────┤
+│      ARREGLO ESTÁTICO         │         ARREGLO DINÁMICO                    │
+├───────────────────────────────┼─────────────────────────────────────────────┤
+│                               │                                             │
+│  • Tamaño fijo en compilación │  • Tamaño puede cambiar en ejecución       │
+│  • No puede crecer ni reducir │  • Crece automáticamente cuando se llena   │
+│  • Memoria en stack o estática│  • Memoria en heap (dinámica)              │
+│  • Muy eficiente en memoria   │  • Overhead por gestión de capacidad       │
+│  • Ejemplo: int arr[100];     │  • Ejemplo: ArrayList, vector, list        │
+│                               │                                             │
+├───────────────────────────────┴─────────────────────────────────────────────┤
+│                                                                             │
+│  CONCEPTOS CLAVE DEL ARREGLO DINÁMICO:                                     │
+│                                                                             │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │  TAMAÑO (size): Cantidad de elementos actualmente almacenados      │   │
+│  │  CAPACIDAD (capacity): Espacios totales disponibles en memoria     │   │
+│  │                                                                     │   │
+│  │  Ejemplo: size=5, capacity=8                                       │   │
+│  │                                                                     │   │
+│  │  ┌────┬────┬────┬────┬────┬────┬────┬────┐                        │   │
+│  │  │ 10 │ 20 │ 30 │ 40 │ 50 │    │    │    │                        │   │
+│  │  └────┴────┴────┴────┴────┴────┴────┴────┘                        │   │
+│  │    0    1    2    3    4    5    6    7                            │   │
+│  │  └──────── usados ────────┘└─── disponibles ──┘                   │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> La diferencia clave es que un arreglo estático tiene tamaño fijo desde que se crea (como un estacionamiento con paredes de concreto), mientras que un arreglo dinámico puede "expandirse" (como un estacionamiento que puede construir más espacios cuando se llena). El truco está en distinguir <em>tamaño</em> (cuántos autos hay) de <em>capacidad</em> (cuántos espacios existen). Los espacios disponibles (5-7 en el ejemplo) están reservados pero vacíos.
+                </div>
+
+                <h3>Operaciones y sus Complejidades</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    OPERACIONES EN ARREGLOS                                  │
+├──────────────────────┬──────────────┬───────────────────────────────────────┤
+│      OPERACIÓN       │ COMPLEJIDAD  │             EXPLICACIÓN               │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Acceso por índice    │    O(1)      │ Cálculo directo de dirección         │
+│ arr[i]               │              │                                       │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Búsqueda (no orden.) │    O(n)      │ Debe revisar elemento por elemento   │
+│ buscar(valor)        │              │                                       │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Búsqueda (ordenado)  │  O(log n)    │ Búsqueda binaria posible             │
+│ buscarBinario(valor) │              │                                       │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Insertar al final    │    O(1)*     │ Si hay capacidad disponible          │
+│ agregar(valor)       │    O(n)      │ Si necesita redimensionar            │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Insertar al inicio   │    O(n)      │ Debe desplazar TODOS los elementos   │
+│ insertarInicio(val)  │              │                                       │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Insertar en posición │    O(n)      │ Desplaza elementos desde posición i  │
+│ insertar(i, valor)   │              │                                       │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Eliminar del final   │    O(1)      │ Solo decrementa el tamaño            │
+│ eliminarUltimo()     │              │                                       │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Eliminar del inicio  │    O(n)      │ Debe desplazar TODOS hacia atrás     │
+│ eliminarPrimero()    │              │                                       │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Eliminar en posición │    O(n)      │ Desplaza elementos hacia atrás       │
+│ eliminar(i)          │              │                                       │
+└──────────────────────┴──────────────┴───────────────────────────────────────┘
+                 * O(1) amortizado si se usa estrategia de duplicación
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Esta tabla resume las complejidades de todas las operaciones de arreglos. Observa el patrón: las operaciones al <em>final</em> son O(1) porque no requieren mover otros elementos, mientras que las operaciones al <em>inicio</em> o en <em>medio</em> son O(n) porque deben desplazar elementos. El asterisco (*) en "Insertar al final" indica que, aunque ocasionalmente es O(n) cuando hay que redimensionar, el <strong>promedio</strong> es O(1) si usamos duplicación de capacidad.
+                </div>
+
+                <div class="context-box warning">
+                    <div class="box-title">⚠️ El Error de MegaStore Explicado</div>
+                    <p>El programador anterior incrementaba la capacidad en 1 cada vez. Con 500,000 productos, agregar el producto 500,001 requería:</p>
+                    <ol>
+                        <li>Crear nuevo arreglo de 500,001 espacios</li>
+                        <li>Copiar 500,000 elementos (¡O(n)!)</li>
+                        <li>Agregar el nuevo elemento</li>
+                    </ol>
+                    <p>Y esto ocurría con <strong>cada inserción</strong>. El costo total de n inserciones: O(n²). ¡Catastrófico!</p>
+                </div>
+
+                <!-- RETO IA #1 - ESENCIAL -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">1</div>
+                        <h4>Visualizador de Memoria <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Simulador visual de memoria que muestra paso a paso cómo se almacenan y acceden los arreglos.
+                        </div>
+                        
+                        <div class="prompt-box">Actúa como un simulador visual de memoria de computadora. Necesito entender profundamente cómo funcionan los arreglos en memoria.
+
+PARTE 1 - ACCESO O(1):
+Tengo un arreglo de enteros (4 bytes cada uno) con estos valores: [15, 28, 33, 47, 52, 69, 71, 88]
+La dirección base es 2000.
+
+1. Dibuja el arreglo en memoria mostrando direcciones y valores
+2. Muéstrame paso a paso el cálculo para acceder a arr[5]
+3. Ahora muestra el cálculo para arr[0] y arr[7]
+4. Explica por qué los tres accesos toman exactamente el mismo tiempo
+
+PARTE 2 - INSERCIÓN O(n):
+Usando el mismo arreglo, quiero insertar el valor 40 en la posición 3.
+
+1. Dibuja el estado inicial
+2. Muestra paso a paso qué elementos deben moverse y en qué orden
+3. Dibuja el estado final
+4. ¿Cuántas operaciones de "mover" se hicieron? ¿Y si insertara en posición 0?
+
+PARTE 3 - ELIMINACIÓN O(n):
+Ahora quiero eliminar el elemento en posición 2 del arreglo original.
+
+1. Muestra el proceso paso a paso
+2. ¿Qué pasa con el "hueco" que queda?
+
+Usa diagramas ASCII claros para cada paso.</div>
+
+                        <div class="entregable-box">
+                            <ul>
+                                <li>Diagrama propio que muestre la fórmula de acceso aplicada a un ejemplo diferente</li>
+                                <li>Tabla comparativa: operación vs. número de movimientos necesarios para un arreglo de n=10</li>
+                                <li>Responde: ¿Por qué insertar al inicio es más costoso que insertar al final?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RETO IA #2 - ESENCIAL -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">2</div>
+                        <h4>Detective del Caso MegaStore <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Analista forense de código que diagnostica problemas de rendimiento en implementaciones de arreglos.
+                        </div>
+                        
+                        <div class="prompt-box">Eres un analista forense de software. Voy a mostrarte el código problemático de MegaStore y necesito que me ayudes a entender exactamente por qué es tan ineficiente.
+
+CÓDIGO PROBLEMÁTICO (pseudocódigo):
+```
+clase CatalogoProductos:
+    arreglo datos[]
+    entero cantidad = 0
+    
+    función agregarProducto(producto):
+        // Crear nuevo arreglo con UN espacio más
+        nuevoArreglo = nuevo arreglo[cantidad + 1]
+        
+        // Copiar todos los elementos existentes
+        para i desde 0 hasta cantidad-1:
+            nuevoArreglo[i] = datos[i]
+        
+        // Agregar el nuevo producto
+        nuevoArreglo[cantidad] = producto
+        
+        // Reemplazar el arreglo
+        datos = nuevoArreglo
+        cantidad = cantidad + 1
+```
+
+ANÁLISIS REQUERIDO:
+
+1. Calcula el número EXACTO de operaciones de copia cuando:
+   - Se agregan los primeros 10 productos (uno por uno)
+   - Se agregan 100 productos
+   - Se agregan 1000 productos
+   Muestra la fórmula matemática.
+
+2. Grafica (ASCII) cómo crece el número de copias vs. número de productos
+
+3. Compara con una implementación que DUPLICA la capacidad cuando se llena:
+   - ¿Cuántas copias se harían para 1000 productos?
+   - ¿Por qué la diferencia es tan dramática?
+
+4. Calcula el tiempo estimado para ambas estrategias si:
+   - Una copia tarda 1 microsegundo
+   - n = 500,000 productos</div>
+
+                        <div class="entregable-box">
+                            <ul>
+                                <li>Fórmula matemática del costo de n inserciones con incremento de +1</li>
+                                <li>Fórmula del costo con duplicación de capacidad</li>
+                                <li>Informe breve (150 palabras) explicando a un gerente no técnico por qué el sistema era lento</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invariantes de la Fase -->
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que NO deben romperse</h4>
+                    <p>Usa estos criterios para verificar si la IA te está guiando correctamente:</p>
+                    <ul>
+                        <li>dirección(arr[i]) = base + (i × tamaño_elemento) — siempre</li>
+                        <li>Acceso por índice SIEMPRE es O(1), sin excepciones</li>
+                        <li>Insertar/eliminar al inicio SIEMPRE requiere mover elementos → O(n)</li>
+                        <li>El índice válido siempre está en el rango [0, tamaño-1]</li>
+                        <li>Memoria contigua significa direcciones consecutivas, sin huecos</li>
+                    </ul>
+                    <div class="nota-ia">
+                        <strong>🤖 Alerta IA:</strong> Si la IA sugiere que acceder a arr[i] depende del valor de i, o que insertar al inicio puede ser O(1) en un arreglo normal, está equivocada. Cuestiona y verifica.
+                    </div>
+                </div>
+
+                <!-- Checkpoint Metacognitivo -->
+                <div class="checkpoint">
+                    <h4>🪞 Checkpoint Metacognitivo - Fase COMPRENDE</h4>
+                    <div class="pregunta">¿Puedo explicar con mis propias palabras por qué arr[i] es O(1) usando la fórmula de dirección?</div>
+                    <div class="pregunta">¿Qué imagen mental tengo ahora de un arreglo en memoria? ¿Es diferente a lo que pensaba antes?</div>
+                    <div class="pregunta">Si me preguntaran "¿por qué insertar al inicio es O(n)?", ¿podría dibujarlo paso a paso?</div>
+                    <div class="pregunta">¿Qué conexión veo entre el análisis de complejidad de la Semana 1 y las operaciones de arreglos?</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FASE 2: APLICA -->
+        <section id="aplica" class="fase-section">
+            <div class="fase-header aplica">
+                <div class="fase-icon">🔧</div>
+                <div class="fase-info">
+                    <h2>FASE 2: APLICA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Aplicar / Analizar</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li>Implementar un TAD ArregloDinámico con redimensionamiento inteligente</li>
+                        <li>Aplicar la estrategia de duplicación para lograr O(1) amortizado en inserción</li>
+                        <li>Analizar la complejidad de las operaciones implementadas</li>
+                        <li>Resolver problemas prácticos de manipulación de arreglos</li>
+                    </ul>
+                </div>
+
+                <!-- Sugerencia de Lenguaje -->
+                <div class="lenguaje-sugerido">
+                    <h4>💻 Implementación en Lenguaje Real (Recomendado)</h4>
+                    <p>Aunque el pseudocódigo es válido para los entregables, implementar en un lenguaje real aporta aprendizaje adicional significativo. Elige según lo que quieras aprender:</p>
+                    
+                    <div class="lenguaje-opcion">
+                        <h5>🔧 C++ — Para entender qué pasa "bajo el capó"</h5>
+                        <p>Aprenderás: gestión manual de memoria (<code>new[]</code>, <code>delete[]</code>), por qué olvidar <code>delete</code> causa memory leaks, diferencia entre punteros y referencias, y cómo el sistema operativo asigna memoria.</p>
+                        <p><strong>Ideal si:</strong> Quieres entender cómo funcionan las cosas a bajo nivel.</p>
+                    </div>
+                    
+                    <div class="lenguaje-opcion">
+                        <h5>☕ Java o C# — Para entender la abstracción</h5>
+                        <p>Aprenderás: genéricos (<code>ArrayList&lt;T&gt;</code>), cómo el garbage collector libera memoria, excepciones para índices inválidos, y por qué no necesitas <code>delete</code> pero sí entender referencias.</p>
+                        <p><strong>Ideal si:</strong> Quieres enfocarte en la lógica sin preocuparte por fugas de memoria.</p>
+                    </div>
+                    
+                    <p style="margin-top: 1rem; font-style: italic;">💡 <strong>Sugerencia:</strong> Si nunca has manejado memoria manualmente, intenta C++ al menos una vez. Ver un memory leak en acción es una lección que no olvidarás.</p>
+                </div>
+
+                <h3>Diseño del TAD ArregloDinámico</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      TAD ARREGLO DINÁMICO                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ATRIBUTOS:                                                                 │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  datos[]    : arreglo interno que almacena los elementos            │    │
+│  │  tamaño     : cantidad de elementos actualmente almacenados         │    │
+│  │  capacidad  : tamaño total del arreglo interno                      │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+│  OPERACIONES:                                                               │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  crear(capacidadInicial)  → nuevo ArregloDinámico                   │    │
+│  │  obtener(índice)          → elemento                                │    │
+│  │  establecer(índice, elem) → void                                    │    │
+│  │  agregar(elemento)        → void         // al final                │    │
+│  │  insertar(índice, elem)   → void         // en posición             │    │
+│  │  eliminar(índice)         → elemento     // en posición             │    │
+│  │  eliminarUltimo()         → elemento                                │    │
+│  │  buscar(elemento)         → índice o -1                             │    │
+│  │  estaVacio()              → booleano                                │    │
+│  │  longitud()               → entero                                  │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+│  INVARIANTES:                                                               │
+│  • 0 ≤ tamaño ≤ capacidad                                                   │
+│  • capacidad > 0                                                            │
+│  • datos tiene exactamente 'capacidad' espacios                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Este es el "contrato" del TAD ArregloDinámico. Define QUÉ hace (las operaciones) sin especificar CÓMO lo hace (la implementación). Los invariantes son condiciones que <em>siempre</em> deben ser verdaderas; si alguna vez <code>tamaño > capacidad</code>, hay un bug. Nota que el TAD incluye tanto operaciones básicas (obtener, establecer) como operaciones que modifican tamaño (agregar, insertar, eliminar).
+                </div>
+
+                <h3>Estrategia de Redimensionamiento</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│              ESTRATEGIA DE DUPLICACIÓN (Factor 2x)                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  REGLA: Cuando tamaño == capacidad, duplicar capacidad                     │
+│                                                                             │
+│  Ejemplo: capacidad inicial = 2                                            │
+│                                                                             │
+│  Inserción 1: [A|_]         tamaño=1, capacidad=2                          │
+│  Inserción 2: [A|B]         tamaño=2, capacidad=2  ← ¡LLENO!              │
+│                                                                             │
+│  Inserción 3: REDIMENSIONAR                                                │
+│               [A|B|_|_]     tamaño=3, capacidad=4                          │
+│                └──┘ copiados                                               │
+│                                                                             │
+│  Inserción 4: [A|B|C|D]     tamaño=4, capacidad=4  ← ¡LLENO!              │
+│                                                                             │
+│  Inserción 5: REDIMENSIONAR                                                │
+│               [A|B|C|D|E|_|_|_]  tamaño=5, capacidad=8                     │
+│                └──────┘ copiados                                           │
+│                                                                             │
+│  ═══════════════════════════════════════════════════════════════════════   │
+│                                                                             │
+│  ANÁLISIS DE COSTOS para n inserciones:                                    │
+│                                                                             │
+│  • Redimensionamientos ocurren en: 2, 4, 8, 16, 32, ... (potencias de 2)  │
+│  • Número de redimensionamientos: log₂(n)                                  │
+│  • Costo total de copias: 2 + 4 + 8 + ... + n ≈ 2n                        │
+│  • Costo AMORTIZADO por inserción: 2n/n = O(1)                            │
+│                                                                             │
+│  ¡La mayoría de inserciones son O(1), y las costosas son cada vez         │
+│   más raras, promediando O(1) por operación!                              │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Este diagrama muestra el truco matemático que hace que los arreglos dinámicos sean eficientes. Al duplicar la capacidad (no incrementar en 1), las operaciones costosas de copia se vuelven exponencialmente más raras. Piénsalo así: después de copiar 1000 elementos, tendrás espacio para otros 1000 antes de volver a copiar. El costo se "amortiza" sobre muchas inserciones baratas, dando un promedio de O(1) por operación.
+                </div>
+
+                <div class="context-box tip">
+                    <div class="box-title">💡 ¿Por qué duplicar y no triplicar?</div>
+                    <p>Duplicar (factor 2x) es un balance entre memoria y rendimiento. Triplicar usaría más memoria desperdiciada. Incrementar en +1 (factor 1+1/n) es demasiado frecuente. En la práctica, factores entre 1.5 y 2 son comunes. Java usa 1.5 para ArrayList, C++ usa 2 para vector.</p>
+                </div>
+
+                <!-- RETO IA #3 - ESENCIAL -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">3</div>
+                        <h4>Arquitecto de Código <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Co-diseñador de algoritmos que te guía en la implementación paso a paso, haciendo preguntas socráticas.
+                        </div>
+                        
+                        <div class="prompt-box">Actúa como un arquitecto de software senior que me guiará a implementar un ArregloDinámico. NO me des el código completo de inmediato. En su lugar:
+
+1. Empecemos con la estructura básica. Pregúntame: "¿Qué atributos necesita la clase y por qué?"
+
+2. Una vez definida la estructura, guíame a implementar el método `agregar(elemento)`:
+   - Pregúntame: "¿Qué debe verificar primero el método?"
+   - Cuando responda sobre la capacidad, pregunta: "¿Cómo implementarías el redimensionamiento?"
+   - Valida mi respuesta y ayúdame a corregir si hay errores
+
+3. Luego guíame con `insertar(índice, elemento)`:
+   - "¿Qué validaciones necesita este método?"
+   - "¿En qué orden debes mover los elementos?"
+   - "¿Qué pasa si el arreglo está lleno?"
+
+4. Finalmente, `eliminar(índice)`:
+   - "¿Cómo 'cierras' el hueco que queda?"
+   - "¿Deberías reducir la capacidad? ¿Cuándo?"
+
+Para cada método que implemente, pídeme que:
+- Identifique la complejidad temporal
+- Identifique la complejidad espacial
+- Mencione casos borde a considerar
+
+NOTA: Quiero implementar en [ESPECIFICA: pseudocódigo / C++ / Java / otro].
+
+Empieza con la primera pregunta y espera mi respuesta.</div>
+
+                        <div class="entregable-box">
+                            <ul>
+                                <li>Código completo del TAD ArregloDinámico (pseudocódigo o lenguaje real)</li>
+                                <li>Tabla de complejidades: cada método con su O() temporal y espacial</li>
+                                <li>Lista de al menos 3 casos borde que tu implementación maneja</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RETO IA #4 -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">4</div>
+                        <h4>Laboratorio de Problemas Clásicos</h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Entrenador de programación competitiva que presenta problemas clásicos y evalúa soluciones.
+                        </div>
+                        
+                        <div class="prompt-box">Eres un entrenador de programación competitiva. Quiero practicar problemas clásicos de manipulación de arreglos. Para cada problema:
+
+1. Presenta el problema claramente con ejemplos de entrada/salida
+2. Déjame proponer mi solución antes de dar pistas
+3. Analiza la complejidad de mi solución
+4. Si es subóptima, guíame hacia una mejor sin darla directamente
+
+PROBLEMAS A RESOLVER (uno a la vez):
+
+PROBLEMA 1: Rotar Arreglo
+Dado un arreglo y un número k, rota el arreglo k posiciones a la derecha.
+Ejemplo: [1,2,3,4,5] con k=2 → [4,5,1,2,3]
+Objetivo: Lograr O(n) tiempo y O(1) espacio extra
+
+PROBLEMA 2: Eliminar Duplicados (arreglo ordenado)
+Dado un arreglo ORDENADO, elimina duplicados in-place y retorna la nueva longitud.
+Ejemplo: [1,1,2,2,2,3] → [1,2,3] retorna 3
+Objetivo: O(n) tiempo, O(1) espacio extra
+
+PROBLEMA 3: Mover Ceros al Final
+Mueve todos los ceros al final manteniendo el orden relativo de los demás.
+Ejemplo: [0,1,0,3,12] → [1,3,12,0,0]
+Objetivo: O(n) tiempo, O(1) espacio extra (in-place)
+
+PROBLEMA 4: Encontrar Elemento Mayoritario
+Encuentra el elemento que aparece más de n/2 veces (garantizado que existe).
+Ejemplo: [3,2,3,3,1,3,3] → 3
+Objetivo: O(n) tiempo, O(1) espacio (sin usar hashmap)
+
+Dame el PROBLEMA 1 primero con todos los detalles y espera mi solución.</div>
+
+                        <div class="entregable-box">
+                            <ul>
+                                <li>Pseudocódigo de tu solución para cada problema</li>
+                                <li>Análisis de complejidad temporal y espacial de cada solución</li>
+                                <li>Para al menos un problema, muestra la evolución de tu solución si la mejoraste</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="context-box danger">
+                    <div class="box-title">🚫 Error Común: Índices Fuera de Rango</div>
+                    <p>El error más común al trabajar con arreglos es acceder a índices inválidos. Siempre valida: <code>0 ≤ índice < tamaño</code>. En producción, estos errores causan crashes o, peor, corrupción silenciosa de memoria.</p>
+                </div>
+
+                <!-- Invariantes de la Fase -->
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que NO deben romperse</h4>
+                    <p>Usa estos criterios para verificar si tu implementación (y la guía de la IA) es correcta:</p>
+                    <ul>
+                        <li>0 ≤ tamaño ≤ capacidad — SIEMPRE, después de cualquier operación</li>
+                        <li>Después de agregar(): tamaño aumenta en exactamente 1</li>
+                        <li>Después de eliminar(): tamaño disminuye en exactamente 1</li>
+                        <li>Los elementos en índices [0, tamaño-1] son válidos; más allá son basura</li>
+                        <li>Redimensionar NO debe perder ningún elemento existente</li>
+                        <li>El orden relativo de elementos no afectados debe preservarse</li>
+                    </ul>
+                    <div class="nota-ia">
+                        <strong>🤖 Alerta IA:</strong> Si la IA te sugiere código que actualiza tamaño ANTES de copiar elementos, o que no verifica si índice < tamaño antes de acceder, hay un error. Desafía la respuesta.
+                    </div>
+                </div>
+
+                <!-- Checkpoint Metacognitivo -->
+                <div class="checkpoint">
+                    <h4>🪞 Checkpoint Metacognitivo - Fase APLICA</h4>
+                    <div class="pregunta">¿Puedo implementar `agregar()` sin mirar mis notas? ¿Qué parte me cuesta más recordar?</div>
+                    <div class="pregunta">Cuando la IA me hizo preguntas socráticas, ¿en qué momento me di cuenta de algo que no había considerado?</div>
+                    <div class="pregunta">De los 4 problemas, ¿cuál me costó más trabajo? ¿Qué patrón o técnica me faltaba?</div>
+                    <div class="pregunta">¿Cómo cambió mi aproximación a los problemas entre el primero y el último?</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FASE 3: REFLEXIONA -->
+        <section id="reflexiona" class="fase-section">
+            <div class="fase-header reflexiona">
+                <div class="fase-icon">🪞</div>
+                <div class="fase-info">
+                    <h2>FASE 3: REFLEXIONA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Analizar</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li>Explicitar las decisiones de diseño en la implementación de arreglos dinámicos</li>
+                        <li>Analizar trade-offs entre diferentes estrategias de redimensionamiento</li>
+                        <li>Conectar el conocimiento de arreglos con aplicaciones del mundo real</li>
+                        <li><strong>Identificar y reconocer</strong> patrones recurrentes en problemas de arreglos (sin necesidad de implementarlos perfectamente desde cero)</li>
+                    </ul>
+                </div>
+
+                <h3>Trade-offs en el Diseño</h3>
+
+                <p>Cada decisión de diseño en estructuras de datos implica un compromiso. No existe la "mejor" solución universal; existe la más adecuada para un contexto específico.</p>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    TRADE-OFFS EN ARREGLOS DINÁMICOS                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  FACTOR DE CRECIMIENTO:                                                    │
+│  ┌─────────────┬────────────────────┬───────────────────────────────────┐  │
+│  │   Factor    │     Ventaja        │          Desventaja               │  │
+│  ├─────────────┼────────────────────┼───────────────────────────────────┤  │
+│  │    1.5x     │ Menos memoria      │ Redimensiona más seguido          │  │
+│  │             │ desperdiciada      │                                   │  │
+│  ├─────────────┼────────────────────┼───────────────────────────────────┤  │
+│  │    2.0x     │ Redimensiona menos │ Hasta 50% memoria sin usar        │  │
+│  │             │ frecuentemente     │                                   │  │
+│  ├─────────────┼────────────────────┼───────────────────────────────────┤  │
+│  │    3.0x     │ Muy pocas copias   │ Hasta 67% memoria desperdiciada   │  │
+│  └─────────────┴────────────────────┴───────────────────────────────────┘  │
+│                                                                             │
+│  CAPACIDAD INICIAL:                                                        │
+│  ┌─────────────┬────────────────────┬───────────────────────────────────┐  │
+│  │   Tamaño    │     Ventaja        │          Desventaja               │  │
+│  ├─────────────┼────────────────────┼───────────────────────────────────┤  │
+│  │   Pequeño   │ Eficiente para     │ Muchos redimensionamientos si     │  │
+│  │   (4-8)     │ colecciones chicas │ crece mucho                       │  │
+│  ├─────────────┼────────────────────┼───────────────────────────────────┤  │
+│  │   Grande    │ Evita redimens.    │ Desperdicio si se usa poco        │  │
+│  │   (100+)    │ temprano           │                                   │  │
+│  └─────────────┴────────────────────┴───────────────────────────────────┘  │
+│                                                                             │
+│  REDUCIR CAPACIDAD (shrink):                                               │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ ¿Deberías reducir cuando hay mucho espacio sin usar?               │   │
+│  │                                                                     │   │
+│  │ SÍ: Ahorra memoria en sistemas con recursos limitados             │   │
+│  │ NO: Puede causar "thrashing" si el tamaño oscila                  │   │
+│  │                                                                     │   │
+│  │ Estrategia común: Reducir a la mitad cuando uso < 25%             │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Este diagrama presenta las decisiones de diseño que todo implementador de arreglos dinámicos debe tomar. No hay respuestas "correctas" universales; depende del contexto. Un sistema embebido con 512KB de RAM priorizará memoria (factor 1.5x, capacidad pequeña). Un servidor con terabytes priorizará velocidad (factor 2x, capacidad grande). La reducción de capacidad es especialmente delicada: reduce memoria pero puede causar "thrashing" (crecer-reducir-crecer-reducir repetidamente).
+                </div>
+
+                <!-- RETO IA #5 -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">5</div>
+                        <h4>Diálogo Socrático sobre Decisiones de Diseño</h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Filósofo del software que cuestiona cada decisión de diseño para profundizar la comprensión.
+                        </div>
+                        
+                        <div class="prompt-box">Actúa como un filósofo del diseño de software. Tu rol es cuestionar mis decisiones de diseño para ayudarme a entender profundamente los trade-offs.
+
+Voy a describir la implementación de ArregloDinámico que hice en la fase anterior. Para cada decisión que mencione, hazme preguntas que me hagan pensar:
+
+MI IMPLEMENTACIÓN:
+1. Usé capacidad inicial de 10
+2. Factor de crecimiento de 2x
+3. No implementé reducción de capacidad
+4. Lanzo excepción si el índice está fuera de rango
+5. Copio elementos uno por uno en el redimensionamiento
+
+Para cada decisión, pregúntame cosas como:
+- "¿Por qué elegiste ese valor específico?"
+- "¿Qué pasaría si...?"
+- "¿En qué escenario fallaría esa decisión?"
+- "¿Cómo lo haría diferente si el contexto fuera...?"
+
+También quiero que explores:
+- Un escenario donde mi implementación sería perfecta
+- Un escenario donde sería la PEOR opción
+- Qué cambiaría para un sistema embebido con 512KB de RAM
+- Qué cambiaría para un servidor con terabytes de RAM
+
+Comienza con mi primera decisión (capacidad inicial de 10) y profundiza antes de pasar a la siguiente.</div>
+
+                        <div class="entregable-box">
+                            <ul>
+                                <li>Documento de reflexión con: cada decisión de diseño, la justificación refinada después del diálogo, y un escenario donde la cambiarías</li>
+                                <li>Matriz de contexto vs. configuración ideal (al menos 4 contextos diferentes)</li>
+                                <li>Una decisión que cambiarías de tu implementación original y por qué</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RETO IA #6 -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">6</div>
+                        <h4>Identificación de Patrones en Problemas de Arreglos</h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Analista de patrones que ayuda a identificar y nombrar técnicas recurrentes.
+                        </div>
+                        
+                        <p><strong>Nota importante:</strong> El objetivo de este reto es <em>reconocer e identificar</em> patrones cuando los veas, no necesariamente implementarlos perfectamente desde cero. Estos patrones se dominan con práctica a lo largo del tiempo.</p>
+                        
+                        <div class="prompt-box">Eres un analista de patrones algorítmicos. Después de resolver los problemas del Reto 4, quiero aprender a IDENTIFICAR los PATRONES GENERALES para reconocerlos en problemas futuros.
+
+Para cada patrón, necesito:
+1. Nombre del patrón y descripción breve
+2. "Señales" en el enunciado que indican usar ese patrón
+3. Un ejemplo simple que ya vi (de los problemas del Reto 4 si aplica)
+4. La IDEA GENERAL de cómo funciona (sin código detallado)
+
+PATRONES A IDENTIFICAR:
+
+1. PATRÓN "DOS PUNTEROS" (Two Pointers):
+   - ¿Cuándo debería pensar en este patrón?
+   - ¿Cuáles de los problemas del Reto 4 lo usan?
+
+2. PATRÓN "VENTANA DESLIZANTE" (Sliding Window):
+   - ¿Qué palabras clave en un problema sugieren este patrón?
+   - ¿Cuál es la intuición básica?
+
+3. PATRÓN "IN-PLACE MODIFICATION":
+   - ¿Por qué es importante?
+   - ¿Cómo sé si puedo modificar in-place?
+
+4. PATRÓN "PREFIJO/SUFIJO":
+   - ¿Cuándo son útiles los arreglos de suma prefija?
+   - Ejemplo simple de aplicación
+
+Para cada patrón, dame las "señales de detección" que buscaré en futuros problemas. NO necesito implementaciones detalladas ahora, solo quiero RECONOCER el patrón cuando lo vea.
+
+Empecemos con DOS PUNTEROS.</div>
+
+                        <div class="entregable-box">
+                            <ul>
+                                <li>"Tarjetas de referencia" para cada patrón con: nombre, señales de detección, idea general</li>
+                                <li>Para cada problema del Reto 4, indica qué patrón(es) usaste o podrías usar</li>
+                                <li>Lista de 2-3 palabras clave que te harán pensar en cada patrón</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="context-box success">
+                    <div class="box-title">✅ Señal de Comprensión Profunda</div>
+                    <p>Sabes que entiendes los arreglos dinámicos cuando puedes explicar: (1) por qué el factor de crecimiento importa, (2) cuándo NO usarías un arreglo dinámico, y (3) cómo elegirías la configuración según el caso de uso.</p>
+                </div>
+
+                <!-- Invariantes de la Fase -->
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que NO deben romperse</h4>
+                    <p>Criterios para verificar la validez de los trade-offs discutidos:</p>
+                    <ul>
+                        <li>Factor de crecimiento > 1 — si es ≤1, nunca habrá espacio nuevo</li>
+                        <li>Capacidad inicial > 0 — no puede haber arreglo de capacidad cero</li>
+                        <li>Costo amortizado de agregar con duplicación = O(1) — matemáticamente demostrable</li>
+                        <li>Costo amortizado con incremento +1 = O(n) — nunca puede ser O(1)</li>
+                        <li>El patrón Two Pointers requiere algún orden o estructura en los datos</li>
+                    </ul>
+                    <div class="nota-ia">
+                        <strong>🤖 Alerta IA:</strong> Si la IA sugiere que incremento +1 puede ser O(1) amortizado, o que el factor de crecimiento no afecta el rendimiento, está equivocada.
+                    </div>
+                </div>
+
+                <!-- Checkpoint Metacognitivo -->
+                <div class="checkpoint">
+                    <h4>🪞 Checkpoint Metacognitivo - Fase REFLEXIONA</h4>
+                    <div class="pregunta">¿Qué decisión de diseño me costó más justificar? ¿Qué dice eso sobre mi comprensión?</div>
+                    <div class="pregunta">¿Qué patrón de los explorados era nuevo para mí? ¿Puedo ahora reconocerlo en un problema?</div>
+                    <div class="pregunta">Si tuviera que enseñar "arreglos dinámicos" a un compañero, ¿por dónde empezaría?</div>
+                    <div class="pregunta">¿Qué conexión inesperada descubrí entre los conceptos de esta semana?</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FASE 4: VALIDA -->
+        <section id="valida" class="fase-section">
+            <div class="fase-header valida">
+                <div class="fase-icon">✅</div>
+                <div class="fase-info">
+                    <h2>FASE 4: VALIDA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Evaluar</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li>Verificar la correctitud de implementaciones mediante casos de prueba</li>
+                        <li>Evaluar el rendimiento empírico vs. el análisis teórico</li>
+                        <li>Detectar errores en implementaciones propias y ajenas</li>
+                        <li>Auditar respuestas de IA relacionadas con arreglos</li>
+                    </ul>
+                </div>
+
+                <h3>Verificación de Correctitud</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    CASOS DE PRUEBA ESENCIALES                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  CASOS BORDE (edge cases):                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ □ Arreglo vacío (tamaño = 0)                                       │   │
+│  │ □ Un solo elemento                                                  │   │
+│  │ □ Arreglo lleno (tamaño = capacidad)                               │   │
+│  │ □ Índice 0 (primer elemento)                                       │   │
+│  │ □ Índice tamaño-1 (último elemento)                                │   │
+│  │ □ Índice negativo (debe fallar)                                    │   │
+│  │ □ Índice >= tamaño (debe fallar)                                   │   │
+│  │ □ Elemento nulo/null (si el lenguaje lo permite)                   │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│  CASOS DE REDIMENSIONAMIENTO:                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ □ Agregar hasta llenar capacidad exacta                            │   │
+│  │ □ Agregar uno más (trigger redimensionamiento)                     │   │
+│  │ □ Agregar muchos seguidos (múltiples redimensionamientos)          │   │
+│  │ □ Verificar que capacidad se duplica correctamente                 │   │
+│  │ □ Verificar que los datos se preservan tras redimensionar          │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│  CASOS DE INTEGRIDAD:                                                      │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ □ Insertar + obtener = mismo valor                                 │   │
+│  │ □ Agregar n elementos → tamaño = n                                 │   │
+│  │ □ Eliminar elemento → tamaño disminuye                             │   │
+│  │ □ Orden se preserva tras inserciones/eliminaciones                 │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Esta checklist organiza los casos de prueba en tres categorías. Los <em>casos borde</em> prueban límites extremos donde suelen esconderse bugs. Los <em>casos de redimensionamiento</em> verifican que la lógica de crecimiento funciona. Los <em>casos de integridad</em> confirman que las operaciones hacen lo que prometen. Un buen conjunto de pruebas cubre al menos un caso de cada categoría.
+                </div>
+
+                <!-- RETO IA #7 - ESENCIAL -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">7</div>
+                        <h4>Cazador de Bugs <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Generador de código con bugs intencionales para que practiques debugging.
+                        </div>
+                        
+                        <div class="prompt-box">Eres un generador de código con bugs intencionales. Tu tarea es crear implementaciones de ArregloDinámico que contengan errores sutiles para que yo los encuentre.
+
+Genera 4 implementaciones con bugs. Para cada una:
+1. Presenta el código completo en pseudocódigo
+2. Indica qué método(s) contienen el bug (pero NO digas cuál es el bug)
+3. Después de que yo identifique el bug, confirma y explica las consecuencias
+
+BUGS A INCLUIR (uno por implementación):
+
+IMPLEMENTACIÓN 1: Bug en `agregar()`
+- Algo relacionado con el redimensionamiento
+
+IMPLEMENTACIÓN 2: Bug en `insertar(índice, elemento)`
+- Algo relacionado con el desplazamiento de elementos
+
+IMPLEMENTACIÓN 3: Bug en `eliminar(índice)`  
+- Algo relacionado con el manejo de índices
+
+IMPLEMENTACIÓN 4: Bug en el constructor o inicialización
+- Algo que cause problemas más adelante
+
+Para cada bug, después de que lo encuentre, dime:
+- ¿Qué caso de prueba lo revelaría?
+- ¿Qué síntoma vería el usuario?
+- ¿Cómo de difícil sería encontrar este bug en producción?
+
+Dame la IMPLEMENTACIÓN 1 primero.</div>
+
+                        <div class="entregable-box">
+                            <ul>
+                                <li>Para cada implementación: bug identificado, línea específica, corrección propuesta</li>
+                                <li>Caso de prueba mínimo que revelaría cada bug</li>
+                                <li>Ranking de los bugs de más fácil a más difícil de detectar, con justificación</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RETO IA #8 -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">8</div>
+                        <h4>Benchmark Empírico</h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Simulador de benchmarks que genera datos de rendimiento para validar análisis teórico.
+                        </div>
+                        
+                        <div class="prompt-box">Actúa como un simulador de benchmarks de rendimiento. Vamos a validar empíricamente el análisis teórico de arreglos dinámicos.
+
+EXPERIMENTO 1: Comparar estrategias de crecimiento
+Simula el tiempo total para agregar n elementos con estas estrategias:
+- Incremento +1 (el error de MegaStore)
+- Incremento +10  
+- Incremento +100
+- Factor 1.5x
+- Factor 2x
+
+Para n = 1000, 10000, 100000
+
+Genera una tabla de resultados (simulados pero realistas basados en el análisis de complejidad). Luego pregúntame si los resultados coinciden con mis predicciones teóricas.
+
+EXPERIMENTO 2: Costo de inserción por posición
+Simula el tiempo de insertar un elemento en diferentes posiciones de un arreglo de 10,000 elementos:
+- Posición 0 (inicio)
+- Posición 2500
+- Posición 5000
+- Posición 7500
+- Posición 9999 (final)
+
+Genera los datos y pídeme que explique el patrón.
+
+EXPERIMENTO 3: Overhead de memoria
+Para un arreglo dinámico con factor 2x:
+- Muestra la capacidad vs. tamaño real para n = 1 a 1000 elementos
+- Calcula el porcentaje de memoria "desperdiciada" en diferentes puntos
+- ¿Cuándo es máximo el desperdicio? ¿Cuándo es mínimo?
+
+Presenta los datos experimentales primero, luego guíame a interpretarlos.</div>
+
+                        <div class="entregable-box">
+                            <ul>
+                                <li>Tablas de datos de los 3 experimentos con tus interpretaciones</li>
+                                <li>Gráfica (ASCII o descripción) del Experimento 1 mostrando las diferentes curvas</li>
+                                <li>Conclusiones: ¿Los datos empíricos confirman la teoría? ¿Hubo sorpresas?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="context-box warning">
+                    <div class="box-title">⚠️ Cuidado con la Auditoría de IA</div>
+                    <p>Recuerda que la IA puede generar código con errores sutiles. Siempre verifica: (1) los casos borde, (2) que las complejidades sean correctas, (3) que el código compile/funcione, y (4) que los invariantes se mantengan. Tu rol es ser el Arquitecto que valida, no el Observador que acepta.</p>
+                </div>
+
+                <!-- Invariantes de la Fase -->
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que NO deben romperse</h4>
+                    <p>Criterios para saber si un bug es real o un falso positivo:</p>
+                    <ul>
+                        <li>Todo acceso a datos[i] requiere que 0 ≤ i < tamaño</li>
+                        <li>Redimensionar debe copiar TODOS los elementos existentes</li>
+                        <li>Después de redimensionar, capacidad > tamaño (debe haber espacio nuevo)</li>
+                        <li>El desplazamiento para insertar debe ir de derecha a izquierda</li>
+                        <li>El desplazamiento para eliminar debe ir de izquierda a derecha</li>
+                        <li>tamaño debe actualizarse DESPUÉS de mover elementos, no antes</li>
+                    </ul>
+                    <div class="nota-ia">
+                        <strong>🤖 Alerta IA:</strong> Si la IA genera código que accede a datos[tamaño] (sin el -1) o que actualiza tamaño antes de copiar, el código tiene un bug aunque "parezca" funcionar.
+                    </div>
+                </div>
+
+                <!-- Checkpoint Metacognitivo -->
+                <div class="checkpoint">
+                    <h4>🪞 Checkpoint Metacognitivo - Fase VALIDA</h4>
+                    <div class="pregunta">¿Cuál de los 4 bugs me costó más encontrar? ¿Qué estrategia de búsqueda me funcionó mejor?</div>
+                    <div class="pregunta">¿Los datos empíricos me sorprendieron en algo? ¿Por qué sí o por qué no?</div>
+                    <div class="pregunta">Si tuviera que diseñar pruebas para el código de otro compañero, ¿qué probaría primero?</div>
+                    <div class="pregunta">¿Cómo ha cambiado mi confianza en mi propia implementación después de esta fase?</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FASE 5: PROFUNDIZA -->
+        <section id="profundiza" class="fase-section">
+            <div class="fase-header profundiza">
+                <div class="fase-icon">🚀</div>
+                <div class="fase-info">
+                    <h2>FASE 5: PROFUNDIZA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Crear</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li>Explorar variantes avanzadas de arreglos (circulares, sparse, multidimensionales)</li>
+                        <li>Conectar arreglos con estructuras que los usan internamente (pilas, colas, heaps)</li>
+                        <li>Investigar implementaciones reales en lenguajes de programación</li>
+                        <li>Diseñar arreglos especializados para casos de uso específicos</li>
+                    </ul>
+                </div>
+
+                <h3>Más Allá del Arreglo Básico</h3>
+
+                <div class="context-box info">
+                    <div class="box-title">ℹ️ Contenido Exploratorio</div>
+                    <p>Esta fase es <strong>opcional</strong> y está diseñada para estudiantes que desean profundizar. Los temas aquí conectan con contenido futuro del curso y preparación para entrevistas técnicas.</p>
+                </div>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    VARIANTES DE ARREGLOS                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ARREGLO CIRCULAR (Ring Buffer):                                           │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ Permite insertar/eliminar eficientemente en AMBOS extremos         │   │
+│  │                                                                     │   │
+│  │     ┌───┬───┬───┬───┬───┬───┬───┬───┐                             │   │
+│  │     │ D │ E │   │   │   │ A │ B │ C │                             │   │
+│  │     └───┴───┴───┴───┴───┴───┴───┴───┘                             │   │
+│  │       ↑                   ↑                                        │   │
+│  │      fin                inicio                                     │   │
+│  │                                                                     │   │
+│  │ Uso: Colas, buffers de streaming, histórico de comandos           │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│  ARREGLO SPARSE (Disperso):                                                │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ Optimizado para arreglos con muchos valores "vacíos" o repetidos  │   │
+│  │                                                                     │   │
+│  │ En vez de: [0,0,0,5,0,0,0,0,3,0,0,0,0,0,0,8,0,0,0,0]             │   │
+│  │ Guarda:    {3:5, 8:3, 15:8} (solo índices con valores)           │   │
+│  │                                                                     │   │
+│  │ Uso: Matrices de machine learning, grafos, imágenes               │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│  ARREGLO MULTIDIMENSIONAL:                                                 │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ Matrices, tensores: múltiples dimensiones                         │   │
+│  │                                                                     │   │
+│  │ Row-major (C, Python): arr[i][j] → arr[i*cols + j]               │   │
+│  │ Column-major (Fortran, MATLAB): arr[i][j] → arr[j*rows + i]      │   │
+│  │                                                                     │   │
+│  │ Uso: Imágenes, videojuegos, simulaciones físicas, ML              │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Existen variantes de arreglos optimizadas para casos específicos. El <em>arreglo circular</em> usa aritmética modular para que el final "conecte" con el inicio, permitiendo operaciones O(1) en ambos extremos. El <em>arreglo sparse</em> solo almacena valores no vacíos, ahorrando memoria cuando hay muchos ceros. Los <em>arreglos multidimensionales</em> almacenan matrices y tensores, y la forma de "aplanarlos" a memoria lineal (row-major vs column-major) afecta el rendimiento según los patrones de acceso.
+                </div>
+
+                <!-- RETO IA #9 - AVANZADO -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">9</div>
+                        <h4>Investigador de Implementaciones Reales <span class="reto-badge avanzado">Avanzado</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Experto en código fuente de lenguajes de programación que explica cómo implementan arreglos dinámicos los lenguajes reales.
+                        </div>
+                        
+                        <div class="prompt-box">Eres un experto en implementaciones de bajo nivel de lenguajes de programación. Quiero entender cómo los lenguajes reales implementan arreglos dinámicos.
+
+Investiga y explícame:
+
+1. JAVA - ArrayList:
+   - ¿Cuál es la capacidad inicial por defecto?
+   - ¿Qué factor de crecimiento usa?
+   - ¿Cómo maneja elementos null?
+   - ¿Qué optimizaciones interesantes tiene?
+
+2. PYTHON - list:
+   - ¿Cómo es diferente de un ArrayList de Java?
+   - ¿Qué factor de crecimiento usa? (es más complejo que un simple 2x)
+   - ¿Cómo maneja tipos mixtos?
+   - ¿Qué es "over-allocation" y por qué lo hace?
+
+3. C++ - std::vector:
+   - ¿Qué garantías da el estándar sobre el factor de crecimiento?
+   - ¿Qué significa "move semantics" para vectores?
+   - ¿Qué es reserve() y shrink_to_fit()?
+
+4. JAVASCRIPT - Array:
+   - ¿Por qué los arrays de JS son tan diferentes?
+   - ¿Qué son "packed" vs "holey" arrays en V8?
+   - ¿Cómo afecta el rendimiento?
+
+Para cada uno, dame:
+- Decisiones de diseño notables
+- Trade-offs que eligieron
+- Algo que me sorprenda o no esperaba</div>
+
+                        <div class="entregable-box">
+                            <ul>
+                                <li>Tabla comparativa de los 4 lenguajes con: capacidad inicial, factor de crecimiento, características únicas</li>
+                                <li>La decisión de diseño más interesante que descubriste y por qué te pareció relevante</li>
+                                <li>Cómo esta investigación cambiaría tu implementación si tuvieras que rehacerla</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RETO IA #10 - AVANZADO -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">10</div>
+                        <h4>Diseñador de Arreglo Especializado <span class="reto-badge avanzado">Avanzado</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Arquitecto de sistemas que te guía a diseñar una estructura de datos personalizada para un caso de uso específico.
+                        </div>
+                        
+                        <div class="prompt-box">Eres un arquitecto de sistemas y vamos a diseñar juntos un arreglo especializado para un caso de uso real.
+
+ESCENARIO: Sistema de Chat en Tiempo Real
+Necesito una estructura de datos para almacenar los últimos 100 mensajes de un chat. Requisitos:
+- Agregar mensajes nuevos es muy frecuente (miles por segundo en chats activos)
+- Solo necesito mantener los últimos 100 mensajes (los más viejos se descartan)
+- Necesito acceder rápidamente al mensaje más reciente
+- Ocasionalmente necesito obtener los últimos N mensajes en orden cronológico
+
+Guíame a diseñar esta estructura:
+
+1. ¿Qué tipo de arreglo sería ideal? (dinámico, circular, otro?)
+   Hazme preguntas sobre los trade-offs antes de decidir.
+
+2. ¿Qué operaciones necesita soportar?
+   Ayúdame a definir la interfaz (métodos y sus firmas)
+
+3. ¿Cómo optimizar para el patrón de uso descrito?
+   - ¿Qué debería ser O(1)?
+   - ¿Qué puede ser O(n)?
+
+4. ¿Qué pasa cuando el buffer está lleno y llega un mensaje nuevo?
+   Diseñemos el algoritmo de "evicción"
+
+5. Implementemos el pseudocódigo juntos
+   Guíame paso a paso como hiciste en el Reto 3
+
+Al final, analiza:
+- Complejidad de cada operación
+- Uso de memoria (exacto, no desperdiciado)
+- Por qué esta solución es mejor que un ArrayList simple para este caso</div>
+
+                        <div class="entregable-box">
+                            <ul>
+                                <li>Diseño completo del "MessageBuffer" con interfaz y pseudocódigo</li>
+                                <li>Análisis de complejidad de cada operación</li>
+                                <li>Diagrama ASCII mostrando cómo funciona la circularidad</li>
+                                <li>Comparación: ¿Por qué es mejor que ArrayList para este caso específico?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Conexiones con el Curso</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                ESTRUCTURAS QUE USAN ARREGLOS INTERNAMENTE                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   Esta semana         Semanas futuras                                       │
+│   ┌─────────┐                                                              │
+│   │ ARREGLO │──────┬──────────► Semana 5: PILA (basada en arreglo)        │
+│   │DINÁMICO │      │                                                       │
+│   └─────────┘      ├──────────► Semana 6: COLA CIRCULAR                   │
+│                    │                                                        │
+│                    ├──────────► Semana 6: HEAP / Cola de Prioridad        │
+│                    │                                                        │
+│                    ├──────────► Semana 11: TABLA HASH (arreglo de buckets)│
+│                    │                                                        │
+│                    └──────────► Semana 12: HEAP para Árboles              │
+│                                                                             │
+│   El arreglo es el "átomo" de las estructuras de datos.                   │
+│   Domínalo ahora y todo lo demás será más fácil.                          │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Este diagrama muestra cómo el arreglo dinámico que aprendiste esta semana es el "bloque de construcción" de muchas estructuras futuras. Las pilas y colas usan arreglos internamente. Los heaps son arreglos con propiedades especiales. Las tablas hash son arreglos de "buckets". Dominar arreglos ahora te dará una ventaja significativa en las siguientes semanas del curso.
+                </div>
+
+                <!-- Invariantes de la Fase -->
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que NO deben romperse</h4>
+                    <p>Criterios para estructuras avanzadas basadas en arreglos:</p>
+                    <ul>
+                        <li>Buffer circular: (inicio + tamaño) % capacidad = siguiente posición libre</li>
+                        <li>Buffer circular: nunca necesita mover elementos, solo actualizar punteros</li>
+                        <li>Arreglo sparse: acceso sigue siendo O(1) si se usa tabla hash interna</li>
+                        <li>Arreglo 2D row-major: arr[i][j] = base + (i × columnas + j) × tamaño_elemento</li>
+                    </ul>
+                    <div class="nota-ia">
+                        <strong>🤖 Alerta IA:</strong> Si la IA sugiere que un buffer circular necesita mover elementos al agregar, o que los arreglos multidimensionales no pueden usar la fórmula de acceso O(1), está equivocada.
+                    </div>
+                </div>
+
+                <!-- Checkpoint Metacognitivo -->
+                <div class="checkpoint">
+                    <h4>🪞 Checkpoint Metacognitivo - Fase PROFUNDIZA</h4>
+                    <div class="pregunta">¿Qué decisión de diseño de los lenguajes reales me sorprendió más? ¿Por qué?</div>
+                    <div class="pregunta">¿Cómo el ejercicio de diseñar un arreglo especializado cambió mi perspectiva sobre los trade-offs?</div>
+                    <div class="pregunta">¿Qué concepto de esta semana anticipo que será más útil en las siguientes semanas?</div>
+                    <div class="pregunta">Si empezara la semana de nuevo con lo que sé ahora, ¿qué haría diferente?</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SISTEMA DE EVALUACIÓN -->
+        <section id="evaluacion" class="evaluacion-section">
+            <div class="evaluacion-header">
+                <h3>📊 Sistema de Evaluación - Semana 2</h3>
+                <p style="opacity: 0.9; margin-top: 0.5rem;">Alineado con las fases AETL y niveles de Bloom</p>
+            </div>
+            
+            <div style="padding: 1rem;">
+                <div class="leyenda-retos" style="margin-bottom: 1rem;">
+                    <div class="leyenda-item">
+                        <span class="reto-badge esencial">Esencial</span>
+                        <span>Retos 1, 2, 3, 7 — Obligatorios para todos</span>
+                    </div>
+                    <div class="leyenda-item">
+                        <span class="reto-badge avanzado">Avanzado</span>
+                        <span>Retos 9, 10 — Para profundización adicional</span>
+                    </div>
+                </div>
+
+                <div class="criterio-item">
+                    <span class="fase-badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">COMPRENDE</span>
+                    <div style="flex: 1;">
+                        <strong>Modelo de memoria y operaciones</strong>
+                        <p style="font-size: 0.9rem; color: var(--gray);">Retos 1-2 (Esenciales): Diagramas de memoria y análisis de MegaStore</p>
+                    </div>
+                    <span class="puntos">15 pts</span>
+                </div>
+
+                <div class="criterio-item">
+                    <span class="fase-badge" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">APLICA</span>
+                    <div style="flex: 1;">
+                        <strong>Implementación de TAD ArregloDinámico</strong>
+                        <p style="font-size: 0.9rem; color: var(--gray);">Reto 3 (Esencial) + Reto 4: Código completo y problemas clásicos</p>
+                    </div>
+                    <span class="puntos">25 pts</span>
+                </div>
+
+                <div class="criterio-item">
+                    <span class="fase-badge" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">REFLEXIONA</span>
+                    <div style="flex: 1;">
+                        <strong>Trade-offs y patrones</strong>
+                        <p style="font-size: 0.9rem; color: var(--gray);">Retos 5-6: Decisiones justificadas y reconocimiento de patrones</p>
+                    </div>
+                    <span class="puntos">20 pts</span>
+                </div>
+
+                <div class="criterio-item">
+                    <span class="fase-badge" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">VALIDA</span>
+                    <div style="flex: 1;">
+                        <strong>Testing y benchmarks</strong>
+                        <p style="font-size: 0.9rem; color: var(--gray);">Reto 7 (Esencial) + Reto 8: Bugs detectados y análisis empírico</p>
+                    </div>
+                    <span class="puntos">25 pts</span>
+                </div>
+
+                <div class="criterio-item">
+                    <span class="fase-badge" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">PROFUNDIZA</span>
+                    <div style="flex: 1;">
+                        <strong>Extensiones (Avanzado - opcional)</strong>
+                        <p style="font-size: 0.9rem; color: var(--gray);">Retos 9-10: Investigación de lenguajes y diseño de MessageBuffer</p>
+                    </div>
+                    <span class="puntos">+15 pts extra</span>
+                </div>
+
+                <div class="criterio-item" style="background: #f8f9fa;">
+                    <span class="fase-badge" style="background: var(--dark);">CHECKPOINTS</span>
+                    <div style="flex: 1;">
+                        <strong>Reflexiones metacognitivas</strong>
+                        <p style="font-size: 0.9rem; color: var(--gray);">Completar los checkpoints de cada fase (mínimo 3 de 5)</p>
+                    </div>
+                    <span class="puntos">15 pts</span>
+                </div>
+
+                <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 1rem 1.5rem; margin-top: 1rem; border-radius: var(--border-radius); display: flex; justify-content: space-between; align-items: center;">
+                    <span><strong>TOTAL SEMANA 2</strong></span>
+                    <span style="font-size: 1.5rem; font-weight: bold;">100 pts (+15 extra)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- GLOSARIO -->
+        <section id="glosario" class="glosario-section">
+            <div class="glosario-header">
+                <h3>📖 Glosario</h3>
+            </div>
+            
+            <div class="glosario-grid">
+                <div class="termino-card">
+                    <dl>
+                        <dt>Arreglo (Array)</dt>
+                        <dd>Estructura de datos que almacena elementos del mismo tipo en posiciones contiguas de memoria, permitiendo acceso O(1) por índice.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Arreglo estático</dt>
+                        <dd>Arreglo cuyo tamaño se define en tiempo de compilación y no puede cambiar durante la ejecución.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Arreglo dinámico</dt>
+                        <dd>Arreglo que puede cambiar su tamaño durante la ejecución, típicamente mediante redimensionamiento automático.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Capacidad (Capacity)</dt>
+                        <dd>Número total de espacios disponibles en el arreglo interno de un arreglo dinámico.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Tamaño (Size)</dt>
+                        <dd>Número de elementos actualmente almacenados en un arreglo dinámico.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Redimensionamiento</dt>
+                        <dd>Proceso de crear un nuevo arreglo más grande y copiar los elementos existentes cuando la capacidad se agota.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Factor de crecimiento</dt>
+                        <dd>Multiplicador usado para calcular la nueva capacidad al redimensionar (común: 1.5x o 2x).</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Complejidad amortizada</dt>
+                        <dd>Costo promedio de una operación sobre una secuencia de operaciones, considerando que algunas son costosas pero raras.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Índice (Index)</dt>
+                        <dd>Posición numérica de un elemento en un arreglo, típicamente comenzando desde 0.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Acceso directo</dt>
+                        <dd>Capacidad de llegar a cualquier elemento inmediatamente usando aritmética de punteros, sin recorrer otros elementos.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Buffer circular (Ring Buffer)</dt>
+                        <dd>Variante de arreglo donde el final conecta lógicamente con el inicio, permitiendo operaciones O(1) en ambos extremos.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>In-place</dt>
+                        <dd>Algoritmo que opera modificando la estructura de entrada directamente, sin usar espacio extra significativo.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card aetl">
+                    <dl>
+                        <dt>TAD (Tipo Abstracto de Datos)</dt>
+                        <dd>Modelo matemático que define un tipo de dato por sus operaciones y comportamiento, independiente de la implementación.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card aetl">
+                    <dl>
+                        <dt>Patrón Two Pointers</dt>
+                        <dd>Técnica que usa dos índices que se mueven por el arreglo para resolver problemas eficientemente.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card aetl">
+                    <dl>
+                        <dt>Invariante</dt>
+                        <dd>Condición que siempre debe ser verdadera en un punto específico del programa; si se rompe, hay un bug.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card aetl">
+                    <dl>
+                        <dt>Off-by-one error</dt>
+                        <dd>Error común donde un índice está desplazado por uno (ej: usar ≤ en vez de <, o acceder a arr[n] en vez de arr[n-1]).</dd>
+                    </dl>
+                </div>
+            </div>
+        </section>
+
+        <!-- REFERENCIAS -->
+        <section id="referencias" class="referencias-section">
+            <h3>📑 Referencias Bibliográficas</h3>
+            
+            <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--secondary);">Contenido Disciplinar</h4>
+            
+            <div class="referencia-item">
+                Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C. (2022). <em>Introduction to Algorithms</em> (4th ed.). MIT Press. [Capítulo 10: Elementary Data Structures]
+            </div>
+            
+            <div class="referencia-item">
+                Sedgewick, R., & Wayne, K. (2011). <em>Algorithms</em> (4th ed.). Addison-Wesley. [Capítulo 1.3: Bags, Queues, and Stacks - Resizing Arrays]
+            </div>
+            
+            <div class="referencia-item">
+                Goodrich, M. T., Tamassia, R., & Goldwasser, M. H. (2014). <em>Data Structures and Algorithms in Java</em> (6th ed.). Wiley. [Capítulo 7: Array-Based Sequences]
+            </div>
+            
+            <div class="referencia-item">
+                Skiena, S. S. (2020). <em>The Algorithm Design Manual</em> (3rd ed.). Springer. [Capítulo 3: Data Structures]
+            </div>
+
+            <h4 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--secondary);">Documentación Técnica</h4>
+            
+            <div class="referencia-item">
+                Oracle. (2024). <em>Java SE Documentation: ArrayList</em>. https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html
+            </div>
+            
+            <div class="referencia-item">
+                Python Software Foundation. (2024). <em>Python Documentation: Common Sequence Operations</em>. https://docs.python.org/3/library/stdtypes.html#common-sequence-operations
+            </div>
+            
+            <div class="referencia-item">
+                cppreference.com. (2024). <em>std::vector</em>. https://en.cppreference.com/w/cpp/container/vector
+            </div>
+
+            <h4 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--secondary);">Fundamentos Pedagógicos</h4>
+            
+            <div class="referencia-item">
+                Tomlinson, C. A. (2001). <em>How to Differentiate Instruction in Mixed-Ability Classrooms</em> (2nd ed.). ASCD.
+            </div>
+            
+            <div class="referencia-item">
+                Wiggins, G., & McTighe, J. (2005). <em>Understanding by Design</em> (2nd ed.). ASCD.
+            </div>
+
+            <h4 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--secondary);">Estándares Curriculares</h4>
+            
+            <div class="referencia-item">
+                ACM, IEEE-CS, AAAI. (2023). <em>Computer Science Curricula 2023 (CS2023)</em>. Association for Computing Machinery. [SDF-Fundamental Data Structures]
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span class="modelo-badge">Modelo AETL v1.0</span>
+        <p>Universidad Autónoma de Nayarit · Licenciatura en Sistemas Computacionales</p>
+        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">
+            Estructura de Datos Básica · Semana 2: Arreglos - Fundamento de las Estructuras
+        </p>
+        <p style="font-size: 0.85rem; opacity: 0.7; margin-top: 1rem;">
+            Documento diseñado con el modelo de Aprendizaje Técnico Aumentado por IA (AETL)
+        </p>
+		<p>Dr. Eligardo Cruz Sánchez</p>
+    </footer>
+
+    <!-- Script para interactividad de la barra de progreso -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = ['comprende', 'aplica', 'reflexiona', 'valida', 'profundiza'];
+            const progressSteps = document.querySelectorAll('.progress-step');
+            
+            function updateProgress() {
+                const scrollPosition = window.scrollY + window.innerHeight / 2;
+                
+                sections.forEach((sectionId, index) => {
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        const sectionTop = section.offsetTop;
+                        const sectionBottom = sectionTop + section.offsetHeight;
+                        
+                        if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                            progressSteps.forEach((step, stepIndex) => {
+                                step.classList.remove('active');
+                                if (stepIndex < index) {
+                                    step.classList.add('completed');
+                                } else {
+                                    step.classList.remove('completed');
+                                }
+                            });
+                            progressSteps[index].classList.add('active');
+                        }
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', updateProgress);
+            updateProgress();
+            
+            // Smooth scroll para navegación
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
