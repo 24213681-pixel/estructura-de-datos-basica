@@ -1,0 +1,2632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 3: Listas Enlazadas Simples | AETL</title>
+    <style>
+:root {
+    --primary: #003a63;
+    --secondary: #005b96;
+    --accent: #f2a900;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --gray: #6c757d;
+    --border-radius: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.7;
+    color: var(--dark);
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+    min-height: 100vh;
+}
+
+/* =====================================================
+   HEADER INSTITUCIONAL
+   ===================================================== */
+
+.header-institucional {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,58,99,0.3);
+}
+
+.header-institucional .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.header-institucional .escudo {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.header-institucional h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.header-institucional .subtitulo {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.header-institucional .badge-semana {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+
+/* =====================================================
+   BARRA DE PROGRESO
+   ===================================================== */
+
+.progress-container {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e0e0e0;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+    transition: transform 0.3s;
+    text-decoration: none;
+}
+
+.progress-step:hover {
+    transform: scale(1.1);
+}
+
+.progress-step .step-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: white;
+    border: 3px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.progress-step.active .step-icon {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,91,150,0.4);
+}
+
+.progress-step.completed .step-icon {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.progress-step .step-label {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.progress-step.active .step-label {
+    color: var(--secondary);
+}
+
+/* =====================================================
+   NAVEGACIÓN
+   ===================================================== */
+
+.nav-container {
+    background: var(--primary);
+    padding: 0.8rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--accent);
+}
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* =====================================================
+   SECCIONES DE FASE
+   ===================================================== */
+
+.fase-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.fase-header {
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fase-header.comprende { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.fase-header.aplica { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.fase-header.reflexiona { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.fase-header.valida { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.fase-header.profundiza { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+.fase-header .fase-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fase-header .fase-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.fase-header .fase-info .bloom-tag {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.fase-content {
+    padding: 2rem;
+}
+
+/* =====================================================
+   OBJETIVOS
+   ===================================================== */
+
+.objetivos-box {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d1e8fa 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.objetivos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.objetivos-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.objetivos-box li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.objetivos-box li::before {
+    content: '🎯';
+    position: absolute;
+    left: 0;
+}
+
+/* =====================================================
+   CAJAS CONTEXTUALES
+   ===================================================== */
+
+.context-box {
+    padding: 1.2rem 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border-left: 4px solid;
+}
+
+.context-box.tip {
+    background: linear-gradient(135deg, #e3f9e5 0%, #c8f7dc 100%);
+    border-color: var(--success);
+}
+
+.context-box.warning {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border-color: var(--warning);
+}
+
+.context-box.danger {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border-color: var(--danger);
+}
+
+.context-box.success {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: var(--success);
+}
+
+.context-box.info {
+    background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+    border-color: var(--info);
+}
+
+.context-box .box-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* =====================================================
+   RETOS IA
+   ===================================================== */
+
+.reto-ia {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.reto-ia-header {
+    background: linear-gradient(90deg, var(--accent) 0%, #e89900 100%);
+    color: var(--primary);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reto-ia-header .reto-numero {
+    background: var(--primary);
+    color: var(--accent);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.reto-ia-header h4 {
+    flex: 1;
+    font-size: 1.1rem;
+}
+
+.reto-ia-body {
+    padding: 1.5rem;
+}
+
+.reto-ia .rol-ia {
+    background: rgba(242,169,0,0.15);
+    border: 1px solid var(--accent);
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.reto-ia .rol-ia strong {
+    color: var(--accent);
+}
+
+.prompt-box {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: var(--border-radius);
+    padding: 1.2rem;
+    margin: 1rem 0;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    color: #c9d1d9;
+}
+
+.prompt-box::before {
+    content: '📝 PROMPT';
+    display: block;
+    color: var(--accent);
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.entregable-box {
+    background: rgba(40,167,69,0.15);
+    border: 1px dashed var(--success);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+}
+
+.entregable-box::before {
+    content: '📦 ENTREGABLE ESPERADO';
+    display: block;
+    color: var(--success);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKPOINT METACOGNITIVO
+   ===================================================== */
+
+.checkpoint {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checkpoint h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkpoint .pregunta {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 0.8rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    padding-left: 3rem;
+}
+
+.checkpoint .pregunta::before {
+    content: '❓';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+}
+
+/* =====================================================
+   DIAGRAMA ASCII
+   ===================================================== */
+
+.ascii-diagram {
+    background: #1e1e1e;
+    color: #00ff00;
+    font-family: 'Consolas', 'Monaco', monospace;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: pre;
+}
+
+.diagrama-descripcion {
+    background: #f8f9fa;
+    border-left: 4px solid var(--info);
+    padding: 1rem;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+/* =====================================================
+   ESCENARIO INMERSIVO
+   ===================================================== */
+
+.escenario-inmersivo {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.escenario-inmersivo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.1;
+}
+
+.escenario-inmersivo h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.escenario-inmersivo .personaje {
+    background: rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    border-left: 3px solid var(--accent);
+}
+
+.escenario-inmersivo .dialogo {
+    font-style: italic;
+    margin: 1rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(255,255,255,0.3);
+}
+
+/* =====================================================
+   FUNDAMENTOS TEÓRICOS
+   ===================================================== */
+
+.fundamentos-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.fundamentos-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.constructo-card {
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius);
+    margin: 1rem;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.constructo-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.constructo-card .card-header {
+    padding: 1rem 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.constructo-card:nth-child(1) .card-header { background: #e8f4fd; color: var(--primary); }
+.constructo-card:nth-child(2) .card-header { background: #fff3e0; color: #e65100; }
+.constructo-card:nth-child(3) .card-header { background: #e8f5e9; color: #2e7d32; }
+.constructo-card:nth-child(4) .card-header { background: #f3e5f5; color: #7b1fa2; }
+.constructo-card:nth-child(5) .card-header { background: #fce4ec; color: #c2185b; }
+
+.constructo-card .card-body {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.constructo-card .referencia {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 0.8rem;
+}
+
+.constructo-card .operacional {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--accent);
+}
+
+/* =====================================================
+   GLOSARIO
+   ===================================================== */
+
+.glosario-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.glosario-header {
+    background: var(--dark);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.glosario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.termino-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--secondary);
+}
+
+.termino-card.aetl {
+    border-left-color: var(--accent);
+}
+
+.termino-card dt {
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.termino-card dd {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+/* =====================================================
+   EVALUACIÓN
+   ===================================================== */
+
+.evaluacion-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.evaluacion-header {
+    background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.criterio-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.criterio-item:last-child {
+    border-bottom: none;
+}
+
+.criterio-item .fase-badge {
+    background: var(--secondary);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 1rem;
+    min-width: 100px;
+    text-align: center;
+}
+
+.criterio-item .puntos {
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    margin-left: auto;
+}
+
+/* =====================================================
+   REFERENCIAS
+   ===================================================== */
+
+.referencias-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.referencias-section h3 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+}
+
+.referencia-item {
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed #e0e0e0;
+    font-size: 0.95rem;
+}
+
+.referencia-item:last-child {
+    border-bottom: none;
+}
+
+/* =====================================================
+   CÓDIGO
+   ===================================================== */
+
+code {
+    background: #f1f3f4;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.9em;
+    color: #d63384;
+}
+
+pre code {
+    display: block;
+    padding: 1rem;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    overflow-x: auto;
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.footer {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.footer .modelo-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* =====================================================
+   TABLAS
+   ===================================================== */
+
+.tabla-comparativa {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.tabla-comparativa th {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+}
+
+.tabla-comparativa td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tabla-comparativa tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-comparativa tr:hover {
+    background: #f8f9fa;
+}
+
+/* =====================================================
+   ESTILOS ADICIONALES
+   ===================================================== */
+
+.prerrequisitos-box {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border: 2px solid var(--accent);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.prerrequisitos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.prerrequisitos-box ul {
+    margin-left: 1.5rem;
+}
+
+.prerrequisitos-box li {
+    margin-bottom: 0.5rem;
+}
+
+.conexion-semana-anterior {
+    background: linear-gradient(135deg, #e8f4fd 0%, #bbdefb 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.conexion-semana-anterior h4 {
+    color: var(--primary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reto-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+}
+
+.reto-badge.esencial {
+    background: var(--success);
+    color: white;
+}
+
+.reto-badge.avanzado {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+    color: white;
+}
+
+.invariantes-box {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+    border: 2px dashed #c2185b;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.invariantes-box h4 {
+    color: #880e4f;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.orientacion-semanal {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.orientacion-semanal h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+}
+
+.orientacion-semanal ul {
+    margin-left: 1.5rem;
+}
+
+.orientacion-semanal li {
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   ANIMACIONES
+   ===================================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .header-institucional h1 {
+        font-size: 1.4rem;
+    }
+    
+    .container {
+        padding: 1rem;
+    }
+    
+    .fase-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .progress-step .step-label {
+        display: none;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .criterio-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .criterio-item .puntos {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+}
+
+/* =====================================================
+   IMPRESIÓN
+   ===================================================== */
+
+@media print {
+    .progress-container,
+    .nav-container {
+        display: none;
+    }
+
+    body {
+        background: white;
+    }
+
+    .reto-ia {
+        break-inside: avoid;
+    }
+}
+
+/* =====================================================
+   UTILIDADES
+   ===================================================== */
+
+.text-center { text-align: center; }
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--gray); }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Header Institucional -->
+    <header class="header-institucional">
+        <div class="logo-container">
+            <div class="escudo">UAN</div>
+            <div>
+                <h1>Estructura de Datos Básica</h1>
+                <p class="subtitulo">Licenciatura en Sistemas Computacionales</p>
+            </div>
+            <div class="escudo">LSC</div>
+        </div>
+        <span class="badge-semana">📅 Semana 3: Listas Enlazadas Simples</span>
+    </header>
+
+    <!-- Barra de Progreso AETL -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <a href="#comprende" class="progress-step active">
+                <div class="step-icon">📖</div>
+                <span class="step-label">Comprende</span>
+            </a>
+            <a href="#aplica" class="progress-step">
+                <div class="step-icon">⚡</div>
+                <span class="step-label">Aplica</span>
+            </a>
+            <a href="#reflexiona" class="progress-step">
+                <div class="step-icon">🔍</div>
+                <span class="step-label">Reflexiona</span>
+            </a>
+            <a href="#valida" class="progress-step">
+                <div class="step-icon">✓</div>
+                <span class="step-label">Valida</span>
+            </a>
+            <a href="#profundiza" class="progress-step">
+                <div class="step-icon">🚀</div>
+                <span class="step-label">Profundiza</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="nav-container">
+        <div class="nav-links">
+            <a href="#fundamentos">📚 Fundamentos</a>
+            <a href="#comprende">📖 Comprende</a>
+            <a href="#aplica">⚡ Aplica</a>
+            <a href="#reflexiona">🔍 Reflexiona</a>
+            <a href="#valida">✓ Valida</a>
+            <a href="#profundiza">🚀 Profundiza</a>
+            <a href="#glosario">📖 Glosario</a>
+            <a href="#referencias">📚 Referencias</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- Prerrequisitos -->
+        <div class="prerrequisitos-box">
+            <h4>⚠️ Para tener éxito esta semana, asegúrate de recordar cómo funcionan...</h4>
+            <ul>
+                <li><strong>Punteros/Referencias:</strong> Variables que almacenan direcciones de memoria o referencias a otros objetos</li>
+                <li><strong>Memoria dinámica:</strong> Cómo se reserva y libera memoria en tiempo de ejecución (heap vs stack)</li>
+                <li><strong>Complejidad temporal:</strong> Notación Big O y cómo analizar el costo de operaciones</li>
+                <li><strong>Arreglos y sus limitaciones:</strong> Por qué insertar/eliminar al inicio cuesta O(n)</li>
+                <li><strong>TAD (Tipo Abstracto de Datos):</strong> Separación entre interfaz y implementación</li>
+            </ul>
+        </div>
+
+        <!-- Conexión con semana anterior -->
+        <div class="conexion-semana-anterior">
+            <h4>🔗 Conexión con la Semana 2: Arreglos</h4>
+            <p>En la semana anterior estudiamos arreglos, estructuras con elementos en memoria <em>contigua</em>. Su fortaleza (acceso O(1) por índice) viene acompañada de una debilidad: insertar o eliminar elementos al inicio o en medio requiere desplazar todos los elementos subsecuentes, resultando en O(n). Esta semana introducimos las <strong>listas enlazadas</strong>, una estructura que resuelve precisamente este problema sacrificando el acceso directo por índice. Entender el trade-off entre arreglos y listas es fundamental para elegir la estructura correcta según el problema.</p>
+        </div>
+
+
+        <!-- FASE 1: COMPRENDE -->
+        <section id="comprende" class="fase-section">
+            <div class="fase-header comprende">
+                <div class="fase-icon">📖</div>
+                <div class="fase-info">
+                    <h2>FASE 1: COMPRENDE</h2>
+                    <span class="bloom-tag">Nivel Bloom: Recordar / Comprender</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Explicar</strong> el concepto de nodo y cómo los punteros/referencias conectan nodos en secuencia</li>
+                        <li><strong>Describir</strong> las operaciones fundamentales de una lista enlazada: inserción, eliminación y búsqueda</li>
+                        <li><strong>Comparar</strong> la lista enlazada con el arreglo en términos de complejidad espacial y temporal</li>
+                        <li><strong>Identificar</strong> casos de uso donde una lista enlazada es preferible a un arreglo</li>
+                    </ul>
+                </div>
+
+                <h3>El Nodo: El Ladrillo Fundamental</h3>
+                
+                <p>Una <strong>lista enlazada</strong> es una colección de elementos donde cada elemento (llamado <em>nodo</em>) contiene dos partes: el <strong>dato</strong> que almacena y una <strong>referencia</strong> (o puntero) al siguiente nodo. A diferencia de los arreglos, los nodos no necesitan estar en memoria contigua.</p>
+
+                <div class="context-box tip">
+                    <div class="box-title">💡 Analogía: El Tren de Vagones</div>
+                    <p>Imagina un tren donde cada vagón tiene pasajeros (el dato) y un enganche al siguiente vagón (el puntero). Para llegar al vagón 5, debes pasar por los vagones 1, 2, 3 y 4. No puedes "saltar" directamente. El último vagón no tiene enganche posterior (puntero NULL).</p>
+                </div>
+
+                <h3>Estructura de un Nodo</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         ANATOMÍA DE UN NODO                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │                           NODO                                      │   │
+│   ├─────────────────────────────┬───────────────────────────────────────┤   │
+│   │          DATO               │           SIGUIENTE                   │   │
+│   │    (valor almacenado)       │    (referencia al próximo nodo)       │   │
+│   │                             │                                       │   │
+│   │         ┌───┐               │              ┌───┐                    │   │
+│   │         │42 │               │              │ ●─┼──────────►         │   │
+│   │         └───┘               │              └───┘                    │   │
+│   └─────────────────────────────┴───────────────────────────────────────┘   │
+│                                                                             │
+│   En pseudocódigo:                                                          │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │  clase Nodo:                                                        │   │
+│   │      dato: Tipo                                                     │   │
+│   │      siguiente: Nodo  (o null si es el último)                      │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Un nodo es la unidad básica de una lista enlazada. Contiene exactamente dos campos: el <em>dato</em> (puede ser cualquier tipo: entero, cadena, objeto) y <em>siguiente</em> (una referencia que "apunta" al nodo que viene después). El campo siguiente del último nodo apunta a NULL/None/null, indicando el fin de la lista.
+                </div>
+
+                <h3>Lista Enlazada Simple: Conectando Nodos</h3>
+
+                <div class="ascii-diagram">
+┌────────────────────────────────────────────────────────────────────────────┐
+│                    LISTA ENLAZADA SIMPLE: [10, 20, 30, 40]                 │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│   cabeza                                                                   │
+│     │                                                                      │
+│     ▼                                                                      │
+│   ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐          │
+│   │ dato: 10 │     │ dato: 20 │     │ dato: 30 │     │ dato: 40 │          │
+│   ├──────────┤     ├──────────┤     ├──────────┤     ├──────────┤          │
+│   │ sig: ●───┼────►│ sig: ●───┼────►│ sig: ●───┼────►│ sig: null│          │
+│   └──────────┘     └──────────┘     └──────────┘     └──────────┘          │
+│     Nodo 0           Nodo 1           Nodo 2           Nodo 3              │
+│                                                                            │
+│   MEMORIA (no contigua):                                                   │
+│   ┌────────────────────────────────────────────────────────────────────┐   │
+│   │  Dir 500    Dir 1200   Dir 800    Dir 2000                         │   │
+│   │    │          │          │          │                              │   │
+│   │    ▼          ▼          ▼          ▼                              │   │
+│   │  [10|1200] [20|800]  [30|2000] [40|null]                           │   │
+│   └────────────────────────────────────────────────────────────────────┘   │
+│                                                                            │
+│   Nota: Los nodos pueden estar en CUALQUIER parte de la memoria.           │
+│   Las direcciones no necesitan ser consecutivas.                           │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Este diagrama muestra cómo se ve una lista enlazada tanto lógicamente (arriba) como en memoria (abajo). La variable <code>cabeza</code> apunta al primer nodo. Cada nodo almacena la dirección del siguiente. Observa que las direcciones (500, 1200, 800, 2000) no son consecutivas; los nodos están "dispersos" en memoria, unidos solo por sus referencias.
+                </div>
+
+                <h3>Comparación: Arreglo vs Lista Enlazada</h3>
+
+                <div class="ascii-diagram">
+┌────────────────────────────────────────────────────────────────────────────┐
+│                    ARREGLO vs LISTA ENLAZADA                               │
+├───────────────────────────────┬────────────────────────────────────────────┤
+│          ARREGLO              │           LISTA ENLAZADA                   │
+├───────────────────────────────┼────────────────────────────────────────────┤
+│                               │                                            │
+│  ┌────┬────┬────┬────┬────┐   │     ┌───┐   ┌───┐   ┌───┐   ┌───┐          │
+│  │ 10 │ 20 │ 30 │ 40 │ 50 │   │     │10 │──►│20 │──►│30 │──►│40 │──►null   │
+│  └────┴────┴────┴────┴────┘   │     └───┘   └───┘   └───┘   └───┘          │
+│  1000 1004 1008 1012 1016     │     500     1200    800     2000           │
+│     (direcciones contiguas)   │        (direcciones dispersas)             │
+│                               │                                            │
+├───────────────────────────────┼────────────────────────────────────────────┤
+│  ACCESO POR ÍNDICE: O(1)      │  ACCESO POR ÍNDICE: O(n)                   │
+│  • Cálculo directo            │  • Debe recorrer desde cabeza              │
+│  • arr[3] = base + 3*4        │  • Sigue n punteros                        │
+├───────────────────────────────┼────────────────────────────────────────────┤
+│  INSERTAR AL INICIO: O(n)     │  INSERTAR AL INICIO: O(1)                  │
+│  • Desplazar TODOS            │  • Solo cambiar 2 punteros                 │
+├───────────────────────────────┼────────────────────────────────────────────┤
+│  INSERTAR AL FINAL: O(1)*     │  INSERTAR AL FINAL: O(n)                   │
+│  • Si hay espacio             │  • Debe recorrer hasta el último           │
+│  • O(n) si redimensiona       │  • O(1) si se mantiene ref. a cola         │
+├───────────────────────────────┼────────────────────────────────────────────┤
+│  MEMORIA: Compacta            │  MEMORIA: Overhead por punteros            │
+│  • Solo datos                 │  • Cada nodo: dato + puntero               │
+│  • Posible desperdicio        │  • Sin desperdicio, crece a demanda        │
+└───────────────────────────────┴────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Esta tabla resume el trade-off fundamental entre arreglos y listas enlazadas. Los arreglos brillan cuando necesitas acceso aleatorio frecuente (por índice). Las listas enlazadas brillan cuando necesitas inserciones/eliminaciones frecuentes al inicio o en posiciones intermedias. No hay una estructura "mejor"; la elección depende del patrón de uso.
+                </div>
+
+                <h3>Operaciones Fundamentales</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    OPERACIONES EN LISTA ENLAZADA SIMPLE                     │
+├──────────────────────┬──────────────┬───────────────────────────────────────┤
+│      OPERACIÓN       │ COMPLEJIDAD  │           EXPLICACIÓN                 │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Acceso al elemento i │    O(n)      │ Debe seguir i punteros desde cabeza   │
+│ obtener(i)           │              │                                       │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Búsqueda por valor   │    O(n)      │ Recorre nodo por nodo hasta encontrar │
+│ buscar(valor)        │              │ o llegar a null                       │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Insertar al inicio   │    O(1)      │ Crear nodo, apuntar a cabeza actual,  │
+│ insertarInicio(val)  │              │ actualizar cabeza                     │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Insertar al final    │    O(n)      │ Recorrer hasta el último,             │
+│ insertarFinal(val)   │              │ enlazar nuevo nodo                    │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Insertar después de  │    O(1)*     │ Solo cambiar punteros                 │
+│ un nodo dado         │              │ (*si ya tienes la referencia al nodo) │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Eliminar al inicio   │    O(1)      │ Mover cabeza al siguiente             │
+│ eliminarInicio()     │              │                                       │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Eliminar al final    │    O(n)      │ Encontrar penúltimo, desenlazar       │
+│ eliminarFinal()      │              │                                       │
+├──────────────────────┼──────────────┼───────────────────────────────────────┤
+│ Eliminar nodo dado   │    O(1)*     │ Reconectar nodo anterior al siguiente │
+│ eliminarNodo(nodo)   │              │ (*requiere referencia al anterior)    │
+└──────────────────────┴──────────────┴───────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Las complejidades O(1) para inserción/eliminación son la gran ventaja de las listas enlazadas, pero tienen una condición: debes tener la referencia al nodo relevante. Si primero necesitas buscar dónde insertar/eliminar, eso agrega O(n). El acceso O(n) es la desventaja principal frente a arreglos.
+                </div>
+
+                <h3>Inserción al Inicio: Paso a Paso</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│              INSERTAR AL INICIO: insertarInicio(5)                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ESTADO INICIAL:                                                            │
+│                                                                             │
+│    cabeza                                                                   │
+│      │                                                                      │
+│      ▼                                                                      │
+│    ┌───┐     ┌───┐     ┌───┐                                                │
+│    │10 │────►│20 │────►│30 │────►null                                       │
+│    └───┘     └───┘     └───┘                                                │
+│                                                                             │
+│  PASO 1: Crear nuevo nodo con dato = 5                                      │
+│                                                                             │
+│    cabeza     nuevoNodo                                                     │
+│      │           │                                                          │
+│      ▼           ▼                                                          │
+│    ┌───┐       ┌───┐                                                        │
+│    │10 │──...  │ 5 │                                                        │
+│    └───┘       └───┘                                                        │
+│                                                                             │
+│  PASO 2: nuevoNodo.siguiente = cabeza                                       │
+│                                                                             │
+│    cabeza     nuevoNodo                                                     │
+│      │           │                                                          │
+│      ▼           ▼                                                          │
+│    ┌───┐       ┌───┐                                                        │
+│    │10 │──...  │ 5 │────┐                                                   │
+│    └───┘       └───┘    │                                                   │
+│      ▲                  │                                                   │
+│      └──────────────────┘                                                   │
+│                                                                             │
+│  PASO 3: cabeza = nuevoNodo                                                 │
+│                                                                             │
+│    cabeza                                                                   │
+│      │                                                                      │
+│      ▼                                                                      │
+│    ┌───┐     ┌───┐     ┌───┐     ┌───┐                                      │
+│    │ 5 │────►│10 │────►│20 │────►│30 │────►null                             │
+│    └───┘     └───┘     └───┘     └───┘                                      │
+│                                                                             │
+│  ¡Solo 2 operaciones de puntero! → O(1)                                     │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Insertar al inicio de una lista enlazada solo requiere crear un nodo, hacer que apunte al nodo actual de cabeza, y actualizar la cabeza. No importa si la lista tiene 5 o 5 millones de elementos; siempre son las mismas 2 operaciones de puntero. Por eso es O(1), a diferencia del arreglo donde habría que desplazar todos los elementos.
+                </div>
+
+                <h3>Eliminación: El Caso Crítico</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│              ELIMINAR NODO CON VALOR 20                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ESTADO INICIAL:                                                            │
+│                                                                             │
+│    cabeza                                                                   │
+│      │                                                                      │
+│      ▼                                                                      │
+│    ┌───┐     ┌───┐     ┌───┐     ┌───┐                                      │
+│    │10 │────►│20 │────►│30 │────►│40 │────►null                             │
+│    └───┘     └───┘     └───┘     └───┘                                      │
+│              ▲ ▲                                                            │
+│              │ │                                                            │
+│         anterior  actual (a eliminar)                                       │
+│                                                                             │
+│  PASO CLAVE: anterior.siguiente = actual.siguiente                          │
+│                                                                             │
+│    cabeza                                                                   │
+│      │                                                                      │
+│      ▼                                                                      │
+│    ┌───┐     ┌───┐     ┌───┐     ┌───┐                                      │
+│    │10 │──┐  │20 │     │30 │────►│40 │────►null                             │
+│    └───┘  │  └───┘     └───┘     └───┘                                      │
+│           │     ▲        ▲                                                  │
+│           │     │        │                                                  │
+│           └─────┼────────┘                                                  │
+│                 │                                                           │
+│            (huérfano - memoria liberada o garbage collected)                │
+│                                                                             │
+│  RESULTADO FINAL:                                                           │
+│                                                                             │
+│    cabeza                                                                   │
+│      │                                                                      │
+│      ▼                                                                      │
+│    ┌───┐     ┌───┐     ┌───┐                                                │
+│    │10 │────►│30 │────►│40 │────►null                                       │
+│    └───┘     └───┘     └───┘                                                │
+│                                                                             │
+│  ⚠️ IMPORTANTE: Necesitas referencia al nodo ANTERIOR para eliminar         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Para eliminar un nodo de una lista simple, necesitas acceso al nodo <em>anterior</em> para "saltar" el nodo a eliminar. El nodo eliminado queda huérfano (sin referencias) y será liberado por el garbage collector (en lenguajes con GC) o debe ser liberado manualmente (en C/C++). Esta es una limitación de las listas simples que las listas dobles resuelven.
+                </div>
+
+                <div class="context-box warning">
+                    <div class="box-title">⚠️ Error Común: Perder la Cabeza</div>
+                    <p>Uno de los bugs más frecuentes es olvidar actualizar la variable <code>cabeza</code> cuando se elimina el primer nodo. Si <code>cabeza</code> sigue apuntando a un nodo eliminado, la lista queda corrupta. Siempre verifica el caso especial de eliminar el primer elemento.</p>
+                </div>
+
+                <!-- Reto IA 1 - ESENCIAL -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">1</span>
+                        <h4>Visualización de Lista Enlazada <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> Tutor visual que genera representaciones paso a paso de operaciones en listas enlazadas.
+                        </div>
+                        
+                        <div class="prompt-box">Actúa como un tutor de estructuras de datos especializado en visualización. Necesito que me ayudes a entender las operaciones de una lista enlazada simple mediante diagramas ASCII detallados.
+
+Para la siguiente lista inicial: cabeza → [7] → [15] → [23] → [42] → null
+
+Muéstrame paso a paso (con diagrama ASCII en cada paso) las siguientes operaciones:
+1. Insertar el valor 3 al INICIO de la lista
+2. Insertar el valor 50 al FINAL de la lista
+3. Eliminar el nodo con valor 15
+
+Para cada operación:
+- Muestra el estado ANTES
+- Muestra cada cambio de puntero como un paso separado
+- Muestra el estado DESPUÉS
+- Indica la complejidad temporal y por qué
+
+Usa el formato:
+```
+[dato|●]──► para nodos
+null para el final
+cabeza/actual/anterior para variables de referencia
+```</div>
+
+                        <p style="margin-top: 1rem;"><strong>Instrucciones:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>Ejecuta el prompt y estudia cada diagrama generado</li>
+                            <li>Identifica el patrón: ¿qué punteros cambian en cada operación?</li>
+                            <li>Pide a la IA que te muestre un caso adicional: eliminar el primer nodo (caso especial)</li>
+                        </ul>
+
+                        <div class="entregable-box">
+                            <p>Documento con los diagramas generados, anotados con tus propias palabras explicando: (1) por qué insertar al inicio es O(1), (2) por qué insertar al final es O(n), y (3) qué problema surge al eliminar el primer nodo que no ocurre con otros nodos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo - Comprende</h4>
+                    <div class="pregunta">¿Puedo explicar en mis propias palabras por qué una lista enlazada no permite acceso O(1) por índice, aunque los arreglos sí?</div>
+                    <div class="pregunta">Si me piden insertar un elemento entre el nodo 3 y el nodo 4 de una lista, ¿sé qué punteros debo modificar sin consultar código?</div>
+                    <div class="pregunta">¿Entiendo por qué necesito referencia al nodo ANTERIOR para eliminar un nodo en una lista simple?</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FASE 2: APLICA -->
+        <section id="aplica" class="fase-section">
+            <div class="fase-header aplica">
+                <div class="fase-icon">⚡</div>
+                <div class="fase-info">
+                    <h2>FASE 2: APLICA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Aplicar</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Implementar</strong> una clase Nodo con sus atributos básicos (dato y siguiente)</li>
+                        <li><strong>Construir</strong> una lista enlazada simple con operaciones de inserción, eliminación y búsqueda</li>
+                        <li><strong>Manejar</strong> casos especiales: lista vacía, un solo elemento, operaciones en cabeza/cola</li>
+                        <li><strong>Depurar</strong> errores comunes relacionados con punteros nulos y pérdida de referencias</li>
+                    </ul>
+                </div>
+
+                <h3>Implementación del TAD Lista Enlazada</h3>
+
+                <p>El Tipo Abstracto de Datos (TAD) <strong>ListaEnlazada</strong> define las operaciones sin comprometerse con detalles de implementación del lenguaje. Esta es la especificación que implementaremos:</p>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    TAD ListaEnlazadaSimple                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ESTRUCTURA:                                                                │
+│    - cabeza: Nodo (referencia al primer nodo, null si lista vacía)          │
+│    - tamaño: entero (cantidad de elementos)                                 │
+│                                                                             │
+│  OPERACIONES:                                                               │
+│                                                                             │
+│    Constructores:                                                           │
+│    ├─ nueva()                → Lista vacía                                  │
+│    └─ desde(arreglo[])       → Lista con elementos del arreglo              │
+│                                                                             │
+│    Consultas:                                                               │
+│    ├─ estaVacia()            → booleano                                     │
+│    ├─ tamaño()               → entero                                       │
+│    ├─ obtener(posicion)      → elemento en esa posición                     │
+│    ├─ buscar(valor)          → posición del valor (-1 si no existe)         │
+│    └─ contiene(valor)        → booleano                                     │
+│                                                                             │
+│    Modificadores:                                                           │
+│    ├─ insertarInicio(valor)  → agrega al inicio                             │
+│    ├─ insertarFinal(valor)   → agrega al final                              │
+│    ├─ insertarEn(pos, valor) → agrega en posición específica                │
+│    ├─ eliminarInicio()       → quita y retorna el primero                   │
+│    ├─ eliminarFinal()        → quita y retorna el último                    │
+│    ├─ eliminarEn(pos)        → quita y retorna el de posición pos           │
+│    └─ eliminar(valor)        → quita primera ocurrencia del valor           │
+│                                                                             │
+│    Utilidades:                                                              │
+│    ├─ imprimir()             → representación legible                       │
+│    └─ aArreglo()             → convierte a arreglo equivalente              │
+│                                                                             │
+│  INVARIANTES:                                                               │
+│    - tamaño >= 0                                                            │
+│    - Si tamaño == 0, entonces cabeza == null                                │
+│    - El último nodo siempre tiene siguiente == null                         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Este TAD especifica QUÉ operaciones debe tener una lista enlazada, pero no CÓMO implementarlas. Los invariantes son condiciones que siempre deben ser verdaderas después de cualquier operación; si se violan, hay un bug.
+                </div>
+
+                <h3>Pseudocódigo: Operaciones Principales</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PSEUDOCÓDIGO: INSERTAR AL INICIO                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  función insertarInicio(valor):                                             │
+│      nuevoNodo ← crearNodo(valor)         // Crear nodo con el valor        │
+│      nuevoNodo.siguiente ← cabeza          // Apuntar al actual primero     │
+│      cabeza ← nuevoNodo                    // Nueva cabeza es el nuevo nodo │
+│      tamaño ← tamaño + 1                   // Actualizar contador           │
+│                                                                             │
+│  // Complejidad: O(1) - siempre las mismas operaciones                      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PSEUDOCÓDIGO: INSERTAR AL FINAL                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  función insertarFinal(valor):                                              │
+│      nuevoNodo ← crearNodo(valor)                                           │
+│                                                                             │
+│      si cabeza == null:                    // Lista vacía - caso especial   │
+│          cabeza ← nuevoNodo                                                 │
+│      sino:                                                                  │
+│          actual ← cabeza                                                    │
+│          mientras actual.siguiente ≠ null: // Buscar el último nodo         │
+│              actual ← actual.siguiente                                      │
+│          finmientras                                                        │
+│          actual.siguiente ← nuevoNodo      // Enlazar al final              │
+│      finsi                                                                  │
+│      tamaño ← tamaño + 1                                                    │
+│                                                                             │
+│  // Complejidad: O(n) - debe recorrer toda la lista                         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PSEUDOCÓDIGO: BUSCAR VALOR                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  función buscar(valor):                                                     │
+│      actual ← cabeza                                                        │
+│      posicion ← 0                                                           │
+│                                                                             │
+│      mientras actual ≠ null:                                                │
+│          si actual.dato == valor:                                           │
+│              retornar posicion              // ¡Encontrado!                 │
+│          finsi                                                              │
+│          actual ← actual.siguiente                                          │
+│          posicion ← posicion + 1                                            │
+│      finmientras                                                            │
+│                                                                             │
+│      retornar -1                            // No encontrado                │
+│                                                                             │
+│  // Complejidad: O(n) - peor caso recorre todo                              │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PSEUDOCÓDIGO: ELIMINAR AL INICIO                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  función eliminarInicio():                                                  │
+│      si cabeza == null:                    // Lista vacía                   │
+│          lanzar Error("Lista vacía")                                        │
+│      finsi                                                                  │
+│                                                                             │
+│      valorEliminado ← cabeza.dato          // Guardar valor a retornar      │
+│      cabeza ← cabeza.siguiente             // Mover cabeza al segundo       │
+│      tamaño ← tamaño - 1                                                    │
+│      retornar valorEliminado                                                │
+│                                                                             │
+│  // Complejidad: O(1) - operación constante                                 │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PSEUDOCÓDIGO: ELIMINAR VALOR ESPECÍFICO                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  función eliminar(valor):                                                   │
+│      si cabeza == null:                    // Lista vacía                   │
+│          retornar falso                                                     │
+│      finsi                                                                  │
+│                                                                             │
+│      // Caso especial: eliminar la cabeza                                   │
+│      si cabeza.dato == valor:                                               │
+│          cabeza ← cabeza.siguiente                                          │
+│          tamaño ← tamaño - 1                                                │
+│          retornar verdadero                                                 │
+│      finsi                                                                  │
+│                                                                             │
+│      // Caso general: buscar nodo anterior al que queremos eliminar         │
+│      anterior ← cabeza                                                      │
+│      mientras anterior.siguiente ≠ null:                                    │
+│          si anterior.siguiente.dato == valor:                               │
+│              anterior.siguiente ← anterior.siguiente.siguiente              │
+│              tamaño ← tamaño - 1                                            │
+│              retornar verdadero                                             │
+│          finsi                                                              │
+│          anterior ← anterior.siguiente                                      │
+│      finmientras                                                            │
+│                                                                             │
+│      retornar falso                        // Valor no encontrado           │
+│                                                                             │
+│  // Complejidad: O(n) - debe buscar el valor                                │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Estos pseudocódigos muestran la lógica de cada operación. Observa cómo cada uno maneja el caso especial de lista vacía o de operar sobre la cabeza. El patrón de "buscar el anterior" aparece frecuentemente porque en una lista simple solo podemos avanzar, no retroceder.
+                </div>
+
+                <div class="context-box danger">
+                    <div class="box-title">🚨 Errores Fatales a Evitar</div>
+                    <ul>
+                        <li><strong>NullPointerException:</strong> Siempre verifica si un nodo es <code>null</code> antes de acceder a <code>.siguiente</code> o <code>.dato</code></li>
+                        <li><strong>Perder la lista:</strong> Si modificas <code>cabeza</code> sin guardar referencia al resto, pierdes toda la lista</li>
+                        <li><strong>Memory leak:</strong> En lenguajes sin GC (C/C++), olvidar liberar nodos eliminados causa fugas de memoria</li>
+                        <li><strong>Olvidar actualizar tamaño:</strong> Si <code>tamaño</code> no coincide con la cantidad real de nodos, tus operaciones fallarán</li>
+                    </ul>
+                </div>
+
+                <!-- Reto IA 2 - ESENCIAL -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">2</span>
+                        <h4>Implementación Guiada de Lista Enlazada <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> Tutor de programación que guía la implementación paso a paso, explicando cada decisión.
+                        </div>
+                        
+                        <div class="prompt-box">Actúa como un tutor experto en estructuras de datos. Voy a implementar una Lista Enlazada Simple en [LENGUAJE: Python/Java/C++/JavaScript].
+
+Necesito que me guíes paso a paso para implementar:
+
+1. Primero, la clase Nodo con:
+   - Atributo para el dato
+   - Atributo para la referencia al siguiente nodo
+   - Constructor
+
+2. Luego, la clase ListaEnlazada con:
+   - Atributo cabeza (referencia al primer nodo)
+   - Atributo tamaño (contador de elementos)
+   - Método estaVacia()
+   - Método insertarInicio(valor)
+   - Método insertarFinal(valor)
+   - Método eliminarInicio()
+   - Método buscar(valor)
+   - Método imprimir()
+
+Para cada método:
+- Explícame el razonamiento antes de escribir el código
+- Muéstrame el código con comentarios detallados
+- Indícame qué casos especiales debo manejar (lista vacía, un elemento, etc.)
+- Dame un ejemplo de uso después de cada método
+
+NO me des todo el código de una vez. Vamos método por método para que yo entienda cada parte.</div>
+
+                        <p style="margin-top: 1rem;"><strong>Instrucciones:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>Elige tu lenguaje preferido y reemplaza [LENGUAJE] en el prompt</li>
+                            <li>Implementa cada método antes de pedir el siguiente</li>
+                            <li>Prueba cada método con casos de prueba propios</li>
+                            <li>Si algo no funciona, describe el error a la IA para que te ayude a depurar</li>
+                        </ul>
+
+                        <div class="entregable-box">
+                            <p>Código fuente completo de tu implementación con: (1) Clase Nodo, (2) Clase ListaEnlazada con al menos 6 métodos funcionales, (3) Programa de prueba que demuestre cada operación, (4) Comentarios explicando la lógica de cada método.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Problemas Clásicos con Listas Enlazadas</h3>
+
+                <p>Estos problemas son frecuentes en entrevistas técnicas y ayudan a solidificar el manejo de punteros:</p>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│               PROBLEMA CLÁSICO 1: INVERTIR UNA LISTA                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ENTRADA: cabeza → [1] → [2] → [3] → [4] → null                             │
+│  SALIDA:  cabeza → [4] → [3] → [2] → [1] → null                             │
+│                                                                             │
+│  IDEA: Usar tres punteros: anterior, actual, siguiente                      │
+│        En cada paso, invertir la dirección del puntero                      │
+│                                                                             │
+│  ALGORITMO:                                                                 │
+│                                                                             │
+│  función invertir():                                                        │
+│      anterior ← null                                                        │
+│      actual ← cabeza                                                        │
+│                                                                             │
+│      mientras actual ≠ null:                                                │
+│          siguiente ← actual.siguiente    // Guardar el siguiente            │
+│          actual.siguiente ← anterior     // Invertir el puntero             │
+│          anterior ← actual               // Avanzar anterior                │
+│          actual ← siguiente              // Avanzar actual                  │
+│      finmientras                                                            │
+│                                                                             │
+│      cabeza ← anterior                   // Nueva cabeza es el último       │
+│                                                                             │
+│  Complejidad: O(n) tiempo, O(1) espacio                                     │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│               PROBLEMA CLÁSICO 2: ENCONTRAR EL MEDIO                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ENTRADA: cabeza → [1] → [2] → [3] → [4] → [5] → null                       │
+│  SALIDA:  Nodo con valor 3 (el del medio)                                   │
+│                                                                             │
+│  IDEA: Técnica "tortuga y liebre" (dos punteros a diferente velocidad)      │
+│        - Lento avanza 1 nodo por iteración                                  │
+│        - Rápido avanza 2 nodos por iteración                                │
+│        - Cuando rápido llega al final, lento está en el medio               │
+│                                                                             │
+│  ALGORITMO:                                                                 │
+│                                                                             │
+│  función encontrarMedio():                                                  │
+│      si cabeza == null:                                                     │
+│          retornar null                                                      │
+│      finsi                                                                  │
+│                                                                             │
+│      lento ← cabeza                                                         │
+│      rapido ← cabeza                                                        │
+│                                                                             │
+│      mientras rapido ≠ null Y rapido.siguiente ≠ null:                      │
+│          lento ← lento.siguiente           // Avanza 1                      │
+│          rapido ← rapido.siguiente.siguiente  // Avanza 2                   │
+│      finmientras                                                            │
+│                                                                             │
+│      retornar lento                        // Está en el medio              │
+│                                                                             │
+│  Complejidad: O(n) tiempo, O(1) espacio - ¡Sin contar elementos!            │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Estos problemas ilustran técnicas fundamentales. Invertir una lista requiere manejar tres punteros simultáneamente para no perder referencias. Encontrar el medio usa la técnica "tortuga y liebre", que evita tener que recorrer la lista dos veces (una para contar, otra para llegar al medio).
+                </div>
+
+                <!-- Reto IA 3 - AVANZADO -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">3</span>
+                        <h4>Resolver Problemas Clásicos con Depuración Visual <span class="reto-badge avanzado">Avanzado</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> Depurador visual que muestra el estado de los punteros en cada iteración.
+                        </div>
+                        
+                        <div class="prompt-box">Actúa como un depurador visual especializado en listas enlazadas. Voy a implementar el algoritmo para INVERTIR una lista enlazada.
+
+Para la lista: cabeza → [A] → [B] → [C] → [D] → null
+
+Necesito que traces la ejecución del algoritmo de inversión mostrando en CADA ITERACIÓN del ciclo:
+
+1. El estado de los tres punteros: anterior, actual, siguiente
+2. Un diagrama ASCII de la lista mostrando:
+   - Qué nodos ya están invertidos
+   - Qué nodos faltan por procesar
+   - Hacia dónde apunta cada puntero
+3. La línea de código que se está ejecutando
+
+Formato para cada iteración:
+```
+=== ITERACIÓN N ===
+Línea ejecutando: [código]
+anterior = [valor]
+actual = [valor]  
+siguiente = [valor]
+
+Estado de la lista:
+[diagrama ASCII]
+```
+
+Después de mostrar todas las iteraciones, dame el código completo en [Python/Java/C++] con comentarios que hagan referencia a cada paso que mostraste.</div>
+
+                        <p style="margin-top: 1rem;"><strong>Instrucciones:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>Sigue la traza completa iteración por iteración</li>
+                            <li>Implementa el código en tu lenguaje</li>
+                            <li>Repite el proceso para el problema de "encontrar el medio"</li>
+                            <li>Opcional: pide a la IA que te muestre otro problema clásico (detectar ciclo)</li>
+                        </ul>
+
+                        <div class="entregable-box">
+                            <p>Implementación de al menos 2 problemas clásicos (invertir lista + encontrar medio) con: (1) Código funcional probado, (2) Documento explicando el algoritmo paso a paso en tus propias palabras, (3) Análisis de complejidad temporal y espacial.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que tu Implementación Debe Mantener</h4>
+                    <ul>
+                        <li><code>tamaño</code> siempre refleja la cantidad exacta de nodos en la lista</li>
+                        <li>Si <code>tamaño == 0</code>, entonces <code>cabeza == null</code></li>
+                        <li>El campo <code>siguiente</code> del último nodo siempre es <code>null</code></li>
+                        <li>Ningún nodo "huérfano" debe quedar referenciado (memory leak potential)</li>
+                        <li>Después de cualquier operación, la lista debe ser recorrible de cabeza a null sin ciclos</li>
+                    </ul>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo - Aplica</h4>
+                    <div class="pregunta">¿Puedo implementar insertarInicio() sin mirar el código? ¿Qué línea escribiría primero y por qué en ese orden?</div>
+                    <div class="pregunta">Si mi método eliminar() no funciona para el primer elemento, ¿puedo identificar qué caso especial olvidé?</div>
+                    <div class="pregunta">¿Cuánto del código escribí yo versus cuánto copié directamente de la IA sin modificar?</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FASE 3: REFLEXIONA -->
+        <section id="reflexiona" class="fase-section">
+            <div class="fase-header reflexiona">
+                <div class="fase-icon">🔍</div>
+                <div class="fase-info">
+                    <h2>FASE 3: REFLEXIONA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Analizar</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Analizar</strong> los trade-offs entre arreglos y listas enlazadas en diferentes escenarios</li>
+                        <li><strong>Evaluar</strong> el impacto en rendimiento de diferentes patrones de acceso</li>
+                        <li><strong>Justificar</strong> la elección de estructura de datos según el problema</li>
+                        <li><strong>Identificar</strong> escenarios donde cada estructura es óptima o subóptima</li>
+                    </ul>
+                </div>
+
+                <h3>Análisis de Trade-offs: ¿Cuándo usar cada estructura?</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    MATRIZ DE DECISIÓN: ARREGLO vs LISTA                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  PREGUNTA CLAVE: ¿Qué operación es MÁS FRECUENTE en mi aplicación?          │
+│                                                                             │
+│  ┌─────────────────────────────────┬─────────────────────────────────────┐  │
+│  │     USA ARREGLO si...           │     USA LISTA ENLAZADA si...        │  │
+│  ├─────────────────────────────────┼─────────────────────────────────────┤  │
+│  │ ✓ Acceso aleatorio frecuente    │ ✓ Inserciones/eliminaciones al     │  │
+│  │   (arr[i] muchas veces)         │   inicio muy frecuentes             │  │
+│  │                                 │                                     │  │
+│  │ ✓ Tamaño conocido y fijo        │ ✓ Tamaño muy variable              │  │
+│  │                                 │                                     │  │
+│  │ ✓ Memoria es crítica            │ ✓ Inserciones en medio frecuentes  │  │
+│  │   (overhead de punteros duele)  │   (y tienes referencia al nodo)     │  │
+│  │                                 │                                     │  │
+│  │ ✓ Necesitas caché-friendly      │ ✓ No necesitas acceso por índice   │  │
+│  │   (procesamiento secuencial)    │                                     │  │
+│  │                                 │                                     │  │
+│  │ ✓ Algoritmos que usan índices   │ ✓ Implementar pilas o colas        │  │
+│  │   (búsqueda binaria, quicksort) │   (operaciones solo en extremos)    │  │
+│  └─────────────────────────────────┴─────────────────────────────────────┘  │
+│                                                                             │
+│  ⚠️ ADVERTENCIA: "Insertar al medio" no es automáticamente mejor en lista   │
+│     Si primero debes BUSCAR dónde insertar, ambos son O(n) en ese paso.     │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Esta matriz ayuda a tomar decisiones de diseño. No existe una estructura "mejor"; solo estructuras más adecuadas para ciertos patrones de uso. Un error común es pensar que las listas siempre ganan en inserciones, pero si primero debes buscar dónde insertar, pierdes la ventaja.
+                </div>
+
+                <h3>Análisis de Memoria</h3>
+
+                <div class="ascii-diagram">
+┌────────────────────────────────────────────────────────────────────────────┐
+│                    USO DE MEMORIA: ARREGLO vs LISTA                        │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│  Para almacenar N enteros (4 bytes cada uno):                              │
+│                                                                            │
+│  ARREGLO:                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │  Memoria = N × tamaño_dato = N × 4 bytes                            │   │
+│  │  Para N=1000: 1000 × 4 = 4,000 bytes                                │   │
+│  │                                                                     │   │
+│  │  + Posible desperdicio si capacidad > tamaño                        │   │
+│  │  + Memoria contigua (bueno para caché CPU)                          │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                            │
+│  LISTA ENLAZADA:                                                           │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │  Memoria = N × (tamaño_dato + tamaño_puntero)                       │   │
+│  │                                                                     │   │
+│  │  En sistema 64 bits: puntero = 8 bytes                              │   │
+│  │  Para N=1000: 1000 × (4 + 8) = 12,000 bytes                         │   │
+│  │                                                                     │   │
+│  │  ¡3 veces más memoria que el arreglo!                               │   │
+│  │                                                                     │   │
+│  │  + Sin desperdicio por capacidad no usada                           │   │
+│  │  + Memoria fragmentada (malo para caché)                            │   │
+│  │  + Overhead del heap por cada asignación                            │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                            │
+│  CONCLUSIÓN: Para datos pequeños (int, char), el overhead de punteros      │
+│  es significativo. Para datos grandes (objetos), es despreciable.          │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> El overhead de memoria de las listas enlazadas es significativo cuando los datos son pequeños. Si almacenas enteros de 4 bytes y cada nodo necesita 8 bytes adicionales para el puntero, ¡estás usando 3 veces más memoria! Este costo se amortiza cuando los datos son objetos grandes.
+                </div>
+
+                <h3>Escenarios Prácticos</h3>
+
+                <table class="tabla-comparativa">
+                    <thead>
+                        <tr>
+                            <th>Escenario</th>
+                            <th>Mejor Opción</th>
+                            <th>Justificación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Editor de texto (insertar/borrar caracteres)</td>
+                            <td>Lista enlazada</td>
+                            <td>Inserciones frecuentes en posición del cursor; no necesita acceso por índice</td>
+                        </tr>
+                        <tr>
+                            <td>Historial de navegador (adelante/atrás)</td>
+                            <td>Lista doble</td>
+                            <td>Navegación bidireccional; operaciones solo en los extremos</td>
+                        </tr>
+                        <tr>
+                            <td>Matriz de píxeles de imagen</td>
+                            <td>Arreglo 2D</td>
+                            <td>Acceso aleatorio constante; tamaño fijo; procesamiento secuencial</td>
+                        </tr>
+                        <tr>
+                            <td>Cola de impresión</td>
+                            <td>Lista/Cola</td>
+                            <td>Solo agregar al final y quitar del inicio; tamaño variable</td>
+                        </tr>
+                        <tr>
+                            <td>Tabla de calificaciones (ordenar, buscar)</td>
+                            <td>Arreglo</td>
+                            <td>Búsqueda binaria requiere índices; ordenamiento eficiente</td>
+                        </tr>
+                        <tr>
+                            <td>Sistema de deshacer (Ctrl+Z)</td>
+                            <td>Lista/Pila</td>
+                            <td>Solo operaciones en un extremo (tope); tamaño variable</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Reto IA 4 - ESENCIAL -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">4</span>
+                        <h4>Análisis de Casos de Uso Reales <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> Arquitecto de software que evalúa trade-offs y justifica decisiones de diseño.
+                        </div>
+                        
+                        <div class="prompt-box">Actúa como un arquitecto de software senior. Necesito que analices los siguientes escenarios y me ayudes a decidir qué estructura de datos usar.
+
+Para CADA escenario:
+1. Identifica las operaciones principales que se realizarán
+2. Estima la frecuencia relativa de cada operación (alta/media/baja)
+3. Analiza los requisitos de memoria
+4. Recomienda: Arreglo, Lista Enlazada Simple, Lista Doblemente Enlazada, u otra estructura
+5. Justifica tu decisión con análisis de complejidad
+
+ESCENARIOS:
+
+A) Sistema de playlist de música:
+   - El usuario puede agregar canciones al final
+   - El usuario puede insertar canciones en cualquier posición
+   - El usuario puede saltar a cualquier canción por número
+   - El usuario puede eliminar la canción actual
+   - Típicamente 50-500 canciones
+
+B) Buffer de teclado:
+   - Caracteres llegan uno a uno
+   - Se procesan en orden de llegada
+   - Tamaño máximo de buffer: 256 caracteres
+   - Crítico: latencia mínima
+
+C) Sistema de versiones de documento (como Git):
+   - Cada versión guarda el documento completo (grande)
+   - Frecuentemente se accede a la última versión
+   - A veces se navega hacia versiones anteriores
+   - Nunca se elimina del medio
+
+Dame un análisis detallado y una tabla comparativa final.</div>
+
+                        <p style="margin-top: 1rem;"><strong>Instrucciones:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>Antes de ver la respuesta de la IA, escribe tu propia hipótesis para cada escenario</li>
+                            <li>Compara tu razonamiento con el de la IA</li>
+                            <li>Si no estás de acuerdo con alguna recomendación, argumenta tu punto con la IA</li>
+                        </ul>
+
+                        <div class="entregable-box">
+                            <p>Documento comparativo que incluya: (1) Tu análisis inicial de cada escenario ANTES de consultar la IA, (2) El análisis de la IA, (3) Tu reflexión sobre las diferencias entre ambos análisis, (4) Conclusiones sobre cuándo usar cada estructura.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="context-box info">
+                    <div class="box-title">💡 Insight Profesional</div>
+                    <p>En la práctica, las bibliotecas estándar de los lenguajes modernos ofrecen implementaciones optimizadas. En Python, <code>list</code> es un arreglo dinámico; si necesitas operaciones eficientes en ambos extremos, usa <code>collections.deque</code>. En Java, <code>ArrayList</code> vs <code>LinkedList</code> ofrecen exactamente este trade-off. Conocer la estructura interna te permite elegir sabiamente.</p>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo - Reflexiona</h4>
+                    <div class="pregunta">Si alguien me pregunta "¿es mejor usar arreglo o lista enlazada?", ¿puedo responder "depende" y explicar de qué depende?</div>
+                    <div class="pregunta">¿Puedo identificar al menos 2 escenarios donde elegir la estructura incorrecta causaría problemas graves de rendimiento?</div>
+                    <div class="pregunta">Cuando la IA me dio una recomendación, ¿la acepté automáticamente o cuestioné su razonamiento?</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FASE 4: VALIDA -->
+        <section id="valida" class="fase-section">
+            <div class="fase-header valida">
+                <div class="fase-icon">✓</div>
+                <div class="fase-info">
+                    <h2>FASE 4: VALIDA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Evaluar</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Verificar</strong> la corrección de implementaciones mediante pruebas sistemáticas</li>
+                        <li><strong>Evaluar</strong> el manejo de casos límite y condiciones de error</li>
+                        <li><strong>Demostrar</strong> comprensión explicando código a otros (o a la IA)</li>
+                        <li><strong>Detectar</strong> bugs comunes relacionados con punteros y referencias</li>
+                    </ul>
+                </div>
+
+                <h3>Casos de Prueba Críticos</h3>
+
+                <div class="ascii-diagram">
+┌────────────────────────────────────────────────────────────────────────────┐
+│                    CASOS DE PRUEBA PARA LISTA ENLAZADA                     │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│  CATEGORÍA 1: ESTADOS ESPECIALES DE LA LISTA                               │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ □ Lista vacía (cabeza = null, tamaño = 0)                           │   │
+│  │ □ Lista con un solo elemento                                        │   │
+│  │ □ Lista con dos elementos (mínimo para probar "anterior-siguiente") │   │
+│  │ □ Lista con muchos elementos (probar escalabilidad)                 │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                            │
+│  CATEGORÍA 2: OPERACIONES EN POSICIONES CRÍTICAS                           │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ □ Insertar en lista vacía                                           │   │
+│  │ □ Insertar al inicio (verifica que cabeza cambie)                   │   │
+│  │ □ Insertar al final                                                 │   │
+│  │ □ Eliminar de lista con un solo elemento (debe quedar vacía)        │   │
+│  │ □ Eliminar el primer elemento                                       │   │
+│  │ □ Eliminar el último elemento                                       │   │
+│  │ □ Eliminar elemento del medio                                       │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                            │
+│  CATEGORÍA 3: BÚSQUEDA                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ □ Buscar en lista vacía (debe retornar -1 o null)                   │   │
+│  │ □ Buscar elemento que existe (al inicio, medio, final)              │   │
+│  │ □ Buscar elemento que NO existe                                     │   │
+│  │ □ Buscar cuando hay duplicados (¿retorna el primero?)               │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                            │
+│  CATEGORÍA 4: INVARIANTES                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ □ Después de cada operación, tamaño es correcto                     │   │
+│  │ □ Después de vaciar la lista, cabeza = null y tamaño = 0            │   │
+│  │ □ La lista es recorrible de inicio a fin sin errores                │   │
+│  │ □ El último nodo siempre tiene siguiente = null                     │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Esta lista de verificación cubre los casos que más frecuentemente causan bugs. El patrón común es olvidar casos especiales: lista vacía, un solo elemento, operar en la cabeza. Una implementación robusta debe pasar TODOS estos casos.
+                </div>
+
+                <!-- Reto IA 5 - ESENCIAL -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">5</span>
+                        <h4>Validación de Implementación con Técnica de "Rubber Duck" <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> "Pato de hule" inteligente que hace preguntas para verificar tu comprensión mientras tú le explicas tu código.
+                        </div>
+                        
+                        <div class="prompt-box">Actúa como un compañero de estudio curioso que quiere entender mi implementación de lista enlazada. Tu trabajo es:
+
+1. Pedirme que te explique mi código LÍNEA POR LÍNEA
+2. Hacer preguntas genuinas cuando algo no esté claro
+3. Señalar posibles problemas que detectes sin darme la solución directa
+4. Preguntarme qué pasa en casos especiales que yo no haya mencionado
+
+Aquí está mi implementación de [MÉTODO - ej: insertarFinal]:
+
+```[PEGA TU CÓDIGO AQUÍ]```
+
+Empieza preguntándome: "¿Puedes explicarme qué hace la primera línea de tu código y por qué es necesaria?"
+
+Luego sigue con preguntas como:
+- "¿Qué pasa si la lista está vacía?"
+- "¿Cómo sabes que llegaste al último nodo?"
+- "¿Qué pasaría si olvidas actualizar el tamaño?"
+
+Si mi explicación tiene huecos o errores, hazme preguntas que me guíen a descubrir el problema yo mismo, NO me des la respuesta directa.</div>
+
+                        <p style="margin-top: 1rem;"><strong>Instrucciones:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>Pega el código de uno de tus métodos implementados</li>
+                            <li>Explica cada línea como si tu compañero no supiera nada de programación</li>
+                            <li>Cuando la IA haga preguntas, respóndelas honestamente</li>
+                            <li>Si descubres que no puedes explicar algo, ¡es una señal de que necesitas entenderlo mejor!</li>
+                        </ul>
+
+                        <div class="entregable-box">
+                            <p>Transcripción de la sesión de "rubber duck debugging" con al menos 3 métodos diferentes. Para cada método, incluye: (1) El código original, (2) Las preguntas de la IA y tus respuestas, (3) Bugs o mejoras que descubriste durante la explicación, (4) Código corregido si aplica.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Prueba tu Implementación</h3>
+
+                <p>Ejecuta la siguiente secuencia de operaciones y verifica que tu lista se comporta correctamente:</p>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    SECUENCIA DE PRUEBA                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  # Crear lista vacía                                                        │
+│  lista = ListaEnlazada()                                                    │
+│  assert lista.estaVacia() == True                                           │
+│  assert lista.tamaño() == 0                                                 │
+│                                                                             │
+│  # Insertar elementos                                                       │
+│  lista.insertarFinal(10)          → [10]                                    │
+│  lista.insertarFinal(20)          → [10, 20]                                │
+│  lista.insertarInicio(5)          → [5, 10, 20]                             │
+│  assert lista.tamaño() == 3                                                 │
+│  assert lista.estaVacia() == False                                          │
+│                                                                             │
+│  # Buscar elementos                                                         │
+│  assert lista.buscar(10) == 1     → Está en posición 1                      │
+│  assert lista.buscar(5) == 0      → Está en posición 0 (inicio)             │
+│  assert lista.buscar(20) == 2     → Está en posición 2 (final)              │
+│  assert lista.buscar(99) == -1    → No existe                               │
+│                                                                             │
+│  # Eliminar elementos                                                       │
+│  lista.eliminar(10)               → [5, 20]                                 │
+│  assert lista.tamaño() == 2                                                 │
+│  lista.eliminarInicio()           → [20]                                    │
+│  assert lista.tamaño() == 1                                                 │
+│  lista.eliminarInicio()           → []                                      │
+│  assert lista.estaVacia() == True                                           │
+│  assert lista.tamaño() == 0                                                 │
+│                                                                             │
+│  # Caso especial: eliminar de lista vacía                                   │
+│  try:                                                                       │
+│      lista.eliminarInicio()       → Debe lanzar error o retornar null       │
+│  except:                                                                    │
+│      print("Correcto: manejó lista vacía")                                  │
+│                                                                             │
+│  print("✓ Todas las pruebas pasaron")                                       │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+
+                <div class="context-box warning">
+                    <div class="box-title">⚠️ Red Flags que indican bugs</div>
+                    <ul>
+                        <li><strong>NullPointerException/SegFault:</strong> Estás accediendo a <code>.siguiente</code> o <code>.dato</code> de un nodo null</li>
+                        <li><strong>Tamaño incorrecto:</strong> Olvidaste incrementar/decrementar después de insertar/eliminar</li>
+                        <li><strong>Lista truncada:</strong> Perdiste la referencia a parte de la lista al modificar punteros</li>
+                        <li><strong>Ciclo infinito en imprimir:</strong> Creaste un ciclo accidentalmente (el último no apunta a null)</li>
+                    </ul>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo - Valida</h4>
+                    <div class="pregunta">¿Mi implementación pasa TODOS los casos de prueba de la secuencia anterior sin errores?</div>
+                    <div class="pregunta">Cuando expliqué mi código a la IA, ¿hubo partes que no pude explicar claramente? ¿Por qué?</div>
+                    <div class="pregunta">¿Escribí pruebas yo mismo o solo usé las que me dieron? ¿Puedo pensar en un caso de prueba adicional?</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FASE 5: PROFUNDIZA -->
+        <section id="profundiza" class="fase-section">
+            <div class="fase-header profundiza">
+                <div class="fase-icon">🚀</div>
+                <div class="fase-info">
+                    <h2>FASE 5: PROFUNDIZA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Crear</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Extender</strong> la implementación básica con funcionalidades avanzadas</li>
+                        <li><strong>Diseñar</strong> soluciones a problemas que requieren listas enlazadas</li>
+                        <li><strong>Conectar</strong> con conceptos de la siguiente semana (listas dobles y circulares)</li>
+                        <li><strong>Investigar</strong> variantes y optimizaciones de listas enlazadas</li>
+                    </ul>
+                </div>
+
+                <h3>Extensiones y Variantes</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PREVIEW: VARIANTES DE LISTAS (Semana 4)                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  LISTA SIMPLE (esta semana):                                                │
+│                                                                             │
+│    cabeza                                                                   │
+│      │                                                                      │
+│      ▼                                                                      │
+│    ┌───┐     ┌───┐     ┌───┐     ┌───┐                                      │
+│    │ A │────►│ B │────►│ C │────►│ D │────►null                             │
+│    └───┘     └───┘     └───┘     └───┘                                      │
+│                                                                             │
+│    ✓ Ventaja: Menor memoria (1 puntero por nodo)                            │
+│    ✗ Limitación: Solo puedes avanzar, no retroceder                         │
+│                                                                             │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│                                                                             │
+│  LISTA DOBLEMENTE ENLAZADA (Semana 4):                                      │
+│                                                                             │
+│    cabeza                                                            cola   │
+│      │                                                                │     │
+│      ▼                                                                ▼     │
+│    ┌───┐     ┌───┐     ┌───┐     ┌───┐                                      │
+│    │ A │◄───►│ B │◄───►│ C │◄───►│ D │                                      │
+│    └───┘     └───┘     └───┘     └───┘                                      │
+│   null◄─                              ─►null                                │
+│                                                                             │
+│    ✓ Ventaja: Navegación bidireccional, eliminar nodo sin buscar anterior   │
+│    ✗ Costo: 2 punteros por nodo, más memoria                                │
+│                                                                             │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│                                                                             │
+│  LISTA CIRCULAR (Semana 4):                                                 │
+│                                                                             │
+│                    ┌───────────────────────────────────┐                    │
+│                    │                                   │                    │
+│                    ▼                                   │                    │
+│    cabeza────►┌───┐     ┌───┐     ┌───┐     ┌───┐      │                    │
+│               │ A │────►│ B │────►│ C │────►│ D │──────┘                    │
+│               └───┘     └───┘     └───┘     └───┘                           │
+│                                                                             │
+│    ✓ Ventaja: Útil para buffers circulares, round-robin                     │
+│    ✗ Cuidado: Fácil crear ciclos infinitos si no se maneja bien             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> La lista simple que implementaste esta semana es la base. La semana 4 explorarás variantes que resuelven limitaciones específicas: la lista doble permite navegar hacia atrás (útil para el historial de un navegador), y la lista circular conecta el final con el inicio (útil para sistemas round-robin o buffers).
+                </div>
+
+                <!-- Reto IA 6 - AVANZADO -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">6</span>
+                        <h4>Diseño de Sistema: Lista con Acceso O(1) al Final <span class="reto-badge avanzado">Avanzado</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> Arquitecto de software que te guía a diseñar una mejora a la lista enlazada básica.
+                        </div>
+                        
+                        <div class="prompt-box">Actúa como un arquitecto de software que me guía a diseñar una mejora.
+
+PROBLEMA: Mi lista enlazada simple tiene insertarFinal() en O(n) porque debe recorrer toda la lista para encontrar el último nodo. Necesito que sea O(1).
+
+RESTRICCIÓN: No puedo usar una lista doblemente enlazada (eso lo veremos la próxima semana).
+
+Guíame a través del proceso de diseño:
+
+1. Primero, hazme preguntas para que yo piense en posibles soluciones:
+   - "¿Qué información adicional podrías almacenar para evitar recorrer?"
+   - "¿Qué pasaría si mantuvieras una referencia extra?"
+
+2. Cuando llegue a la solución (mantener una referencia 'cola' al último nodo), ayúdame a pensar en:
+   - ¿Qué operaciones necesitan actualizar la referencia cola?
+   - ¿Qué pasa cuando la lista está vacía?
+   - ¿Qué pasa cuando elimino el último elemento?
+
+3. Pídeme que dibuje un diagrama de cómo se vería la estructura.
+
+4. Finalmente, guíame a implementar los métodos modificados.
+
+NO me des la solución directa. Usa preguntas socráticas para que yo llegue a la respuesta.</div>
+
+                        <p style="margin-top: 1rem;"><strong>Instrucciones:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>Intenta responder las preguntas de la IA antes de pedir pistas</li>
+                            <li>Dibuja el diagrama pedido en papel o en ASCII</li>
+                            <li>Implementa la mejora en tu código existente</li>
+                            <li>Verifica que insertarFinal() ahora sea O(1) y que todas las demás operaciones sigan funcionando</li>
+                        </ul>
+
+                        <div class="entregable-box">
+                            <p>Implementación mejorada de ListaEnlazada con referencia a cola que incluya: (1) Diagrama de la nueva estructura, (2) Código modificado con todos los métodos actualizados para mantener 'cola' consistente, (3) Análisis de cómo cambió la complejidad de cada operación, (4) Pruebas que demuestren que insertarFinal() ahora es O(1).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Conexión con el Proyecto Integrador</h3>
+
+                <div class="context-box success">
+                    <div class="box-title">📋 Uso en el Sistema de Biblioteca</div>
+                    <p>En el proyecto integrador de la materia (Sistema de Gestión de Biblioteca), las listas enlazadas se usarán para:</p>
+                    <ul>
+                        <li><strong>Historial de préstamos por usuario:</strong> Cada usuario tiene una lista de libros prestados ordenados cronológicamente</li>
+                        <li><strong>Cola de espera para libros populares:</strong> Cuando un libro no está disponible, los usuarios se agregan a una lista de espera</li>
+                        <li><strong>Historial de transacciones:</strong> Registro de todas las operaciones del sistema</li>
+                    </ul>
+                    <p>La implementación de esta semana será la base para estos componentes.</p>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo - Profundiza</h4>
+                    <div class="pregunta">¿Puedo identificar al menos una situación en mi vida académica o laboral donde una lista enlazada sería la estructura correcta?</div>
+                    <div class="pregunta">¿Entiendo por qué una referencia a 'cola' hace insertarFinal() O(1) pero no hace eliminarFinal() O(1)?</div>
+                    <div class="pregunta">¿Qué preguntas me quedan pendientes que quiero investigar o preguntar la próxima semana?</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EVALUACIÓN -->
+        <section id="evaluacion" class="evaluacion-section">
+            <div class="evaluacion-header">
+                <h2>📊 Criterios de Evaluación de la Semana</h2>
+            </div>
+            
+            <div class="criterio-item">
+                <span class="fase-badge">Comprende</span>
+                <span>Diagramas anotados de operaciones de lista enlazada con explicaciones propias</span>
+                <span class="puntos">15%</span>
+            </div>
+            
+            <div class="criterio-item">
+                <span class="fase-badge">Aplica</span>
+                <span>TAD ListaEnlazada implementado con mínimo 6 métodos funcionales y casos de prueba</span>
+                <span class="puntos">30%</span>
+            </div>
+            
+            <div class="criterio-item">
+                <span class="fase-badge">Aplica+</span>
+                <span>Implementación de problemas clásicos (invertir lista, encontrar medio)</span>
+                <span class="puntos">15%</span>
+            </div>
+            
+            <div class="criterio-item">
+                <span class="fase-badge">Reflexiona</span>
+                <span>Análisis comparativo arreglo vs lista con justificaciones propias</span>
+                <span class="puntos">15%</span>
+            </div>
+            
+            <div class="criterio-item">
+                <span class="fase-badge">Valida</span>
+                <span>Transcripción de sesión "rubber duck" mostrando comprensión profunda</span>
+                <span class="puntos">15%</span>
+            </div>
+            
+            <div class="criterio-item">
+                <span class="fase-badge">Profundiza</span>
+                <span>Lista mejorada con referencia a cola y análisis de complejidad</span>
+                <span class="puntos">10%</span>
+            </div>
+        </section>
+
+        <!-- GLOSARIO -->
+        <section id="glosario" class="glosario-section">
+            <div class="glosario-header">
+                <h3>📖 Glosario</h3>
+            </div>
+            
+            <div class="glosario-grid">
+                <div class="termino-card">
+                    <dl>
+                        <dt>Nodo (Node)</dt>
+                        <dd>Unidad básica de una lista enlazada que contiene un dato y una referencia al siguiente nodo.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Cabeza (Head)</dt>
+                        <dd>Referencia al primer nodo de la lista. Si es null, la lista está vacía.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Cola (Tail)</dt>
+                        <dd>Referencia al último nodo de la lista. Opcional; permite inserción O(1) al final.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Puntero/Referencia</dt>
+                        <dd>Variable que almacena la dirección de memoria de otro objeto, permitiendo acceso indirecto.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Null/None/nil</dt>
+                        <dd>Valor especial que indica "ausencia de referencia". El último nodo apunta a null.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Lista Simple</dt>
+                        <dd>Lista donde cada nodo solo tiene referencia al siguiente; solo permite recorrido hacia adelante.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Lista Doble</dt>
+                        <dd>Lista donde cada nodo tiene referencias al siguiente Y al anterior; permite recorrido bidireccional.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Lista Circular</dt>
+                        <dd>Lista donde el último nodo apunta al primero, formando un ciclo sin null.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Traversal/Recorrido</dt>
+                        <dd>Proceso de visitar todos los nodos de una lista siguiendo las referencias.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Memory Leak</dt>
+                        <dd>Bug donde memoria asignada no se libera; en listas, ocurre al perder referencia a nodos sin liberarlos.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card aetl">
+                    <dl>
+                        <dt>Técnica Two Pointers</dt>
+                        <dd>Patrón algorítmico que usa dos referencias moviéndose a diferentes velocidades (tortuga y liebre).</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card aetl">
+                    <dl>
+                        <dt>Rubber Duck Debugging</dt>
+                        <dd>Técnica de depuración donde explicas tu código línea por línea a un objeto (o IA) para descubrir errores.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card aetl">
+                    <dl>
+                        <dt>Sentinel Node</dt>
+                        <dd>Nodo ficticio usado al inicio o final de una lista para simplificar el manejo de casos especiales.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card aetl">
+                    <dl>
+                        <dt>In-place</dt>
+                        <dd>Algoritmo que modifica la estructura original sin usar espacio extra proporcional al tamaño de entrada.</dd>
+                    </dl>
+                </div>
+            </div>
+        </section>
+
+        <!-- REFERENCIAS -->
+        <section id="referencias" class="referencias-section">
+            <h3>📚 Referencias Bibliográficas</h3>
+            
+            <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--secondary);">Contenido Disciplinar</h4>
+            
+            <div class="referencia-item">
+                Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C. (2022). <em>Introduction to Algorithms</em> (4th ed.). MIT Press. [Capítulo 10: Elementary Data Structures - Linked Lists]
+            </div>
+            
+            <div class="referencia-item">
+                Sedgewick, R., & Wayne, K. (2011). <em>Algorithms</em> (4th ed.). Addison-Wesley. [Capítulo 1.3: Bags, Queues, and Stacks - Linked Lists]
+            </div>
+            
+            <div class="referencia-item">
+                Goodrich, M. T., Tamassia, R., & Goldwasser, M. H. (2014). <em>Data Structures and Algorithms in Java</em> (6th ed.). Wiley. [Capítulo 3: Fundamental Data Structures - Singly Linked Lists]
+            </div>
+            
+            <div class="referencia-item">
+                Skiena, S. S. (2020). <em>The Algorithm Design Manual</em> (3rd ed.). Springer. [Capítulo 3: Data Structures - Linked Structures]
+            </div>
+
+            <h4 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--secondary);">Documentación Técnica</h4>
+            
+            <div class="referencia-item">
+                Oracle. (2024). <em>Java SE Documentation: LinkedList</em>. https://docs.oracle.com/javase/8/docs/api/java/util/LinkedList.html
+            </div>
+            
+            <div class="referencia-item">
+                Python Software Foundation. (2024). <em>Python Documentation: collections.deque</em>. https://docs.python.org/3/library/collections.html#collections.deque
+            </div>
+            
+            <div class="referencia-item">
+                cppreference.com. (2024). <em>std::list</em>. https://en.cppreference.com/w/cpp/container/list
+            </div>
+
+            <h4 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--secondary);">Fundamentos Pedagógicos</h4>
+            
+            <div class="referencia-item">
+                Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. <em>Cognitive Science</em>, 12(2), 257-285.
+            </div>
+            
+            <div class="referencia-item">
+                Vygotsky, L. S. (1978). <em>Mind in Society: The Development of Higher Psychological Processes</em>. Harvard University Press.
+            </div>
+
+            <h4 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--secondary);">Estándares Curriculares</h4>
+            
+            <div class="referencia-item">
+                ACM, IEEE-CS, AAAI. (2023). <em>Computer Science Curricula 2023 (CS2023)</em>. Association for Computing Machinery. [SDF-Fundamental Data Structures: Linked Lists]
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span class="modelo-badge">Modelo AETL v1.0</span>
+        <p>Universidad Autónoma de Nayarit · Licenciatura en Sistemas Computacionales</p>
+        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">
+            Estructura de Datos Básica · Semana 3: Listas Enlazadas Simples
+        </p>
+        <p style="font-size: 0.85rem; opacity: 0.7; margin-top: 1rem;">
+            Documento diseñado con el modelo de Aprendizaje Técnico Aumentado por IA (AETL)
+        </p>
+        <p>Dr. Eligardo Cruz Sánchez</p>
+    </footer>
+
+    <!-- Script para interactividad de la barra de progreso -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = ['comprende', 'aplica', 'reflexiona', 'valida', 'profundiza'];
+            const progressSteps = document.querySelectorAll('.progress-step');
+            
+            function updateProgress() {
+                const scrollPosition = window.scrollY + window.innerHeight / 2;
+                
+                sections.forEach((sectionId, index) => {
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        const sectionTop = section.offsetTop;
+                        const sectionBottom = sectionTop + section.offsetHeight;
+                        
+                        if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                            progressSteps.forEach((step, stepIndex) => {
+                                step.classList.remove('active');
+                                if (stepIndex < index) {
+                                    step.classList.add('completed');
+                                } else {
+                                    step.classList.remove('completed');
+                                }
+                            });
+                            progressSteps[index].classList.add('active');
+                        }
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', updateProgress);
+            updateProgress();
+            
+            // Smooth scroll para navegación
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
