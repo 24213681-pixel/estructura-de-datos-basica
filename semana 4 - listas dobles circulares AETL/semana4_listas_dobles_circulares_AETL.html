@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 4: Listas Dobles y Circulares | AETL</title>
+    <style>
+:root {
+    --primary: #003a63;
+    --secondary: #005b96;
+    --accent: #f2a900;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --gray: #6c757d;
+    --border-radius: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.7;
+    color: var(--dark);
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+    min-height: 100vh;
+}
+
+/* =====================================================
+   HEADER INSTITUCIONAL
+   ===================================================== */
+
+.header-institucional {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,58,99,0.3);
+}
+
+.header-institucional .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.header-institucional .escudo {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.header-institucional h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.header-institucional .subtitulo {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.header-institucional .badge-semana {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+
+/* =====================================================
+   BARRA DE PROGRESO
+   ===================================================== */
+
+.progress-container {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e0e0e0;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+    transition: transform 0.3s;
+    text-decoration: none;
+}
+
+.progress-step:hover {
+    transform: scale(1.1);
+}
+
+.progress-step .step-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: white;
+    border: 3px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.progress-step.active .step-icon {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,91,150,0.4);
+}
+
+.progress-step.completed .step-icon {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.progress-step .step-label {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.progress-step.active .step-label {
+    color: var(--secondary);
+}
+
+/* =====================================================
+   NAVEGACIÓN
+   ===================================================== */
+
+.nav-container {
+    background: var(--primary);
+    padding: 0.8rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--accent);
+}
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* =====================================================
+   SECCIONES DE FASE
+   ===================================================== */
+
+.fase-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.fase-header {
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fase-header.comprende { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.fase-header.aplica { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.fase-header.reflexiona { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.fase-header.valida { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.fase-header.profundiza { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+.fase-header .fase-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fase-header .fase-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.fase-header .fase-info .bloom-tag {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.fase-content {
+    padding: 2rem;
+}
+
+/* =====================================================
+   OBJETIVOS
+   ===================================================== */
+
+.objetivos-box {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d1e8fa 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.objetivos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.objetivos-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.objetivos-box li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.objetivos-box li::before {
+    content: '🎯';
+    position: absolute;
+    left: 0;
+}
+
+/* =====================================================
+   CAJAS CONTEXTUALES
+   ===================================================== */
+
+.context-box {
+    padding: 1.2rem 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border-left: 4px solid;
+}
+
+.context-box.tip {
+    background: linear-gradient(135deg, #e3f9e5 0%, #c8f7dc 100%);
+    border-color: var(--success);
+}
+
+.context-box.warning {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border-color: var(--warning);
+}
+
+.context-box.danger {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border-color: var(--danger);
+}
+
+.context-box.success {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: var(--success);
+}
+
+.context-box.info {
+    background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+    border-color: var(--info);
+}
+
+.context-box .box-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* =====================================================
+   RETOS IA
+   ===================================================== */
+
+.reto-ia {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.reto-ia-header {
+    background: linear-gradient(90deg, var(--accent) 0%, #e89900 100%);
+    color: var(--primary);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reto-ia-header .reto-numero {
+    background: var(--primary);
+    color: var(--accent);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.reto-ia-header h4 {
+    flex: 1;
+    font-size: 1.1rem;
+}
+
+.reto-ia-body {
+    padding: 1.5rem;
+}
+
+.reto-ia .rol-ia {
+    background: rgba(242,169,0,0.15);
+    border: 1px solid var(--accent);
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.reto-ia .rol-ia strong {
+    color: var(--accent);
+}
+
+.prompt-box {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: var(--border-radius);
+    padding: 1.2rem;
+    margin: 1rem 0;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    color: #c9d1d9;
+}
+
+.prompt-box::before {
+    content: '📝 PROMPT';
+    display: block;
+    color: var(--accent);
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.entregable-box {
+    background: rgba(40,167,69,0.15);
+    border: 1px dashed var(--success);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+}
+
+.entregable-box::before {
+    content: '📦 ENTREGABLE ESPERADO';
+    display: block;
+    color: var(--success);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKPOINT METACOGNITIVO
+   ===================================================== */
+
+.checkpoint {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checkpoint h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkpoint .pregunta {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 0.8rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    padding-left: 3rem;
+}
+
+.checkpoint .pregunta::before {
+    content: '❓';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+}
+
+/* =====================================================
+   DIAGRAMA ASCII
+   ===================================================== */
+
+.ascii-diagram {
+    background: #1e1e1e;
+    color: #00ff00;
+    font-family: 'Consolas', 'Monaco', monospace;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: pre;
+}
+
+.diagrama-descripcion {
+    background: #f8f9fa;
+    border-left: 4px solid var(--info);
+    padding: 1rem;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+/* =====================================================
+   ESCENARIO INMERSIVO
+   ===================================================== */
+
+.escenario-inmersivo {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.escenario-inmersivo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.1;
+}
+
+.escenario-inmersivo h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.escenario-inmersivo .personaje {
+    background: rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    border-left: 3px solid var(--accent);
+}
+
+.escenario-inmersivo .dialogo {
+    font-style: italic;
+    margin: 1rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(255,255,255,0.3);
+}
+
+/* =====================================================
+   FUNDAMENTOS TEÓRICOS
+   ===================================================== */
+
+.fundamentos-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.fundamentos-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.constructo-card {
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius);
+    margin: 1rem;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.constructo-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.constructo-card .card-header {
+    padding: 1rem 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.constructo-card:nth-child(1) .card-header { background: #e8f4fd; color: var(--primary); }
+.constructo-card:nth-child(2) .card-header { background: #fff3e0; color: #e65100; }
+.constructo-card:nth-child(3) .card-header { background: #e8f5e9; color: #2e7d32; }
+.constructo-card:nth-child(4) .card-header { background: #f3e5f5; color: #7b1fa2; }
+.constructo-card:nth-child(5) .card-header { background: #fce4ec; color: #c2185b; }
+
+.constructo-card .card-body {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.constructo-card .referencia {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 0.8rem;
+}
+
+.constructo-card .operacional {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--accent);
+}
+
+/* =====================================================
+   GLOSARIO
+   ===================================================== */
+
+.glosario-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.glosario-header {
+    background: var(--dark);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.glosario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.termino-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--secondary);
+}
+
+.termino-card.aetl {
+    border-left-color: var(--accent);
+}
+
+.termino-card dt {
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.termino-card dd {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+/* =====================================================
+   EVALUACIÓN
+   ===================================================== */
+
+.evaluacion-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.evaluacion-header {
+    background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.criterio-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.criterio-item:last-child {
+    border-bottom: none;
+}
+
+.criterio-item .fase-badge {
+    background: var(--secondary);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 1rem;
+    min-width: 100px;
+    text-align: center;
+}
+
+.criterio-item .puntos {
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    margin-left: auto;
+}
+
+/* =====================================================
+   REFERENCIAS
+   ===================================================== */
+
+.referencias-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.referencias-section h3 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+}
+
+.referencia-item {
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed #e0e0e0;
+    font-size: 0.95rem;
+}
+
+.referencia-item:last-child {
+    border-bottom: none;
+}
+
+/* =====================================================
+   CÓDIGO
+   ===================================================== */
+
+code {
+    background: #f1f3f4;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.9em;
+    color: #d63384;
+}
+
+pre code {
+    display: block;
+    padding: 1rem;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    overflow-x: auto;
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.footer {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.footer .modelo-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* =====================================================
+   TABLAS
+   ===================================================== */
+
+.tabla-comparativa {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.tabla-comparativa th {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+}
+
+.tabla-comparativa td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tabla-comparativa tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-comparativa tr:hover {
+    background: #f8f9fa;
+}
+
+/* =====================================================
+   ESTILOS ADICIONALES
+   ===================================================== */
+
+.prerrequisitos-box {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border: 2px solid var(--accent);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.prerrequisitos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.prerrequisitos-box ul {
+    margin-left: 1.5rem;
+}
+
+.prerrequisitos-box li {
+    margin-bottom: 0.5rem;
+}
+
+.conexion-semana-anterior {
+    background: linear-gradient(135deg, #e8f4fd 0%, #bbdefb 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.conexion-semana-anterior h4 {
+    color: var(--primary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reto-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+}
+
+.reto-badge.esencial {
+    background: var(--success);
+    color: white;
+}
+
+.reto-badge.avanzado {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+    color: white;
+}
+
+.invariantes-box {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+    border: 2px dashed #c2185b;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.invariantes-box h4 {
+    color: #880e4f;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.orientacion-semanal {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.orientacion-semanal h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+}
+
+.orientacion-semanal ul {
+    margin-left: 1.5rem;
+}
+
+.orientacion-semanal li {
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   ANIMACIONES
+   ===================================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .header-institucional h1 {
+        font-size: 1.4rem;
+    }
+    
+    .container {
+        padding: 1rem;
+    }
+    
+    .fase-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .progress-step .step-label {
+        display: none;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .criterio-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .criterio-item .puntos {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+}
+
+/* =====================================================
+   IMPRESIÓN
+   ===================================================== */
+
+@media print {
+    .progress-container,
+    .nav-container {
+        display: none;
+    }
+
+    body {
+        background: white;
+    }
+
+    .reto-ia {
+        break-inside: avoid;
+    }
+}
+
+/* =====================================================
+   UTILIDADES
+   ===================================================== */
+
+.text-center { text-align: center; }
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--gray); }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Header Institucional -->
+    <header class="header-institucional">
+        <div class="logo-container">
+            <div class="escudo">UAN</div>
+            <div>
+                <h1>Estructura de Datos Básica</h1>
+                <p class="subtitulo">Licenciatura en Sistemas Computacionales</p>
+            </div>
+            <div class="escudo">LSC</div>
+        </div>
+        <span class="badge-semana">📅 Semana 4: Listas Dobles y Circulares</span>
+    </header>
+
+    <!-- Barra de Progreso AETL -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <a href="#comprende" class="progress-step active">
+                <div class="step-icon">📖</div>
+                <span class="step-label">Comprende</span>
+            </a>
+            <a href="#aplica" class="progress-step">
+                <div class="step-icon">⚡</div>
+                <span class="step-label">Aplica</span>
+            </a>
+            <a href="#reflexiona" class="progress-step">
+                <div class="step-icon">🔍</div>
+                <span class="step-label">Reflexiona</span>
+            </a>
+            <a href="#valida" class="progress-step">
+                <div class="step-icon">✔</div>
+                <span class="step-label">Valida</span>
+            </a>
+            <a href="#profundiza" class="progress-step">
+                <div class="step-icon">🚀</div>
+                <span class="step-label">Profundiza</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="nav-container">
+        <div class="nav-links">
+            <a href="#escenario">🎬 Escenario</a>
+            <a href="#fundamentos">📚 Fundamentos</a>
+            <a href="#comprende">📖 Comprende</a>
+            <a href="#aplica">⚡ Aplica</a>
+            <a href="#reflexiona">🔍 Reflexiona</a>
+            <a href="#valida">✔ Valida</a>
+            <a href="#profundiza">🚀 Profundiza</a>
+            <a href="#evaluacion">📊 Evaluación</a>
+            <a href="#glosario">📖 Glosario</a>
+            <a href="#referencias">📚 Referencias</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- Prerrequisitos -->
+        <div class="prerrequisitos-box">
+            <h4>⚠️ Para tener éxito esta semana, asegúrate de dominar...</h4>
+            <ul>
+                <li><strong>Lista enlazada simple:</strong> Crear nodos, insertar al inicio/final, eliminar por valor, recorrer la lista</li>
+                <li><strong>Manejo de referencias:</strong> Saber qué pasa cuando asignas <code>nodo.siguiente = otroNodo</code></li>
+                <li><strong>Casos frontera:</strong> Lista vacía, un solo elemento, operar sobre el primer o último nodo</li>
+                <li><strong>Complejidad temporal:</strong> Por qué insertar al inicio es O(1) y buscar es O(n) en una lista simple</li>
+                <li><strong>Referencia a cola (tail):</strong> Cómo una referencia extra al último nodo permite insertarFinal() en O(1)</li>
+            </ul>
+            <p style="margin-top: 1rem; font-style: italic;">💡 Si dudas en alguno de estos puntos, dedica 15-20 minutos a repasar tu implementación de la semana 3 antes de continuar.</p>
+        </div>
+
+        <!-- Conexión con semana anterior -->
+        <div class="conexion-semana-anterior">
+            <h4>🔗 Conexión con la Semana 3: Listas Enlazadas Simples</h4>
+            <p>La semana anterior implementaste una lista enlazada simple: cada nodo apunta al siguiente, y solo puedes recorrer en una dirección. Descubriste que eliminar un nodo requiere acceso al nodo <em>anterior</em>, lo que obliga a recorrer desde la cabeza. También viste que <code>eliminarFinal()</code> es O(n) incluso con referencia a cola, porque necesitas actualizar el penúltimo nodo. Esta semana, las <strong>listas doblemente enlazadas</strong> resuelven exactamente estas limitaciones añadiendo un puntero <code>anterior</code> a cada nodo, permitiendo navegación bidireccional y eliminación eficiente desde cualquier posición.</p>
+        </div>
+
+        <!-- Escenario Inmersivo -->
+        <section id="escenario" class="escenario-inmersivo">
+            <h3>🎬 ESCENARIO: El Reproductor de Música</h3>
+            
+            <div class="personaje">
+                <strong>Contexto:</strong> Trabajas en el equipo de desarrollo de <em>SoundWave</em>, una app de streaming musical. Tu líder técnico, el Ing. Andrés Ríos, te convoca a una reunión urgente.
+            </div>
+
+            <div class="dialogo">
+                "Tenemos un problema serio con la playlist. Los usuarios se quejan de que no pueden retroceder a la canción anterior — solo avanzar. Nuestro sistema usa una lista enlazada simple para la cola de reproducción, y cuando alguien presiona '⏮ Anterior', tenemos que recorrer toda la lista desde el inicio para encontrar la canción previa. Con playlists de 500 canciones, el retraso es notable."
+            </div>
+
+            <div class="personaje">
+                <strong>Andrés continúa:</strong>
+            </div>
+
+            <div class="dialogo">
+                "Pero eso no es todo. También necesitamos un modo 'Repetir playlist' donde al terminar la última canción, automáticamente empiece la primera, sin interrupciones. Y los usuarios quieren poder navegar en ambas direcciones fluidamente. ¿Qué estructura de datos propones?"
+            </div>
+
+            <div class="personaje">
+                <strong>Tu misión:</strong> Rediseñar el sistema de playlist usando una <strong>lista doblemente enlazada</strong> que permita navegación bidireccional eficiente, y explorar cómo una <strong>lista circular</strong> resolvería el modo de repetición continua.
+            </div>
+        </section>
+
+        <!-- FUNDAMENTOS TEÓRICOS AETL -->
+        <section id="fundamentos" class="fundamentos-section">
+            <div class="fundamentos-header">
+                <h2>📚 Fundamentos del Modelo AETL</h2>
+                <p>Constructos teóricos que guían tu aprendizaje esta semana</p>
+            </div>
+
+            <div class="constructo-card">
+                <div class="card-header">🧠 Constructivismo y Zona de Desarrollo Próximo</div>
+                <div class="card-body">
+                    <div class="referencia">(Vygotsky, 1978; Bognár, 2024)</div>
+                    <p>Ya sabes construir listas simples. La lista doble añade exactamente <strong>un concepto nuevo</strong> (el puntero anterior) sobre lo que ya dominas. La IA te ayuda a cruzar esa distancia entre lo que sabes y lo nuevo.</p>
+                    <div class="operacional">
+                        <strong>Constructo operacional:</strong> Puedes construir la lista doble <em>extendiendo</em> tu código de la semana 3, no empezando desde cero. Cada método nuevo parte de uno que ya funciona.
+                    </div>
+                </div>
+            </div>
+
+            <div class="constructo-card">
+                <div class="card-header">🔄 Aprendizaje Autorregulado (SRL)</div>
+                <div class="card-body">
+                    <div class="referencia">(Zimmerman, 2000; Chiu, 2024)</div>
+                    <p>Ciclo planificación → ejecución → autorreflexión. Antes de implementar cada método, predice qué punteros deben cambiar. Después, verifica si tu predicción fue correcta.</p>
+                    <div class="operacional">
+                        <strong>Constructo operacional:</strong> Antes de escribir código, dibuja el diagrama de lo que debería pasar. Si tu diagrama y tu código no coinciden, ahí está el bug.
+                    </div>
+                </div>
+            </div>
+
+            <div class="constructo-card">
+                <div class="card-header">⚖️ Teoría de la Carga Cognitiva</div>
+                <div class="card-body">
+                    <div class="referencia">(Sweller, 1988/2020; Mahdi et al., 2025)</div>
+                    <p>Cada nodo en una lista doble tiene 3 campos (dato, siguiente, anterior). Cada operación debe actualizar más punteros que en la lista simple. El riesgo de sobrecarga es real.</p>
+                    <div class="operacional">
+                        <strong>Constructo operacional:</strong> Trabaja un método a la vez. Dibuja antes de codificar. El pseudocódigo comentado de este documento reduce la carga extrínseca para que te concentres en la lógica.
+                    </div>
+                </div>
+            </div>
+
+            <div class="constructo-card">
+                <div class="card-header">🤝 Agencia Compartida</div>
+                <div class="card-body">
+                    <div class="referencia">(Bandura, 2001; Brod et al., 2023)</div>
+                    <p>Esta semana el código explicado te da una base sólida. Tu rol como <strong>Arquitecto</strong> es entender <em>por qué</em> cada línea existe, no solo copiarla.</p>
+                    <div class="operacional">
+                        <strong>Constructo operacional:</strong> Si puedes explicar cada línea del pseudocódigo sin consultar notas, la comprensión es tuya. Si necesitas releer, ahí hay una brecha que la IA puede ayudarte a cerrar.
+                    </div>
+                </div>
+            </div>
+
+            <div class="constructo-card">
+                <div class="card-header">📊 Taxonomía de Bloom para la Era Digital</div>
+                <div class="card-body">
+                    <div class="referencia">(Anderson et al., 2001)</div>
+                    <p>Esta semana recorres los 6 niveles: Recordar la estructura del nodo → Comprender la navegación bidireccional → Aplicar en implementación → Analizar trade-offs → Evaluar correctitud → Crear extensiones.</p>
+                    <div class="operacional">
+                        <strong>Constructo operacional:</strong> Las fases AETL mapean a Bloom: Comprende (recordar/comprender), Aplica (aplicar/analizar), Reflexiona (analizar), Valida (evaluar), Profundiza (crear).
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 1: COMPRENDE                                         -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="comprende" class="fase-section">
+            <div class="fase-header comprende">
+                <div class="fase-icon">📖</div>
+                <div class="fase-info">
+                    <h2>FASE 1: COMPRENDE</h2>
+                    <span class="bloom-tag">Nivel Bloom: Recordar / Comprender</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Explicar</strong> la estructura de un nodo doble (dato, siguiente, anterior) y por qué necesita dos punteros</li>
+                        <li><strong>Describir</strong> cómo la navegación bidireccional resuelve limitaciones de la lista simple</li>
+                        <li><strong>Comparar</strong> la complejidad de operaciones entre lista simple, lista doble y arreglo</li>
+                        <li><strong>Identificar</strong> los casos de uso donde una lista doble es la estructura correcta</li>
+                    </ul>
+                </div>
+
+                <h3>Del Nodo Simple al Nodo Doble</h3>
+                
+                <p>En la semana 3, tu nodo tenía dos campos: <code>dato</code> y <code>siguiente</code>. El nodo doble añade exactamente un campo más: <code>anterior</code>. Este campo es una referencia al nodo previo, lo que permite navegar "hacia atrás" sin recorrer desde la cabeza.</p>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    NODO SIMPLE vs NODO DOBLE                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  NODO SIMPLE (Semana 3):                                                    │
+│                                                                             │
+│   ┌──────────────────────────────┬──────────────────────────────┐           │
+│   │          DATO                │         SIGUIENTE             │           │
+│   │         ┌───┐                │           ┌───┐               │           │
+│   │         │42 │                │           │ ●─┼──────────►    │           │
+│   │         └───┘                │           └───┘               │           │
+│   └──────────────────────────────┴──────────────────────────────┘           │
+│                                                                             │
+│  NODO DOBLE (Semana 4):                                                     │
+│                                                                             │
+│   ┌───────────────┬──────────────────────────┬──────────────────┐           │
+│   │   ANTERIOR     │          DATO            │    SIGUIENTE      │           │
+│   │    ┌───┐       │         ┌───┐            │      ┌───┐       │           │
+│   │ ◄──┼─● │       │         │42 │            │      │ ●─┼──►    │           │
+│   │    └───┘       │         └───┘            │      └───┘       │           │
+│   └───────────────┴──────────────────────────┴──────────────────┘           │
+│                                                                             │
+│  En pseudocódigo:                                                           │
+│   ┌─────────────────────────────────────────────────────────────┐           │
+│   │  clase NodoDoble:                                           │           │
+│   │      dato: Tipo                                             │           │
+│   │      siguiente: NodoDoble  (o null si es el último)         │           │
+│   │      anterior: NodoDoble   (o null si es el primero)        │           │
+│   └─────────────────────────────────────────────────────────────┘           │
+│                                                                             │
+│  Costo extra: 1 puntero adicional por nodo ≈ 4-8 bytes más de memoria      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> El nodo doble es idéntico al simple pero con un campo adicional <code>anterior</code>. Este campo permite "retroceder" al nodo previo sin necesidad de recorrer desde la cabeza. El costo es un puntero extra por nodo (4-8 bytes según la arquitectura), lo cual generalmente es aceptable.
+                </div>
+
+                <h3>Lista Doblemente Enlazada: Estructura Completa</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│              LISTA DOBLEMENTE ENLAZADA: [10, 20, 30, 40]                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  cabeza                                     cola       `                    │
+│    │                                         │                              │
+│    ▼                                         ▼                              │
+│  ┌──────┐     ┌──────┐     ┌──────┐     ┌──────┐                          │
+│  │  10  │◄───►│  20  │◄───►│  30  │◄───►│  40  │                          │
+│  └──────┘     └──────┘     └──────┘     └──────┘                          │
+│  null◄─                                    ─►null                          │
+│                                                                             │
+│  Detalle de conexiones entre nodos 20 y 30:                                │
+│                                                                             │
+│         ┌──────────────┐         ┌──────────────┐                          │
+│         │ ant │20│ sig │         │ ant │30│ sig │                          │
+│         └──┼──────┼────┘         └──┼──────┼────┘                          │
+│            │      └─────────────────┘      │                               │
+│            │      ┌─────────────────┐      │                               │
+│            └──────┘   (enlace doble)└──────┘                               │
+│                                                                             │
+│  Reglas de la estructura:                                                   │
+│  • cabeza.anterior = null  (no hay nada antes del primero)                  │
+│  • cola.siguiente = null   (no hay nada después del último)                 │
+│  • Si A.siguiente = B, entonces B.anterior = A  (siempre simétrico)        │
+│  • Si la lista tiene 1 elemento: cabeza = cola = ese nodo                  │
+│  • Si la lista está vacía: cabeza = cola = null                            │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> La lista doblemente enlazada mantiene dos referencias globales: <code>cabeza</code> (primer nodo) y <code>cola</code> (último nodo). Cada par de nodos adyacentes está conectado en ambas direcciones. La regla de simetría (<em>si A.siguiente = B, entonces B.anterior = A</em>) es el invariante más importante de toda la estructura.
+                </div>
+
+                <h3>¿Por qué necesitamos listas dobles? — Las limitaciones de la lista simple</h3>
+
+                <div class="context-box info">
+                    <div class="box-title">🔑 Recordatorio de la semana 3</div>
+                    <p>En la lista simple, para eliminar un nodo necesitas acceso al nodo <strong>anterior</strong>. Pero solo puedes avanzar hacia adelante. Esto causa dos problemas concretos:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li><code>eliminarFinal()</code> es O(n) — aun con referencia a cola, necesitas encontrar el penúltimo nodo</li>
+                        <li>Eliminar un nodo del que <em>ya tienes referencia</em> sigue siendo O(n) — debes buscar su anterior</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem;">La lista doble resuelve ambos problemas porque cada nodo <em>ya sabe</em> quién está antes.</p>
+                </div>
+
+                <h3>Tabla Comparativa: Complejidades</h3>
+
+                <table class="tabla-comparativa">
+                    <thead>
+                        <tr>
+                            <th>Operación</th>
+                            <th>Arreglo</th>
+                            <th>Lista Simple</th>
+                            <th>Lista Doble</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Acceso por índice</td>
+                            <td><strong>O(1)</strong></td>
+                            <td>O(n)</td>
+                            <td>O(n)</td>
+                        </tr>
+                        <tr>
+                            <td>Insertar al inicio</td>
+                            <td>O(n)</td>
+                            <td><strong>O(1)</strong></td>
+                            <td><strong>O(1)</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Insertar al final</td>
+                            <td>O(1) amortizado</td>
+                            <td>O(1) con cola</td>
+                            <td><strong>O(1)</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Eliminar al inicio</td>
+                            <td>O(n)</td>
+                            <td><strong>O(1)</strong></td>
+                            <td><strong>O(1)</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Eliminar al final</td>
+                            <td>O(1)</td>
+                            <td><span style="color: var(--danger); font-weight: bold;">O(n)</span></td>
+                            <td><strong>O(1)</strong> ← mejora clave</td>
+                        </tr>
+                        <tr>
+                            <td>Eliminar nodo conocido</td>
+                            <td>O(n)</td>
+                            <td><span style="color: var(--danger); font-weight: bold;">O(n)</span></td>
+                            <td><strong>O(1)</strong> ← mejora clave</td>
+                        </tr>
+                        <tr>
+                            <td>Búsqueda por valor</td>
+                            <td>O(n)</td>
+                            <td>O(n)</td>
+                            <td>O(n)</td>
+                        </tr>
+                        <tr>
+                            <td>Memoria por elemento</td>
+                            <td>Solo dato</td>
+                            <td>Dato + 1 puntero</td>
+                            <td>Dato + 2 punteros</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="context-box warning">
+                    <div class="box-title">⚠️ Clave: "Eliminar nodo conocido" en O(1)</div>
+                    <p>La mejora más poderosa de la lista doble no es solo eliminar al final en O(1). Es que si <strong>ya tienes una referencia directa al nodo</strong> que quieres eliminar (por ejemplo, la canción actual en la playlist), puedes eliminarlo en O(1) sin buscar su anterior. En la lista simple, aun teniendo el nodo, necesitas recorrer para encontrar el anterior. Esta diferencia es crucial para estructuras como cachés LRU, editores de texto, y navegadores web.</p>
+                </div>
+
+                <h3>Pseudocódigo Completo: Operaciones Fundamentales</h3>
+
+                <p>A continuación se presentan las operaciones clave con pseudocódigo <strong>comentado línea por línea</strong>. Lee cada comentario para entender <em>por qué</em> existe cada línea, no solo <em>qué</em> hace.</p>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                  PSEUDOCÓDIGO: INSERTAR AL INICIO                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  método insertarInicio(valor):                                              │
+│      nuevo ← crear NodoDoble(valor)     // Crear nodo con dato = valor     │
+│      nuevo.siguiente ← cabeza           // El nuevo apunta al ex-primero  │
+│      nuevo.anterior ← null              // Nada antes del primero          │
+│                                                                             │
+│      SI cabeza ≠ null:                   // Si la lista NO estaba vacía    │
+│          cabeza.anterior ← nuevo         // El ex-primero apunta atrás    │
+│      SINO:                               // Si la lista ESTABA vacía      │
+│          cola ← nuevo                    // El nuevo es también el último  │
+│                                                                             │
+│      cabeza ← nuevo                      // Actualizar cabeza             │
+│      tamaño ← tamaño + 1                                                  │
+│                                                                             │
+│  Complejidad: O(1) — sin importar el tamaño de la lista                    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                  PSEUDOCÓDIGO: INSERTAR AL FINAL                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  método insertarFinal(valor):                                               │
+│      nuevo ← crear NodoDoble(valor)     // Crear nodo con dato = valor     │
+│      nuevo.anterior ← cola               // El nuevo apunta atrás al cola │
+│      nuevo.siguiente ← null              // Nada después del último        │
+│                                                                             │
+│      SI cola ≠ null:                     // Si la lista NO estaba vacía    │
+│          cola.siguiente ← nuevo          // El ex-último apunta adelante   │
+│      SINO:                               // Si la lista ESTABA vacía      │
+│          cabeza ← nuevo                  // El nuevo es también el primero │
+│                                                                             │
+│      cola ← nuevo                        // Actualizar cola               │
+│      tamaño ← tamaño + 1                                                  │
+│                                                                             │
+│  Complejidad: O(1) — simétrico a insertarInicio                            │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│              PSEUDOCÓDIGO: ELIMINAR UN NODO CONOCIDO                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  método eliminarNodo(nodo):              // Recibe referencia directa       │
+│                                                                             │
+│      // PASO 1: Reconectar el nodo anterior (si existe)                    │
+│      SI nodo.anterior ≠ null:                                              │
+│          nodo.anterior.siguiente ← nodo.siguiente   // Saltar nodo        │
+│      SINO:                                                                 │
+│          cabeza ← nodo.siguiente         // Era el primero: mover cabeza  │
+│                                                                             │
+│      // PASO 2: Reconectar el nodo siguiente (si existe)                   │
+│      SI nodo.siguiente ≠ null:                                             │
+│          nodo.siguiente.anterior ← nodo.anterior    // Saltar nodo        │
+│      SINO:                                                                 │
+│          cola ← nodo.anterior            // Era el último: mover cola     │
+│                                                                             │
+│      tamaño ← tamaño - 1                                                  │
+│                                                                             │
+│  Complejidad: O(1) — no recorre nada, solo reasigna punteros              │
+│                                                                             │
+│  ⚠️ NOTA: Este método asume que "nodo" pertenece a esta lista.            │
+│     No valida pertenencia. En producción, esto puede ser un bug.           │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Punto clave:</strong> Observa cómo <code>eliminarNodo()</code> maneja 4 casos automáticamente: nodo del medio, primer nodo, último nodo, y único nodo. Las dos condiciones (<code>anterior ≠ null</code> y <code>siguiente ≠ null</code>) cubren todas las combinaciones. Este patrón de "verificar ambos lados" es el corazón de la lista doble.
+                </div>
+
+                <h3>Errores Comunes esta Semana</h3>
+
+                <div class="context-box danger">
+                    <div class="box-title">🚫 Errores frecuentes con listas dobles</div>
+                    <ul style="margin-left: 1rem;">
+                        <li><strong>Olvidar actualizar el puntero anterior:</strong> Si insertas un nodo y solo actualizas <code>siguiente</code> pero no <code>anterior</code> del nodo adyacente, la lista queda asimétrica. Parece funcionar al recorrer hacia adelante, pero falla al retroceder.</li>
+                        <li><strong>No manejar cabeza Y cola juntas:</strong> Si la lista tiene un solo elemento y lo eliminas, debes poner <code>cabeza = cola = null</code>. Olvidar uno de los dos deja un "fantasma".</li>
+                        <li><strong>Asumir que el nodo pertenece a la lista:</strong> <code>eliminarNodo(nodo)</code> no verifica que el nodo sea parte de esta lista. Si pasas un nodo de otra lista, corrompes ambas.</li>
+                    </ul>
+                </div>
+
+                <!-- Reto IA 1 - ESENCIAL -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">1</span>
+                        <h4>Visualización de Lista Doblemente Enlazada <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> Tutor visual que genera representaciones paso a paso de operaciones en listas doblemente enlazadas.
+                        </div>
+                        
+                        <div class="prompt-box">Explica de forma simple, usando analogías cotidianas (como un tren de vagones con enganches en ambos lados, o un navegador web con botones adelante/atrás) antes de entrar en detalles técnicos. Usa lenguaje de estudiante de segundo-tercer semestre.
+
+Actúa como un tutor de estructuras de datos especializado en visualización. Necesito que me ayudes a entender las operaciones de una lista DOBLEMENTE enlazada mediante diagramas ASCII detallados.
+
+Para la siguiente lista inicial:
+null ◄─ [7] ◄──► [15] ◄──► [23] ◄──► [42] ─► null
+cabeza = [7], cola = [42]
+
+Muéstrame paso a paso (con diagrama ASCII en cada paso) las siguientes operaciones:
+1. Insertar el valor 3 al INICIO
+2. Insertar el valor 50 al FINAL
+3. Eliminar el nodo con valor 15 (asumiendo que tenemos referencia directa a él)
+
+Para cada operación:
+- Muestra el estado ANTES
+- Señala con flechas qué punteros cambian (tanto "siguiente" como "anterior")
+- Muestra el estado DESPUÉS
+- Indica la complejidad y si cabeza/cola cambiaron
+
+Al finalizar las 3 operaciones, muéstrame cómo se vería recorrer la lista resultante:
+- De cabeza a cola (hacia adelante)
+- De cola a cabeza (hacia atrás)
+
+Incluye el pseudocódigo de cada operación junto al diagrama.</div>
+
+                        <div class="entregable-box">
+                            <p>Documento con los 3 diagramas anotados por ti (puedes hacerlos en papel, ASCII o herramienta digital). Incluye una explicación <strong>con tus propias palabras</strong> de por qué eliminar un nodo conocido es O(1) en la lista doble pero O(n) en la lista simple.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que no deben romperse — Fase COMPRENDE</h4>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Si <code>A.siguiente = B</code>, entonces <code>B.anterior = A</code> (simetría bidireccional)</li>
+                        <li><code>cabeza.anterior = null</code> siempre (nada antes del primero)</li>
+                        <li><code>cola.siguiente = null</code> siempre (nada después del último)</li>
+                        <li>Si la lista tiene un solo nodo: <code>cabeza = cola = ese nodo</code></li>
+                        <li>Si la lista está vacía: <code>cabeza = cola = null</code></li>
+                    </ul>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🪞 Checkpoint Metacognitivo - Fase COMPRENDE</h4>
+                    <div class="pregunta">¿Puedo dibujar de memoria la estructura de una lista doble con 3 nodos, incluyendo cabeza, cola, y todos los punteros?</div>
+                    <div class="pregunta">¿Puedo explicar con mis palabras por qué eliminarFinal() es O(1) en lista doble pero O(n) en lista simple?</div>
+                    <div class="pregunta">¿Entiendo los 5 invariantes listados arriba? ¿Puedo dar un ejemplo de qué pasa si alguno se rompe?</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 2: APLICA                                            -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="aplica" class="fase-section">
+            <div class="fase-header aplica">
+                <div class="fase-icon">⚡</div>
+                <div class="fase-info">
+                    <h2>FASE 2: APLICA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Aplicar / Analizar</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Implementar</strong> un TAD ListaDoble con operaciones CRUD completas</li>
+                        <li><strong>Aplicar</strong> el patrón de actualización simétrica de punteros en cada operación</li>
+                        <li><strong>Analizar</strong> por qué cada operación tiene su complejidad</li>
+                        <li><strong>Decidir</strong> qué lenguaje usar y qué aprendizajes técnicos emergen de esa elección</li>
+                    </ul>
+                </div>
+
+                <!-- Código base de referencia -->
+                <div class="context-box tip" style="border-left-color: #6f42c1; background: linear-gradient(135deg, #f3e8ff 0%, #e8d5f5 100%);">
+                    <div class="box-title" style="color: #6f42c1;">🧱 Punto de partida: Código base de referencia</div>
+                    <p>Si tu implementación de la semana 3 funcionó correctamente y te sientes cómodo extendiéndola, <strong>úsala</strong> — es tu mejor punto de partida. Si tuviste problemas con punteros, actualización de cabeza o casos frontera, aquí tienes una implementación de referencia mínima y bien probada para que empieces la semana 4 con confianza.</p>
+                    <p style="margin-top: 0.5rem; font-style: italic; color: #6f42c1;"><strong>No es "hacer trampa":</strong> es usar una base sólida para enfocarte en aprender listas dobles, no en depurar bugs antiguos. Muchos cursos universitarios proporcionan "starter code" por esta razón.</p>
+                </div>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│          CÓDIGO BASE: ESQUELETO MÍNIMO DE LISTA DOBLE                     │
+│          (Usa esto si necesitas un punto de partida limpio)                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  clase NodoDoble:                                                          │
+│      constructor(dato):                                                    │
+│          este.dato = dato                                                  │
+│          este.siguiente = null                                             │
+│          este.anterior = null                                              │
+│                                                                             │
+│  clase ListaDoble:                                                         │
+│      constructor():                                                        │
+│          este.cabeza = null                                                │
+│          este.cola = null                                                  │
+│          este.tamaño = 0                                                   │
+│                                                                             │
+│      // --- TU TAREA: implementar estos métodos uno por uno ---            │
+│      método insertarInicio(valor):   // → usa pseudocódigo de COMPRENDE   │
+│          // ...                                                            │
+│                                                                             │
+│      método insertarFinal(valor):    // → usa pseudocódigo de COMPRENDE   │
+│          // ...                                                            │
+│                                                                             │
+│      método eliminarInicio():        // → piensa: ¿qué pasa si está vacía?│
+│          // ...                                                            │
+│                                                                             │
+│      método eliminarFinal():         // → ahora es O(1), ¿por qué?       │
+│          // ...                                                            │
+│                                                                             │
+│      método eliminarNodo(nodo):      // → usa pseudocódigo de COMPRENDE   │
+│          // ...                                                            │
+│                                                                             │
+│      método buscar(valor):           // → recorre y compara               │
+│          // ...                                                            │
+│                                                                             │
+│      método recorrerAdelante():      // → de cabeza a cola                │
+│          // ...                                                            │
+│                                                                             │
+│      método recorrerAtras():         // → de cola a cabeza                │
+│          // ...                                                            │
+│                                                                             │
+│      método estaVacia():                                                   │
+│          retornar este.tamaño = 0                                          │
+│                                                                             │
+│      método obtenerTamaño():                                               │
+│          retornar este.tamaño                                              │
+│                                                                             │
+│  INSTRUCCIONES:                                                            │
+│  1. Traduce este esqueleto a tu lenguaje de preferencia                    │
+│  2. Implementa un método a la vez, en el orden listado                    │
+│  3. Prueba cada método antes de avanzar al siguiente                      │
+│  4. El pseudocódigo de la fase COMPRENDE tiene la lógica completa         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Nota:</strong> Este esqueleto solo define la estructura. La lógica de cada método viene del pseudocódigo de la fase COMPRENDE. Si prefieres empezar desde tu lista simple de la semana 3 y agregar el puntero <code>anterior</code>, esa es una estrategia igualmente válida — elige la que te dé más confianza.
+                </div>
+
+                <h3>Elección de Lenguaje</h3>
+
+                <div class="context-box info">
+                    <div class="box-title">💻 Lenguaje sugerido para implementación</div>
+                    <p>Puedes implementar en el lenguaje que prefieras. Cada opción enseña algo diferente:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li><strong>Python:</strong> Sintaxis simple, garbage collector maneja la memoria. Ideal si quieres enfocarte en la lógica de punteros sin distracciones.</li>
+                        <li><strong>Java / C#:</strong> Clases y genéricos. Aprendes a definir tipos genéricos (<code>NodoDoble&lt;T&gt;</code>), manejo de null references.</li>
+                        <li><strong>C / C++:</strong> Gestión manual de memoria (<code>malloc</code>/<code>free</code> o <code>new</code>/<code>delete</code>). Aprendes el costo real de los memory leaks.</li>
+                        <li><strong>JavaScript:</strong> Si ya estás aprendiendo JS en otra materia, puedes aprovechar la sinergia. Los objetos como nodos son naturales.</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem;"><strong>Lo importante no es el lenguaje, sino entender las decisiones que cada operación obliga a tomar</strong> (qué punteros actualizar, en qué orden, y qué pasa si olvidas uno).</p>
+                </div>
+
+                <h3>Guía de Implementación</h3>
+                
+                <p>Tu TAD <code>ListaDoble</code> debe incluir como mínimo estos métodos. El pseudocódigo de la fase COMPRENDE ya te dio la lógica para los primeros tres. Los restantes siguen el mismo patrón de "verificar ambos lados":</p>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    TAD ListaDoble — MÉTODOS MÍNIMOS                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  CONSTRUCCIÓN:                                                              │
+│  • constructor()         → Inicializa cabeza=null, cola=null, tamaño=0     │
+│                                                                             │
+│  INSERCIÓN:                                                                │
+│  • insertarInicio(valor) → Agrega nodo al inicio                O(1)      │
+│  • insertarFinal(valor)  → Agrega nodo al final                 O(1)      │
+│                                                                             │
+│  ELIMINACIÓN:                                                              │
+│  • eliminarInicio()      → Remueve y retorna el primer nodo     O(1)      │
+│  • eliminarFinal()       → Remueve y retorna el último nodo     O(1)      │
+│  • eliminarNodo(nodo)    → Remueve un nodo dado por referencia  O(1)      │
+│                                                                             │
+│  BÚSQUEDA:                                                                 │
+│  • buscar(valor)         → Retorna el nodo con ese valor o null O(n)      │
+│                                                                             │
+│  RECORRIDO:                                                                │
+│  • recorrerAdelante()    → Imprime de cabeza a cola             O(n)      │
+│  • recorrerAtras()       → Imprime de cola a cabeza             O(n)      │
+│                                                                             │
+│  UTILIDAD:                                                                 │
+│  • estaVacia()           → Retorna verdadero si tamaño = 0     O(1)      │
+│  • obtenerTamaño()       → Retorna el tamaño                   O(1)      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+
+                <!-- Reto IA 2 - ESENCIAL (UNIFICADO: TAD + Playlist) -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">2</span>
+                        <h4>Proyecto: Playlist Bidireccional con Lista Doble propia <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> Co-constructor que te guía paso a paso. Primero construyes la estructura interna (lista doble), y luego la usas como motor de una playlist funcional — todo en un solo proyecto con propósito claro.
+                        </div>
+
+                        <p style="margin-bottom: 1rem;">Este reto integra dos aprendizajes en una sola entrega: construir una lista doblemente enlazada <strong>y</strong> usarla inmediatamente para resolver el problema del escenario (la playlist de SoundWave). Así aprendes la estructura aplicándola, no en abstracto.</p>
+
+                        <div class="prompt-box">Explica de forma simple, usando analogías cotidianas (como un tren de vagones con enganches en ambos lados) antes de entrar en detalles técnicos. Usa lenguaje de estudiante de segundo-tercer semestre.
+
+Actúa como un instructor de estructuras de datos que me guía a construir un Sistema de Playlist Bidireccional cuya estructura interna sea una lista doblemente enlazada que yo mismo construya en [TU LENGUAJE].
+
+Vamos a trabajar en dos etapas dentro del MISMO proyecto:
+
+═══ ETAPA 1: Construir la estructura interna ═══
+Guíame método por método para implementar:
+1. Clase NodoDoble y constructor de la estructura
+2. insertarInicio() e insertarFinal()
+3. eliminarInicio() y eliminarFinal()
+4. eliminarNodo(nodo) — eliminar un nodo del que ya tengo referencia
+5. buscar(valor)
+6. recorrerAdelante() y recorrerAtras()
+
+Para CADA método:
+- Recuérdame el pseudocódigo antes de que yo escriba código
+- Pídeme que identifique los casos frontera
+- Cuando escriba mi código, revísalo y señala si olvidé actualizar algún puntero o si la simetría bidireccional se rompe
+- Hazme una pregunta de verificación antes de pasar al siguiente
+
+═══ ETAPA 2: Convertirlo en Playlist ═══
+Usando la estructura que ya construí, guíame a agregar:
+1. agregarCancion(nombre) — agrega al final de la playlist
+2. siguiente() — avanza y reproduce la siguiente canción
+3. anterior() — retrocede y reproduce la canción anterior
+4. eliminarActual() — elimina la canción actual y avanza a la siguiente
+5. mostrarPlaylist() — muestra toda la playlist indicando cuál es la actual
+
+RESTRICCIONES de la Playlist:
+- Necesito mantener un puntero "actual" que indica qué canción se reproduce
+- Si estoy en la última canción y presiono siguiente(), debe indicar "fin de playlist"
+- Si estoy en la primera y presiono anterior(), debe indicar "inicio de playlist"
+
+Hazme preguntas sobre los casos frontera ANTES de que yo escriba cada método.
+Ayúdame a pensar: si elimino la canción actual, ¿a cuál "salto"?
+
+NO me des la solución directa. Quiero escribirlo yo y que tú valides.
+Mi nivel: Ya implementé una lista enlazada simple la semana pasada.</div>
+
+                        <p style="margin-top: 1rem;"><strong>Instrucciones de trabajo:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li><strong>Etapa 1:</strong> Implementa cada método basándote en el pseudocódigo de COMPRENDE. Prueba cada uno con: lista vacía, un elemento, y múltiples elementos</li>
+                            <li><strong>Etapa 2:</strong> Usa tu lista doble como estructura subyacente de la Playlist. No copies código nuevo — reutiliza los métodos que ya creaste</li>
+                            <li>Puedes probar con canciones reales o inventadas — lo importante es que la navegación funcione</li>
+                        </ul>
+
+                        <div class="entregable-box">
+                            <p><strong>Entregable único:</strong> Código fuente del sistema Playlist Bidireccional con la lista doble construida por ti. Incluye: (1) la clase NodoDoble y la estructura ListaDoble con mínimo 10 métodos funcionales, (2) la clase Playlist con los 5 métodos del escenario, (3) una demostración que ejecute una secuencia de operaciones mostrando inserción, navegación adelante/atrás, eliminación de canción actual y recorrido completo, (4) comentarios explicando la lógica de cada bloque y cómo el puntero "actual" se mantiene consistente.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="context-box info">
+                    <div class="box-title">💡 ¿Quieres practicar la lista doble como estructura genérica separada?</div>
+                    <p>Si prefieres primero implementar una <code>ListaDoble</code> genérica (sin playlist) para sentirte más seguro, puedes hacerlo como paso intermedio. No es obligatorio como entrega separada, pero es una excelente práctica. El Reto 2 ya cubre ambos aprendizajes en un solo proyecto.</p>
+                </div>
+
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que no deben romperse — Fase APLICA</h4>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Después de CADA operación de inserción o eliminación, la simetría bidireccional debe mantenerse</li>
+                        <li><code>cabeza</code> y <code>cola</code> deben actualizarse correctamente cuando la lista pasa de vacía a un elemento, o de un elemento a vacía</li>
+                        <li>El <code>tamaño</code> debe coincidir con el número real de nodos (verificable recorriendo)</li>
+                        <li>Recorrer adelante y atrás debe dar la misma secuencia (en orden inverso)</li>
+                    </ul>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🪞 Checkpoint Metacognitivo - Fase APLICA</h4>
+                    <div class="pregunta">¿Puedo implementar eliminarNodo() sin mirar el pseudocódigo? ¿Qué parte me cuesta más?</div>
+                    <div class="pregunta">¿Cuántos punteros debo actualizar al insertar en una lista doble vs. una simple? ¿Puedo listarlos?</div>
+                    <div class="pregunta">Si la IA me dio código, ¿lo entiendo línea por línea o hay partes que "confío" sin verificar?</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 3: REFLEXIONA                                        -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="reflexiona" class="fase-section">
+            <div class="fase-header reflexiona">
+                <div class="fase-icon">🔍</div>
+                <div class="fase-info">
+                    <h2>FASE 3: REFLEXIONA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Analizar</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Analizar</strong> los trade-offs entre lista simple, lista doble y arreglo para problemas concretos</li>
+                        <li><strong>Justificar</strong> la elección de estructura de datos según el patrón de operaciones del problema</li>
+                        <li><strong>Explicitar</strong> el razonamiento detrás de decisiones de diseño tomadas en la fase Aplica</li>
+                    </ul>
+                </div>
+
+                <h3>Análisis de Trade-offs: ¿Cuándo vale la pena el puntero extra?</h3>
+
+                <p>La lista doble usa más memoria que la simple (un puntero extra por nodo). No siempre vale la pena. El criterio es: <strong>¿tu aplicación necesita frecuentemente navegar hacia atrás o eliminar nodos de los que ya tienes referencia?</strong></p>
+
+                <div class="context-box tip">
+                    <div class="box-title">✅ Usa lista doble cuando...</div>
+                    <ul style="margin-left: 1rem;">
+                        <li>Navegación bidireccional es frecuente (playlist, historial de navegador, undo/redo)</li>
+                        <li>Necesitas eliminar nodos de los que ya tienes referencia directa en O(1) (caché LRU)</li>
+                        <li>Eliminar al final es operación frecuente</li>
+                    </ul>
+                </div>
+
+                <div class="context-box warning">
+                    <div class="box-title">⚠️ Quédate con lista simple cuando...</div>
+                    <ul style="margin-left: 1rem;">
+                        <li>Solo necesitas recorrer en una dirección (procesamiento de streams, logs)</li>
+                        <li>Memoria es muy limitada y el puntero extra es costoso</li>
+                        <li>Solo insertas/eliminas al inicio (pila implementada con lista)</li>
+                    </ul>
+                </div>
+
+                <h3>Reflexión Guiada</h3>
+
+                <p>Responde estas preguntas por escrito. No busques "la respuesta correcta" — busca <em>tu</em> razonamiento:</p>
+
+                <ol style="margin-left: 1.5rem; margin-top: 1rem;">
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Para el sistema de playlist que implementaste:</strong> ¿Qué pasaría si hubieras usado una lista simple? ¿Cuáles operaciones serían más lentas y por cuánto? ¿El usuario notaría la diferencia con 50 canciones? ¿Y con 10,000?
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Sobre memoria:</strong> Si cada canción ocupa 200 bytes de metadatos y un puntero ocupa 8 bytes, ¿qué porcentaje de memoria extra usa la lista doble vs. la simple para una playlist de 1,000 canciones? ¿Es significativo?
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Sobre tu proceso:</strong> ¿Cuál fue el bug más difícil que encontraste al implementar la lista doble? ¿Tenía que ver con olvidar actualizar un puntero? ¿Cómo lo detectaste?
+                    </li>
+                </ol>
+
+                <div class="checkpoint">
+                    <h4>🪞 Checkpoint Metacognitivo - Fase REFLEXIONA</h4>
+                    <div class="pregunta">¿Puedo explicar a un compañero cuándo elegir lista doble vs. simple vs. arreglo, con ejemplos concretos?</div>
+                    <div class="pregunta">¿Qué patrón descubrí al implementar? ¿Hay una "receta" para las operaciones de lista doble?</div>
+                    <div class="pregunta">Si tuviera que enseñar "listas dobles" a alguien, ¿por dónde empezaría y qué diagrama dibujaría primero?</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 4: VALIDA                                            -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="valida" class="fase-section">
+            <div class="fase-header valida">
+                <div class="fase-icon">✔</div>
+                <div class="fase-info">
+                    <h2>FASE 4: VALIDA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Evaluar</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Verificar</strong> la correctitud de tu implementación mediante casos de prueba sistemáticos</li>
+                        <li><strong>Auditar</strong> respuestas de IA identificando errores en operaciones de lista doble</li>
+                        <li><strong>Evaluar</strong> si los invariantes se mantienen después de cada operación</li>
+                    </ul>
+                </div>
+
+                <h3>Verificación Sistemática</h3>
+
+                <div class="context-box danger" style="border-left-color: #880e4f; background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);">
+                    <div class="box-title" style="color: #880e4f;">✅ Checklist de Autoevaluación Rápida — Verifica antes de entregar</div>
+                    <p style="margin-bottom: 0.8rem;">Estos son los errores más frecuentes. Si alguno falla, probablemente tienes un puntero mal actualizado. Márcalos uno por uno:</p>
+                    <ul style="margin-left: 1rem; list-style: none;">
+                        <li style="margin-bottom: 0.5rem;">☐ <strong>¿Imprimir hacia atrás funciona correctamente?</strong> — Si entra en bucle infinito → puntero <code>anterior</code> mal actualizado</li>
+                        <li style="margin-bottom: 0.5rem;">☐ <strong>¿Borrar el primer elemento actualiza correctamente <code>cabeza</code>?</strong> — Si <code>cabeza</code> sigue apuntando al nodo eliminado, la lista queda corrupta</li>
+                        <li style="margin-bottom: 0.5rem;">☐ <strong>¿Borrar el último elemento actualiza correctamente <code>cola</code>?</strong> — Mismo problema pero al final</li>
+                        <li style="margin-bottom: 0.5rem;">☐ <strong>¿Insertar en lista vacía actualiza tanto <code>cabeza</code> como <code>cola</code>?</strong> — Olvidar uno de los dos deja un "fantasma"</li>
+                        <li style="margin-bottom: 0.5rem;">☐ <strong>¿Después de cualquier operación, la simetría bidireccional se mantiene?</strong> — Prueba ácida: si <code>A.siguiente = B</code>, entonces <code>B.anterior = A</code></li>
+                        <li style="margin-bottom: 0.5rem;">☐ <strong>¿El tamaño coincide con el número real de nodos?</strong> — Recorre la lista y cuenta</li>
+                    </ul>
+                    <p style="margin-top: 0.8rem; font-style: italic;">💡 <strong>Tip:</strong> Si encuentras un error con este checklist, dibuja el estado de la lista antes y después de la operación problemática. El diagrama casi siempre revela qué puntero olvidaste actualizar.</p>
+                </div>
+
+                <p>Además de la autoevaluación rápida, verifica estos casos de prueba completos. Cada uno expone un tipo diferente de bug:</p>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    CASOS DE PRUEBA ESENCIALES                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  CATEGORÍA 1: OPERACIONES EN LISTA VACÍA                                   │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ □ Insertar en lista vacía → cabeza Y cola deben apuntar al nuevo   │   │
+│  │ □ Eliminar de lista vacía → debe manejar sin error                 │   │
+│  │ □ Buscar en lista vacía → debe retornar null                       │   │
+│  │ □ Recorrer lista vacía → no debe fallar                            │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│  CATEGORÍA 2: LISTA CON UN SOLO ELEMENTO                                   │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ □ Insertar al inicio → el anterior debe ser cabeza, ahora 2 nodos │   │
+│  │ □ Eliminar el único nodo → cabeza = cola = null, tamaño = 0       │   │
+│  │ □ ¿cabeza = cola después de insertar en lista vacía?               │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│  CATEGORÍA 3: SIMETRÍA BIDIRECCIONAL                                       │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ □ Insertar 5 elementos, recorrer adelante: [A,B,C,D,E]            │   │
+│  │ □ Recorrer atrás: debe dar [E,D,C,B,A]                            │   │
+│  │ □ Eliminar C (del medio), recorrer ambas direcciones               │   │
+│  │ □ Verificar: B.siguiente = D  Y  D.anterior = B                   │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│  CATEGORÍA 4: ELIMINACIONES EN EXTREMOS                                    │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ □ Eliminar al inicio → nueva cabeza.anterior = null                │   │
+│  │ □ Eliminar al final → nueva cola.siguiente = null                  │   │
+│  │ □ Eliminar al inicio hasta vaciar → termina sin error              │   │
+│  │ □ Eliminar al final hasta vaciar → termina sin error               │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│  PRUEBA ÁCIDA: Función verificarIntegridad()                               │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ Recorre toda la lista verificando que:                              │   │
+│  │ 1. Para cada nodo N (excepto cabeza): N.anterior.siguiente = N    │   │
+│  │ 2. Para cada nodo N (excepto cola): N.siguiente.anterior = N      │   │
+│  │ 3. cabeza.anterior = null                                          │   │
+│  │ 4. cola.siguiente = null                                           │   │
+│  │ 5. Conteo de nodos al recorrer = tamaño                           │   │
+│  │ Ejecutar DESPUÉS de cada operación durante desarrollo              │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+
+                <div class="context-box warning">
+                    <div class="box-title">⚠️ Recordatorio de Agencia</div>
+                    <p>Recuerda el constructo de <strong>Agencia Compartida</strong>: tu rol es ser el "Arquitecto", no el "Observador". La IA propone, tú dispones. Nunca aceptes una respuesta sin verificarla críticamente.</p>
+                </div>
+
+                <!-- Reto IA 4 - AVANZADO -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">3</span>
+                        <h4>El Auditor de Listas Dobles <span class="reto-badge avanzado">Avanzado</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> Generador de código con errores intencionales para que tú los detectes.
+                        </div>
+                        
+                        <div class="prompt-box">Explica de forma simple, usando analogías cotidianas (como desconectar vagones de un tren y reconectar mal) antes de entrar en detalles técnicos. Usa lenguaje de estudiante de segundo-tercer semestre.
+
+Voy a practicar auditoría crítica de implementaciones de listas doblemente enlazadas.
+
+Tu tarea es generarme 3 implementaciones de métodos de lista doble que contengan ERRORES INTENCIONALES para que yo los detecte:
+
+1. Un método insertarFinal() que parece correcto pero tiene un bug sutil con los punteros
+2. Un método eliminarNodo() que funciona para el caso general pero falla en un caso frontera específico
+3. Un método que rompe la simetría bidireccional (A.siguiente = B pero B.anterior ≠ A)
+
+Para cada implementación:
+- Escríbela en [TU LENGUAJE] con comentarios que parezcan correctos
+- El error debe ser SUTIL (no un error de sintaxis obvio)
+- Después de que yo identifique el error, confirma si acerté y explica la consecuencia del bug
+
+Nivel de dificultad: intermedio (errores lógicos, no tipográficos).
+
+IMPORTANTE: No me digas dónde están los errores hasta que yo intente encontrarlos.</div>
+
+                        <div class="entregable-box">
+                            <p>Documento con las 3 implementaciones erróneas, tu análisis de cada error (dónde está, por qué es incorrecto, qué consecuencia tendría en ejecución), y la versión corregida de cada método.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🪞 Checkpoint Metacognitivo - Fase VALIDA</h4>
+                    <div class="pregunta">¿Implementé la función verificarIntegridad() y la ejecuté después de cada operación? ¿Encontró algún error?</div>
+                    <div class="pregunta">¿Pude detectar los errores en el código de la IA sin ayuda? ¿Qué estrategia usé?</div>
+                    <div class="pregunta">¿Escribí pruebas yo mismo o solo usé las que me dieron? ¿Puedo pensar en un caso de prueba que no está en la lista?</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 5: PROFUNDIZA                                        -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="profundiza" class="fase-section">
+            <div class="fase-header profundiza">
+                <div class="fase-icon">🚀</div>
+                <div class="fase-info">
+                    <h2>FASE 5: PROFUNDIZA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Crear</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Extender</strong> la lista doble a una variante circular para el modo "repetir playlist"</li>
+                        <li><strong>Conectar</strong> con el proyecto integrador y con los temas de la siguiente semana (Pilas)</li>
+                        <li><strong>Investigar</strong> aplicaciones reales de listas dobles y circulares</li>
+                    </ul>
+                </div>
+
+                <h3>Extensión Opcional: Lista Circular</h3>
+
+                <p>Una lista circular es una variante donde el último nodo apunta de vuelta al primero (y en la versión doble, el primero apunta atrás al último). No tiene <code>null</code> al final — siempre puedes seguir avanzando.</p>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│              LISTA DOBLEMENTE ENLAZADA CIRCULAR                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│                    ┌───────────────────────────────────────┐                │
+│                    │                                       │                │
+│                    ▼                                       │                │
+│         cabeza───►┌───┐     ┌───┐     ┌───┐     ┌───┐      │                │
+│                   │ A │◄───►│ B │◄───►│ C │◄───►│ D │──────┘                │
+│                   └───┘     └───┘     └───┘     └───┘                       │
+│                 │                                       ▲                   │
+│                 └───────────────────────────────────────┘                   │
+│                                                                             │
+│    Diferencias con la lista doble normal:                                   │
+│    • cola.siguiente = cabeza  (en vez de null)                             │
+│    • cabeza.anterior = cola   (en vez de null)                             │
+│    • No se necesita referencia "cola" separada: cabeza.anterior ES cola    │
+│    • CUIDADO: Los recorridos necesitan condición de parada (volver al     │
+│      nodo inicial), o se crean ciclos infinitos                            │
+│                                                                             │
+│    Casos de uso:                                                            │
+│    • Playlist en modo "repetir" (SoundWave)                                │
+│    • Round-robin de procesos en un sistema operativo                       │
+│    • Buffer circular para streaming de datos                               │
+│    • Juegos de mesa (turnos cíclicos entre jugadores)                      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> En la lista circular, no existen los punteros <code>null</code>. Esto simplifica algunas operaciones (no hay casos especiales de "primero" o "último") pero complica los recorridos: si olvidas la condición de parada, entras en un ciclo infinito. La lista circular doble es especialmente elegante porque <code>cabeza.anterior</code> te da acceso al último nodo en O(1), eliminando la necesidad de una variable <code>cola</code> separada.
+                </div>
+
+                <div class="context-box info">
+                    <div class="box-title">💡 Esta extensión es opcional</div>
+                    <p>La lista circular <strong>no es obligatoria</strong> para la entrega de esta semana. Si tu tiempo es limitado, enfócate en completar y probar bien tu ListaDoble. Si tienes tiempo extra, la circular es una excelente extensión que profundiza tu comprensión y adelanta conceptos útiles para las semanas siguientes.</p>
+                </div>
+
+                <h3>Conexión con el Proyecto Integrador</h3>
+
+                <div class="context-box success">
+                    <div class="box-title">📋 Uso en el Sistema de Biblioteca Digital</div>
+                    <p>En el proyecto integrador, la lista doblemente enlazada se usará para:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li><strong>Historial de navegación del catálogo:</strong> El usuario puede avanzar y retroceder entre libros consultados (como un navegador web)</li>
+                        <li><strong>Funcionalidad "Deshacer":</strong> La semana 5 (Pilas) implementará undo/redo, y las pilas pueden construirse sobre listas dobles</li>
+                        <li><strong>Cola de espera con prioridad:</strong> Las listas dobles permiten reordenar eficientemente la cola de espera de préstamos</li>
+                    </ul>
+                </div>
+
+                <h3>Preview: Semana 5 — Pilas (Stacks)</h3>
+
+                <div class="context-box info">
+                    <div class="box-title">👁️ Lo que viene</div>
+                    <p>La próxima semana estudiarás <strong>Pilas</strong>: estructuras LIFO (Last In, First Out) donde solo puedes operar en un extremo. Una pila puede implementarse con un arreglo <em>o</em> con una lista enlazada. Tu ListaDoble ya tiene <code>insertarFinal()</code> y <code>eliminarFinal()</code> en O(1) — eso es exactamente una pila. La comprensión que construiste esta semana es la base directa de la semana 5.</p>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo - Profundiza</h4>
+                    <div class="pregunta">¿Puedo identificar al menos 3 aplicaciones reales donde una lista doble es mejor que una simple?</div>
+                    <div class="pregunta">¿Entiendo por qué la lista circular elimina los punteros null y qué riesgo introduce?</div>
+                    <div class="pregunta">¿Puedo explicar cómo mi ListaDoble se conecta con la implementación de Pilas de la próxima semana?</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EVALUACIÓN -->
+        <section id="evaluacion" class="evaluacion-section">
+            <div class="evaluacion-header">
+                <h2>📊 Criterios de Evaluación de la Semana</h2>
+            </div>
+            
+            <div class="criterio-item">
+                <span class="fase-badge">Comprende</span>
+                <span>Diagramas anotados de operaciones de lista doble con explicaciones propias</span>
+                <span class="puntos">15%</span>
+            </div>
+            
+            <div class="criterio-item">
+                <span class="fase-badge">Aplica</span>
+                <span>Proyecto Playlist Bidireccional: ListaDoble propia (mín. 10 métodos) + sistema Playlist (5 métodos funcionales) con pruebas</span>
+                <span class="puntos">40%</span>
+            </div>
+            
+            <div class="criterio-item">
+                <span class="fase-badge">Reflexiona</span>
+                <span>Análisis de trade-offs lista simple vs doble vs arreglo con justificaciones propias</span>
+                <span class="puntos">15%</span>
+            </div>
+            
+            <div class="criterio-item">
+                <span class="fase-badge">Valida</span>
+                <span>Auditoría de código con errores detectados y verificación de integridad</span>
+                <span class="puntos">15%</span>
+            </div>
+            
+            <div class="criterio-item">
+                <span class="fase-badge">Profundiza</span>
+                <span>Extensión circular o conexión con proyecto integrador (opcional: bono)</span>
+                <span class="puntos">10%</span>
+            </div>
+        </section>
+
+        <!-- GLOSARIO -->
+        <section id="glosario" class="glosario-section">
+            <div class="glosario-header">
+                <h3>📖 Glosario</h3>
+            </div>
+            
+            <div class="glosario-grid">
+                <div class="termino-card">
+                    <dl>
+                        <dt>Nodo Doble (Double Node)</dt>
+                        <dd>Nodo con tres campos: dato, siguiente (referencia al próximo nodo) y anterior (referencia al nodo previo).</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Lista Doblemente Enlazada (Doubly Linked List)</dt>
+                        <dd>Estructura lineal donde cada nodo tiene punteros al siguiente y al anterior, permitiendo recorrido bidireccional.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Lista Circular (Circular List)</dt>
+                        <dd>Variante donde el último nodo apunta al primero (y en la versión doble, el primero apunta al último). No tiene null.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Simetría Bidireccional</dt>
+                        <dd>Invariante donde si A.siguiente = B, entonces B.anterior = A. Romper esta simetría corrompe la lista.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Cabeza / Cola (Head / Tail)</dt>
+                        <dd>Referencias al primer y último nodo de la lista respectivamente. En una lista circular, cola = cabeza.anterior.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Sentinel Node (Nodo Centinela)</dt>
+                        <dd>Nodo ficticio (sin dato real) usado al inicio o final de la lista para eliminar casos especiales en el código.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Navegación Bidireccional</dt>
+                        <dd>Capacidad de recorrer una estructura tanto hacia adelante como hacia atrás desde cualquier nodo.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card">
+                    <dl>
+                        <dt>Caché LRU (Least Recently Used)</dt>
+                        <dd>Estrategia de caché que elimina el elemento menos usado recientemente. Se implementa eficientemente con lista doble + tabla hash.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card aetl">
+                    <dl>
+                        <dt>Trade-off (Compromiso)</dt>
+                        <dd>Decisión de diseño donde ganar en un aspecto (ej. velocidad de eliminación) implica perder en otro (ej. memoria por nodo).</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card aetl">
+                    <dl>
+                        <dt>Caso Frontera (Edge Case)</dt>
+                        <dd>Situación límite que puede causar bugs: lista vacía, un solo elemento, operar en el primero o último nodo.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card aetl">
+                    <dl>
+                        <dt>Verificación de Integridad</dt>
+                        <dd>Función que recorre la estructura verificando que todos los invariantes se cumplan. Herramienta esencial de debugging.</dd>
+                    </dl>
+                </div>
+
+                <div class="termino-card aetl">
+                    <dl>
+                        <dt>Agencia Compartida (AETL)</dt>
+                        <dd>Balance entre autonomía del estudiante y asistencia de la IA. El estudiante es el Arquitecto; la IA es la herramienta.</dd>
+                    </dl>
+                </div>
+            </div>
+        </section>
+
+        <!-- REFERENCIAS -->
+        <section id="referencias" class="referencias-section">
+            <h3>📚 Referencias Bibliográficas</h3>
+            
+            <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--secondary);">Contenido Disciplinar</h4>
+            
+            <div class="referencia-item">
+                Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C. (2022). <em>Introduction to Algorithms</em> (4th ed.). MIT Press. [Capítulo 10: Elementary Data Structures — Doubly Linked Lists]
+            </div>
+            
+            <div class="referencia-item">
+                Sedgewick, R., & Wayne, K. (2011). <em>Algorithms</em> (4th ed.). Addison-Wesley. [Capítulo 1.3: Bags, Queues, and Stacks — Linked Lists]
+            </div>
+            
+            <div class="referencia-item">
+                Goodrich, M. T., Tamassia, R., & Goldwasser, M. H. (2014). <em>Data Structures and Algorithms in Java</em> (6th ed.). Wiley. [Capítulo 3: Doubly Linked Lists and Circular Lists]
+            </div>
+            
+            <div class="referencia-item">
+                Skiena, S. S. (2020). <em>The Algorithm Design Manual</em> (3rd ed.). Springer. [Capítulo 3: Data Structures — Linked Structures]
+            </div>
+
+            <h4 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--secondary);">Documentación Técnica</h4>
+            
+            <div class="referencia-item">
+                Oracle. (2024). <em>Java SE Documentation: LinkedList</em> (implementa lista doble internamente). https://docs.oracle.com/javase/8/docs/api/java/util/LinkedList.html
+            </div>
+            
+            <div class="referencia-item">
+                Python Software Foundation. (2024). <em>Python Documentation: collections.deque</em> (doble-ended queue basada en lista doble). https://docs.python.org/3/library/collections.html#collections.deque
+            </div>
+            
+            <div class="referencia-item">
+                cppreference.com. (2024). <em>std::list</em> (lista doblemente enlazada en C++). https://en.cppreference.com/w/cpp/container/list
+            </div>
+            
+            <div class="referencia-item">
+                MDN Web Docs. (2024). <em>JavaScript — Implementing Data Structures: Doubly Linked List</em>. Mozilla Developer Network.
+            </div>
+
+            <h4 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--secondary);">Fundamentos Pedagógicos</h4>
+            
+            <div class="referencia-item">
+                Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. <em>Cognitive Science</em>, 12(2), 257-285.
+            </div>
+            
+            <div class="referencia-item">
+                Vygotsky, L. S. (1978). <em>Mind in Society: The Development of Higher Psychological Processes</em>. Harvard University Press.
+            </div>
+            
+            <div class="referencia-item">
+                Zimmerman, B. J. (2000). Attaining self-regulation: A social cognitive perspective. In M. Boekaerts, P. R. Pintrich, & M. Zeidner (Eds.), <em>Handbook of Self-Regulation</em> (pp. 13-39). Academic Press.
+            </div>
+
+            <div class="referencia-item">
+                Anderson, L. W., Krathwohl, D. R., et al. (2001). <em>A Taxonomy for Learning, Teaching, and Assessing: A Revision of Bloom's Taxonomy of Educational Objectives</em>. Longman.
+            </div>
+
+            <h4 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--secondary);">Estándares Curriculares</h4>
+            
+            <div class="referencia-item">
+                ACM, IEEE-CS, AAAI. (2023). <em>Computer Science Curricula 2023 (CS2023)</em>. Association for Computing Machinery. [SDF-Fundamental Data Structures: Linked Lists, Doubly Linked Lists]
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span class="modelo-badge">Modelo AETL v1.0</span>
+        <p>Universidad Autónoma de Nayarit · Licenciatura en Sistemas Computacionales</p>
+        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">
+            Estructura de Datos Básica · Semana 4: Listas Dobles y Circulares
+        </p>
+        <p style="font-size: 0.85rem; opacity: 0.7; margin-top: 1rem;">
+            Documento diseñado con el modelo de Aprendizaje Técnico Aumentado por IA (AETL)
+        </p>
+        <p>Dr. Eligardo Cruz Sánchez</p>
+    </footer>
+
+    <!-- Script para interactividad de la barra de progreso -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = ['comprende', 'aplica', 'reflexiona', 'valida', 'profundiza'];
+            const progressSteps = document.querySelectorAll('.progress-step');
+            
+            function updateProgress() {
+                const scrollPosition = window.scrollY + window.innerHeight / 2;
+                
+                sections.forEach((sectionId, index) => {
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        const sectionTop = section.offsetTop;
+                        const sectionBottom = sectionTop + section.offsetHeight;
+                        
+                        if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                            progressSteps.forEach((step, stepIndex) => {
+                                step.classList.remove('active');
+                                if (stepIndex < index) {
+                                    step.classList.add('completed');
+                                } else {
+                                    step.classList.remove('completed');
+                                }
+                            });
+                            progressSteps[index].classList.add('active');
+                        }
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', updateProgress);
+            updateProgress();
+            
+            // Smooth scroll para navegación
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
