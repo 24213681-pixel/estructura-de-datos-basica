@@ -1,0 +1,2434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 5: Pilas — Implementación y Aplicaciones | AETL</title>
+    <style>
+:root {
+    --primary: #003a63;
+    --secondary: #005b96;
+    --accent: #f2a900;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --gray: #6c757d;
+    --border-radius: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.7;
+    color: var(--dark);
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+    min-height: 100vh;
+}
+
+/* =====================================================
+   HEADER INSTITUCIONAL
+   ===================================================== */
+
+.header-institucional {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,58,99,0.3);
+}
+
+.header-institucional .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.header-institucional .escudo {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.header-institucional h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.header-institucional .subtitulo {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.header-institucional .badge-semana {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+
+/* =====================================================
+   BARRA DE PROGRESO
+   ===================================================== */
+
+.progress-container {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e0e0e0;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+    transition: transform 0.3s;
+    text-decoration: none;
+}
+
+.progress-step:hover {
+    transform: scale(1.1);
+}
+
+.progress-step .step-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: white;
+    border: 3px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.progress-step.active .step-icon {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,91,150,0.4);
+}
+
+.progress-step.completed .step-icon {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.progress-step .step-label {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.progress-step.active .step-label {
+    color: var(--secondary);
+}
+
+/* =====================================================
+   NAVEGACIÓN
+   ===================================================== */
+
+.nav-container {
+    background: var(--primary);
+    padding: 0.8rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--accent);
+}
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* =====================================================
+   SECCIONES DE FASE
+   ===================================================== */
+
+.fase-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.fase-header {
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fase-header.comprende { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.fase-header.aplica { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.fase-header.reflexiona { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.fase-header.valida { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.fase-header.profundiza { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+.fase-header .fase-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fase-header .fase-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.fase-header .fase-info .bloom-tag {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.fase-content {
+    padding: 2rem;
+}
+
+/* =====================================================
+   OBJETIVOS
+   ===================================================== */
+
+.objetivos-box {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d1e8fa 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.objetivos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.objetivos-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.objetivos-box li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.objetivos-box li::before {
+    content: '🎯';
+    position: absolute;
+    left: 0;
+}
+
+/* =====================================================
+   CAJAS CONTEXTUALES
+   ===================================================== */
+
+.context-box {
+    padding: 1.2rem 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border-left: 4px solid;
+}
+
+.context-box.tip {
+    background: linear-gradient(135deg, #e3f9e5 0%, #c8f7dc 100%);
+    border-color: var(--success);
+}
+
+.context-box.warning {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border-color: var(--warning);
+}
+
+.context-box.danger {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border-color: var(--danger);
+}
+
+.context-box.success {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: var(--success);
+}
+
+.context-box.info {
+    background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+    border-color: var(--info);
+}
+
+.context-box .box-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* =====================================================
+   RETOS IA
+   ===================================================== */
+
+.reto-ia {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.reto-ia-header {
+    background: linear-gradient(90deg, var(--accent) 0%, #e89900 100%);
+    color: var(--primary);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reto-ia-header .reto-numero {
+    background: var(--primary);
+    color: var(--accent);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.reto-ia-header h4 {
+    flex: 1;
+    font-size: 1.1rem;
+}
+
+.reto-ia-body {
+    padding: 1.5rem;
+}
+
+.reto-ia .rol-ia {
+    background: rgba(242,169,0,0.15);
+    border: 1px solid var(--accent);
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.reto-ia .rol-ia strong {
+    color: var(--accent);
+}
+
+.prompt-box {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: var(--border-radius);
+    padding: 1.2rem;
+    margin: 1rem 0;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    color: #c9d1d9;
+}
+
+.prompt-box::before {
+    content: '📝 PROMPT';
+    display: block;
+    color: var(--accent);
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.entregable-box {
+    background: rgba(40,167,69,0.15);
+    border: 1px dashed var(--success);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+}
+
+.entregable-box::before {
+    content: '📦 ENTREGABLE ESPERADO';
+    display: block;
+    color: var(--success);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKPOINT METACOGNITIVO
+   ===================================================== */
+
+.checkpoint {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checkpoint h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkpoint .pregunta {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 0.8rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    padding-left: 3rem;
+}
+
+.checkpoint .pregunta::before {
+    content: '❓';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+}
+
+/* =====================================================
+   DIAGRAMA ASCII
+   ===================================================== */
+
+.ascii-diagram {
+    background: #1e1e1e;
+    color: #00ff00;
+    font-family: 'Consolas', 'Monaco', monospace;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: pre;
+}
+
+.diagrama-descripcion {
+    background: #f8f9fa;
+    border-left: 4px solid var(--info);
+    padding: 1rem;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+/* =====================================================
+   ESCENARIO INMERSIVO
+   ===================================================== */
+
+.escenario-inmersivo {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.escenario-inmersivo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.1;
+}
+
+.escenario-inmersivo h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.escenario-inmersivo .personaje {
+    background: rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    border-left: 3px solid var(--accent);
+}
+
+.escenario-inmersivo .dialogo {
+    font-style: italic;
+    margin: 1rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(255,255,255,0.3);
+}
+
+/* =====================================================
+   FUNDAMENTOS TEÓRICOS
+   ===================================================== */
+
+.fundamentos-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.fundamentos-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.constructo-card {
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius);
+    margin: 1rem;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.constructo-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.constructo-card .card-header {
+    padding: 1rem 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.constructo-card:nth-child(1) .card-header { background: #e8f4fd; color: var(--primary); }
+.constructo-card:nth-child(2) .card-header { background: #fff3e0; color: #e65100; }
+.constructo-card:nth-child(3) .card-header { background: #e8f5e9; color: #2e7d32; }
+.constructo-card:nth-child(4) .card-header { background: #f3e5f5; color: #7b1fa2; }
+.constructo-card:nth-child(5) .card-header { background: #fce4ec; color: #c2185b; }
+
+.constructo-card .card-body {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.constructo-card .referencia {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 0.8rem;
+}
+
+.constructo-card .operacional {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--accent);
+}
+
+/* =====================================================
+   GLOSARIO
+   ===================================================== */
+
+.glosario-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.glosario-header {
+    background: var(--dark);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.glosario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.termino-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--secondary);
+}
+
+.termino-card.aetl {
+    border-left-color: var(--accent);
+}
+
+.termino-card dt {
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.termino-card dd {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+/* =====================================================
+   EVALUACIÓN
+   ===================================================== */
+
+.evaluacion-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.evaluacion-header {
+    background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.criterio-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.criterio-item:last-child {
+    border-bottom: none;
+}
+
+.criterio-item .fase-badge {
+    background: var(--secondary);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 1rem;
+    min-width: 100px;
+    text-align: center;
+}
+
+.criterio-item .puntos {
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    margin-left: auto;
+}
+
+/* =====================================================
+   REFERENCIAS
+   ===================================================== */
+
+.referencias-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.referencias-section h3 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+}
+
+.referencia-item {
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed #e0e0e0;
+    font-size: 0.95rem;
+}
+
+.referencia-item:last-child {
+    border-bottom: none;
+}
+
+/* =====================================================
+   CÓDIGO
+   ===================================================== */
+
+code {
+    background: #f1f3f4;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.9em;
+    color: #d63384;
+}
+
+pre code {
+    display: block;
+    padding: 1rem;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    overflow-x: auto;
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.footer {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.footer .modelo-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* =====================================================
+   TABLAS
+   ===================================================== */
+
+.tabla-comparativa {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.tabla-comparativa th {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+}
+
+.tabla-comparativa td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tabla-comparativa tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-comparativa tr:hover {
+    background: #f8f9fa;
+}
+
+/* =====================================================
+   ESTILOS ADICIONALES
+   ===================================================== */
+
+.prerrequisitos-box {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border: 2px solid var(--accent);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.prerrequisitos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.prerrequisitos-box ul {
+    margin-left: 1.5rem;
+}
+
+.prerrequisitos-box li {
+    margin-bottom: 0.5rem;
+}
+
+.conexion-semana-anterior {
+    background: linear-gradient(135deg, #e8f4fd 0%, #bbdefb 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.conexion-semana-anterior h4 {
+    color: var(--primary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reto-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+}
+
+.reto-badge.esencial {
+    background: var(--success);
+    color: white;
+}
+
+.reto-badge.avanzado {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+    color: white;
+}
+
+.invariantes-box {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+    border: 2px dashed #c2185b;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.invariantes-box h4 {
+    color: #880e4f;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.orientacion-semanal {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.orientacion-semanal h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+}
+
+.orientacion-semanal ul {
+    margin-left: 1.5rem;
+}
+
+.orientacion-semanal li {
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKLIST DE AUTOEVALUACIÓN
+   ===================================================== */
+
+.checklist-box {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checklist-box h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checklist-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.8rem;
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 0.6rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    align-items: flex-start;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-top: 0.2rem;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checklist-item .check-text {
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+.checklist-item .check-diagnostico {
+    font-size: 0.85rem;
+    color: var(--danger);
+    margin-top: 0.3rem;
+    font-style: italic;
+}
+
+.starter-code-box {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px solid var(--secondary);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.starter-code-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.starter-code-box .empathy-msg {
+    background: rgba(0,91,150,0.1);
+    border-left: 3px solid var(--secondary);
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    font-style: italic;
+    font-size: 0.95rem;
+}
+
+/* =====================================================
+   ANIMACIONES
+   ===================================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .header-institucional h1 {
+        font-size: 1.4rem;
+    }
+    
+    .container {
+        padding: 1rem;
+    }
+    
+    .fase-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .progress-step .step-label {
+        display: none;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .criterio-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .criterio-item .puntos {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+}
+
+/* =====================================================
+   IMPRESIÓN
+   ===================================================== */
+
+@media print {
+    .progress-container,
+    .nav-container {
+        display: none;
+    }
+
+    body {
+        background: white;
+    }
+
+    .reto-ia {
+        break-inside: avoid;
+    }
+}
+
+/* =====================================================
+   UTILIDADES
+   ===================================================== */
+
+.text-center { text-align: center; }
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--gray); }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Header Institucional -->
+    <header class="header-institucional">
+        <div class="logo-container">
+            <div class="escudo">UAN</div>
+            <div>
+                <h1>Estructura de Datos Básica</h1>
+                <p class="subtitulo">Licenciatura en Sistemas Computacionales</p>
+            </div>
+            <div class="escudo">LSC</div>
+        </div>
+        <span class="badge-semana">📅 Semana 5: Pilas — Implementación y Aplicaciones</span>
+    </header>
+
+    <!-- Barra de Progreso AETL -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <a href="#comprende" class="progress-step active">
+                <div class="step-icon">📖</div>
+                <span class="step-label">Comprende</span>
+            </a>
+            <a href="#aplica" class="progress-step">
+                <div class="step-icon">⚡</div>
+                <span class="step-label">Aplica</span>
+            </a>
+            <a href="#reflexiona" class="progress-step">
+                <div class="step-icon">🔍</div>
+                <span class="step-label">Reflexiona</span>
+            </a>
+            <a href="#valida" class="progress-step">
+                <div class="step-icon">✔</div>
+                <span class="step-label">Valida</span>
+            </a>
+            <a href="#profundiza" class="progress-step">
+                <div class="step-icon">🚀</div>
+                <span class="step-label">Profundiza</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="nav-container">
+        <div class="nav-links">
+            <a href="#escenario">🎬 Escenario</a>
+            <a href="#fundamentos">📚 Fundamentos</a>
+            <a href="#comprende">📖 Comprende</a>
+            <a href="#aplica">⚡ Aplica</a>
+            <a href="#reflexiona">🔍 Reflexiona</a>
+            <a href="#valida">✔ Valida</a>
+            <a href="#profundiza">🚀 Profundiza</a>
+            <a href="#evaluacion">📊 Evaluación</a>
+            <a href="#glosario">📖 Glosario</a>
+            <a href="#referencias">📚 Referencias</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- Prerrequisitos -->
+        <div class="prerrequisitos-box">
+            <h4>⚠️ Para tener éxito esta semana, asegúrate de dominar...</h4>
+            <ul>
+                <li><strong>Lista enlazada simple:</strong> Insertar al inicio en O(1) y cómo la referencia <code>cabeza</code> apunta al primer nodo</li>
+                <li><strong>Nodo como objeto:</strong> Crear una clase/estructura con campos <code>dato</code> y <code>siguiente</code></li>
+                <li><strong>Referencia nula:</strong> Saber qué significa que <code>siguiente = null</code> y cómo verificarlo</li>
+                <li><strong>Complejidad O(1) vs O(n):</strong> Entender por qué algunas operaciones son instantáneas y otras dependen del tamaño</li>
+                <li><strong>Casos frontera:</strong> Estructuras vacías, de un solo elemento, o con un único elemento disponible</li>
+            </ul>
+            <p style="margin-top: 1rem; font-style: italic;">💡 Esta semana usarás tu lista enlazada como base interna de la pila. Si tu implementación de semanas anteriores tenía bugs, el Starter Code de la fase Aplica te dará una base limpia para empezar.</p>
+        </div>
+
+        <!-- Conexión con semana anterior -->
+        <div class="conexion-semana-anterior">
+            <h4>🔗 Conexión con la Semana 4: Listas Dobles y Circulares</h4>
+            <p>La semana pasada exploraste cómo añadir un puntero <code>anterior</code> otorga navegación bidireccional, y cómo una lista circular elimina el concepto de "fin". Esta semana usarás un subconjunto deliberadamente <em>restringido</em> de esas capacidades: una pila solo accede a <strong>un extremo</strong> de la estructura. Esta restricción no es una limitación — es el diseño. Al eliminar acceso arbitrario, la pila garantiza un comportamiento predecible (LIFO) que resulta esencial para evaluar expresiones, gestionar llamadas a funciones y navegar historiales.</p>
+        </div>
+
+        <!-- Escenario Inmersivo -->
+        <section id="escenario" class="escenario-inmersivo">
+            <h3>🎬 ESCENARIO: El Editor de Código con Deshacer Ilimitado</h3>
+            
+            <div class="personaje">
+                <strong>Contexto:</strong> Tu startup de EdTech, <em>CodeLeap</em>, lanza un editor de código en línea para estudiantes universitarios. El desarrollador principal, la Ing. Valentina Cruz, te asigna un módulo crítico.
+            </div>
+
+            <div class="dialogo">
+                "Necesito que implementes el sistema de Deshacer / Rehacer del editor. Cuando un estudiante escribe código, cada cambio se guarda. Si presiona Ctrl+Z, debe revertirse el último cambio. Si presiona Ctrl+Y, debe reaplican el cambio que deshizo. Simple en concepto, pero si lo implementamos con un arreglo dinámico tendremos problemas de rendimiento cuando los proyectos sean grandes. ¿Tienes alguna idea mejor?"
+            </div>
+
+            <div class="personaje">
+                <strong>Valentina añade:</strong>
+            </div>
+
+            <div class="dialogo">
+                "Ah, y también necesito que implementes el verificador de sintaxis: cuando el estudiante abre un paréntesis <code>(</code> o una llave <code>{</code>, el sistema debe detectar si al final del archivo todas están correctamente cerradas y en el orden correcto. Por ejemplo, <code>({[]})</code> es válido pero <code>({[}])</code> no. Esto lo necesito para el linter en tiempo real."
+            </div>
+
+            <div class="personaje">
+                <strong>Tu misión:</strong> Diseñar e implementar una <strong>Pila (Stack)</strong> propia — usando una lista enlazada como estructura interna — y aplicarla para construir el sistema de Deshacer/Rehacer y el verificador de paréntesis del editor <em>CodeLeap</em>.
+            </div>
+        </section>
+
+        <!-- FUNDAMENTOS TEÓRICOS AETL -->
+        <section id="fundamentos" class="fundamentos-section">
+            <div class="fundamentos-header">
+                <h2>📚 Fundamentos Teóricos AETL — Aplicados a Pilas</h2>
+                <p style="opacity: 0.85; margin-top: 0.5rem;">Cómo los principios del aprendizaje se manifiestan específicamente en este tema</p>
+            </div>
+            <div style="padding: 1.5rem;">
+
+                <div class="constructo-card">
+                    <div class="card-header">🏗️ Constructivismo y Socioconstructivismo</div>
+                    <div class="card-body">
+                        <div class="referencia">(Piaget, 1978; Vygotsky, 1978; Bognár, 2024)</div>
+                        <p>La pila es una estructura que <em>ya conoces intuitivamente</em> — una pila de platos, una pila de libros. Este conocimiento previo es el andamiaje sobre el cual construirás el concepto formal de TAD. La IA actúa como tu zona de desarrollo próximo: te permite alcanzar comprensiones que aún no podrías sostener solo.</p>
+                        <div class="operacional">
+                            <strong>Constructo operacional:</strong> Antes de ver el pseudocódigo, intenta dibujar en papel cómo funcionaría <code>push</code> y <code>pop</code> en una pila de platos. Si tu dibujo coincide con el pseudocódigo, construiste el concepto genuinamente.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="constructo-card">
+                    <div class="card-header">🎯 Aprendizaje Autorregulado (SRL)</div>
+                    <div class="card-body">
+                        <div class="referencia">(Zimmerman, 2000; Chiu, 2024; Sari et al., 2025)</div>
+                        <p>La pila tiene una operación que puede fallar silenciosamente: <code>pop()</code> en una pila vacía. Un estudiante autorregulado planifica esta situación antes de codificar, la ejecuta con prueba, y reflexiona sobre por qué es un caso frontera crítico.</p>
+                        <div class="operacional">
+                            <strong>Constructo operacional:</strong> Formula preguntas progresivas: ¿Qué pasa si hago pop() vacía? → ¿Cómo lo detecto? → ¿Debería lanzar excepción o devolver null? Cada pregunta te lleva más profundo.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="constructo-card">
+                    <div class="card-header">🧠 Teoría de la Carga Cognitiva</div>
+                    <div class="card-body">
+                        <div class="referencia">(Sweller, 1988/2020; Mahdi et al., 2025)</div>
+                        <p>La pila tiene solo 3 operaciones principales: <code>push</code>, <code>pop</code>, <code>peek</code>. Esta restricción deliberada reduce la carga intrínseca, permitiéndote enfocar la carga germana en entender <em>cuándo y por qué</em> una pila es la estructura correcta para cada problema.</p>
+                        <div class="operacional">
+                            <strong>Constructo operacional:</strong> Si sientes que el proyecto te desborda, regresa a las operaciones básicas. Dominar push + pop + estaVacía es suficiente para 80% de los problemas clásicos con pilas.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="constructo-card">
+                    <div class="card-header">🤝 Agencia Compartida</div>
+                    <div class="card-body">
+                        <div class="referencia">(Bandura, 2001; Brod et al., 2023)</div>
+                        <p>Las aplicaciones de la pila (Deshacer/Rehacer, verificación de paréntesis) son problemas donde la IA puede darte la solución completa en segundos. Tu rol como <strong>Arquitecto</strong> es entender <em>por qué</em> una pila funciona aquí y no otra estructura. La IA te da el código; tú decides si es correcto.</p>
+                        <div class="operacional">
+                            <strong>Constructo operacional:</strong> Antes de pedirle código a la IA, escribe en papel los pasos del algoritmo. Luego compara. Si tu versión y la de la IA difieren, analiza cuál es correcta y por qué.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="constructo-card">
+                    <div class="card-header">📊 Taxonomía de Bloom para la Era Digital</div>
+                    <div class="card-body">
+                        <div class="referencia">(Anderson et al., 2001)</div>
+                        <p>Esta semana recorres los 6 niveles: Recordar el principio LIFO → Comprender por qué funciona para deshacer → Aplicar en implementación → Analizar la eficiencia vs arreglo → Evaluar correctitud del verificador → Crear el sistema completo del editor.</p>
+                        <div class="operacional">
+                            <strong>Constructo operacional:</strong> Una respuesta de IA que solo da código te mueve hasta "Aplicar". Para llegar a "Evaluar" y "Crear", debes preguntar: ¿Por qué este diseño? ¿Qué pasaría si...? ¿Qué mejorarías?
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 1: COMPRENDE                                         -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="comprende" class="fase-section">
+            <div class="fase-header comprende">
+                <div class="fase-icon">📖</div>
+                <div class="fase-info">
+                    <h2>FASE 1: COMPRENDE</h2>
+                    <span class="bloom-tag">Nivel Bloom: Recordar / Comprender</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Explicar</strong> el principio LIFO y cómo determina el comportamiento de toda la estructura (Recordar/Comprender)</li>
+                        <li><strong>Identificar</strong> las operaciones fundamentales de una pila: push, pop, peek, estaVacía, tamaño (Recordar)</li>
+                        <li><strong>Describir</strong> la diferencia entre implementar una pila con arreglo vs con lista enlazada (Comprender)</li>
+                        <li><strong>Reconocer</strong> situaciones del mundo real donde la pila es la estructura apropiada (Comprender)</li>
+                        <li><strong>Comparar</strong> la complejidad de las operaciones de pila con la de otras estructuras vistas (Analizar)</li>
+                    </ul>
+                    <p style="margin-top:0.8rem; font-style:italic; color: var(--gray);">Nota: El objetivo es <em>explicar y reconocer</em> el comportamiento de la pila, no implementarla desde cero en esta fase. La implementación viene en APLICA.</p>
+                </div>
+
+                <h3>¿Qué es una Pila? — El Principio LIFO</h3>
+
+                <p>Una <strong>pila (stack)</strong> es un Tipo Abstracto de Dato (TAD) que organiza elementos bajo una regla muy simple: <strong>el último en entrar es el primero en salir</strong>, conocido como principio <strong>LIFO</strong> (Last In, First Out).</p>
+
+                <p>Piensa en una pila de platos en una cafetería. Solo puedes poner un plato encima (<code>push</code>) o tomar el plato de arriba (<code>pop</code>). Nunca puedes sacar el plato del fondo sin quitar todos los de encima. Esta restricción aparentemente simple tiene consecuencias profundas en algoritmos.</p>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PRINCIPIO LIFO — PILA DE PLATOS                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ESTADO INICIAL     PUSH("C")      PUSH("D")      POP()        POP()       │
+│                                                                             │
+│                                       ┌───┐        ┌───┐                   │
+│                        ┌───┐          │ D │  ◄─top │ C │  ◄─top            │
+│             ┌───┐      │ C │  ◄─top   ├───┤        ├───┤                   │
+│             │ B │  ◄─  ├───┤          │ C │        │ B │                   │
+│  ┌───┐◄─top ├───┤      │ B │          ├───┤        ├───┤                   │
+│  │ A │      │ A │      ├───┤          │ B │        │ A │                   │
+│  └───┘      └───┘      │ A │          ├───┤        └───┘                   │
+│   base       base      └───┘          │ A │         base  devuelve "D"     │
+│                         base          └───┘                                │
+│                                        base  devuelve "C" al siguiente pop │
+│                                                                             │
+│  REGLA: Solo se accede al elemento del TOP (cima). El resto es inaccesible.│
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> La cima (<em>top</em>) es el único punto de acceso de la pila. Push añade encima; pop retira desde arriba. Al hacer pop sobre una pila con [A, B, C, D], se obtiene D primero, luego C, luego B, luego A — en orden inverso al de inserción. Esto es exactamente lo que necesita el historial de "deshacer": el último cambio es el primero en revertirse.
+                </div>
+
+                <h3>Las 5 Operaciones Fundamentales</h3>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    OPERACIONES DE LA PILA                                   │
+├──────────────────┬──────────────────────────────────────────────────────────┤
+│   OPERACIÓN      │  DESCRIPCIÓN Y COMPORTAMIENTO                           │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│  push(x)         │  Inserta x en la cima. La pila crece.                   │
+│                  │  Pila: [A,B,C] → push("D") → [A,B,C,D]  top=D          │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│  pop()           │  Retira y devuelve el elemento de la cima.              │
+│                  │  Pila: [A,B,C,D] → pop() → [A,B,C]  devuelve D         │
+│                  │  ⚠ ERROR si la pila está vacía (Stack Underflow)        │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│  peek() / top()  │  Devuelve el elemento de la cima SIN eliminarlo.        │
+│                  │  Pila: [A,B,C,D] → peek() → [A,B,C,D]  devuelve D      │
+│                  │  ⚠ ERROR si la pila está vacía                          │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│  estaVacía()     │  Devuelve true si la pila no tiene elementos.           │
+│                  │  Siempre segura de llamar. Usar ANTES de pop/peek.      │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│  tamaño()        │  Devuelve el número de elementos en la pila.            │
+│                  │  Opcional: a veces se omite si no es necesaria.         │
+└──────────────────┴──────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Las operaciones críticas son push y pop. El error más común en producción es hacer pop() sin verificar primero estaVacía() — esto causa excepciones en tiempo de ejecución. peek() es útil cuando necesitas ver el tope sin consumirlo.
+                </div>
+
+                <h3>Pseudocódigo: Implementación con Lista Enlazada</h3>
+
+                <p>Una pila puede implementarse con un arreglo o con una lista enlazada. Esta semana usaremos <strong>lista enlazada</strong> como estructura interna, porque ya la dominas y porque no requiere redimensionamiento.</p>
+
+                <p>La intuición clave: el <strong>tope de la pila es la cabeza de la lista enlazada</strong>. Push = insertarInicio. Pop = eliminarInicio. Ambas operaciones son O(1).</p>
+
+                <div class="ascii-diagram">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  PILA IMPLEMENTADA CON LISTA ENLAZADA                                       │
+│  Tope = Cabeza de la lista                                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  clase Pila:                                                                │
+│  ┌──────────────────────────────────────────────────────────────────────┐  │
+│  │  tope ──────►  [C|→]──►[B|→]──►[A|null]                             │  │
+│  │                                                                      │  │
+│  │  PUSH("D"):   tope ──► [D|→]──►[C|→]──►[B|→]──►[A|null]            │  │
+│  │               (nuevo nodo apunta al tope anterior, tope = nuevo)    │  │
+│  │                                                                      │  │
+│  │  POP():       tope ──► [C|→]──►[B|→]──►[A|null]                    │  │
+│  │               (tope = tope.siguiente, devuelve dato del nodo viejo) │  │
+│  └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                             │
+│  Ventaja: sin límite de tamaño, push/pop siempre O(1)                      │
+│  Desventaja: memoria extra por puntero en cada nodo                         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Al usar la cabeza de la lista como tope, push y pop son idénticos a insertarAlInicio y eliminarDelInicio. Estas operaciones son O(1) porque no requieren recorrer la lista — simplemente actualizan el puntero <code>tope</code>.
+                </div>
+
+                <h3>Pseudocódigo Comentado Línea por Línea</h3>
+
+                <pre><code>
+// ═══════════════════════════════════════════════════
+//  CLASE NODO (igual que semanas anteriores)
+// ═══════════════════════════════════════════════════
+clase Nodo:
+    dato: Tipo          // El valor que guarda este nodo
+    siguiente: Nodo     // Referencia al nodo debajo en la pila (null si es el último)
+    
+    constructor(valor):
+        this.dato = valor       // Guarda el dato recibido
+        this.siguiente = null   // Por defecto, ningún nodo debajo
+
+// ═══════════════════════════════════════════════════
+//  CLASE PILA
+// ═══════════════════════════════════════════════════
+clase Pila:
+    tope: Nodo          // Referencia al nodo en la cima (null si está vacía)
+    contador: entero    // Cuántos elementos hay (opcional pero útil)
+    
+    constructor():
+        this.tope = null        // Pila vacía: no hay tope todavía
+        this.contador = 0       // Zero elementos al inicio
+
+    // ─── PUSH: Agregar al tope ────────────────────
+    metodo push(valor):
+        nuevoNodo = new Nodo(valor)     // 1. Crear el nodo con el valor
+        nuevoNodo.siguiente = tope      // 2. El nuevo nodo apunta al tope actual
+                                        //    (si tope es null, OK: el nuevo nodo
+                                        //     queda como el único)
+        tope = nuevoNodo                // 3. El tope ahora es el nuevo nodo
+        contador = contador + 1        // 4. Incrementar el tamaño
+        // Complejidad: O(1) — no importa cuántos elementos haya
+
+    // ─── POP: Retirar el tope ─────────────────────
+    metodo pop():
+        si estaVacía():                 // 1. SIEMPRE verificar antes de operar
+            lanzar Error("Stack Underflow: pila vacía")
+        datoCima = tope.dato            // 2. Guardar el dato a devolver
+        tope = tope.siguiente           // 3. El tope ahora es el siguiente nodo
+                                        //    (si era el único, tope queda null)
+        contador = contador - 1        // 4. Decrementar el tamaño
+        devolver datoCima               // 5. Retornar el dato guardado
+        // Complejidad: O(1) — sin recorrido
+
+    // ─── PEEK: Ver el tope sin eliminar ──────────
+    metodo peek():
+        si estaVacía():                 // 1. Verificar primero
+            lanzar Error("Pila vacía")
+        devolver tope.dato              // 2. Solo devolver el dato, no mover tope
+        // Complejidad: O(1)
+
+    // ─── ESTAVÁCIA: Consultar si hay elementos ───
+    metodo estaVacía():
+        devolver (tope == null)         // true si no hay nodo en el tope
+        // Complejidad: O(1)
+
+    // ─── TAMAÑO: Cuántos elementos hay ───────────
+    metodo tamaño():
+        devolver contador               // Solo devolver el contador ya calculado
+        // Complejidad: O(1) gracias al contador
+                </code></pre>
+
+                <div class="context-box info">
+                    <div class="box-title">💡 ¿Por qué push apunta PRIMERO y LUEGO actualiza tope?</div>
+                    <p>El orden importa: <code>nuevoNodo.siguiente = tope</code> debe ir ANTES de <code>tope = nuevoNodo</code>. Si lo haces al revés, <code>tope</code> ya apunta al nuevo nodo cuando intentas asignarlo, y pierdes la cadena anterior. Este error de orden es uno de los más comunes en implementaciones de pilas.</p>
+                </div>
+
+                <h3>Implementaciones alternativas: Arreglo vs Lista Enlazada</h3>
+
+                <table class="tabla-comparativa">
+                    <thead>
+                        <tr>
+                            <th>Aspecto</th>
+                            <th>Con Arreglo estático</th>
+                            <th>Con Arreglo dinámico</th>
+                            <th>Con Lista Enlazada ✅</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>push()</strong></td>
+                            <td>O(1) amortizado</td>
+                            <td>O(1) amortizado</td>
+                            <td>O(1) siempre</td>
+                        </tr>
+                        <tr>
+                            <td><strong>pop()</strong></td>
+                            <td>O(1)</td>
+                            <td>O(1)</td>
+                            <td>O(1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>peek()</strong></td>
+                            <td>O(1)</td>
+                            <td>O(1)</td>
+                            <td>O(1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Límite de tamaño</strong></td>
+                            <td>Sí (fijo)</td>
+                            <td>No (redimensionable)</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Memoria por elemento</strong></td>
+                            <td>Solo el dato</td>
+                            <td>Solo el dato</td>
+                            <td>Dato + puntero</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Localidad de caché</strong></td>
+                            <td>Alta (contiguo)</td>
+                            <td>Alta</td>
+                            <td>Baja (nodos dispersos)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Implementación didáctica</strong></td>
+                            <td>Simple</td>
+                            <td>Moderada</td>
+                            <td>Refuerza listas enlazadas ✅</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Aplicaciones Clásicas de la Pila</h3>
+
+                <div class="context-box tip">
+                    <div class="box-title">🌍 ¿Dónde aparecen las pilas en software real?</div>
+                    <ul style="margin-left: 1.2rem; margin-top: 0.5rem;">
+                        <li><strong>Historial de deshacer (Ctrl+Z):</strong> Cada acción se guarda en una pila. Deshacer = pop().</li>
+                        <li><strong>Pila de llamadas (call stack):</strong> Cuando una función llama a otra, la dirección de retorno se guarda en la pila. Al regresar, se hace pop().</li>
+                        <li><strong>Verificación de paréntesis/brackets:</strong> Paréntesis abiertos se apilan; al encontrar uno cerrado, se compara con el tope.</li>
+                        <li><strong>Navegación web (Atrás/Adelante):</strong> Cada página visitada se guarda en una pila de historial.</li>
+                        <li><strong>Evaluación de expresiones:</strong> Convertir expresiones infija (2+3) a postfija (2 3 +) y evaluarlas.</li>
+                        <li><strong>Algoritmos de backtracking:</strong> DFS en grafos, resolución de laberintos, sudoku.</li>
+                    </ul>
+                </div>
+
+                <h3>Errores Comunes Esta Semana</h3>
+
+                <div class="context-box danger">
+                    <div class="box-title">⚠️ Errores frecuentes que la IA podría no detectar automáticamente</div>
+                    <ol style="margin-left: 1.2rem; margin-top: 0.5rem;">
+                        <li style="margin-bottom: 1rem;"><strong>Orden incorrecto en push():</strong> Asignar <code>tope = nuevoNodo</code> ANTES de <code>nuevoNodo.siguiente = tope</code>. Resultado: el nuevo nodo se apunta a sí mismo o se pierde la cadena. <em>Diagnóstico: la pila siempre tiene 1 elemento aunque hagas varios push.</em></li>
+                        <li style="margin-bottom: 1rem;"><strong>No verificar estaVacía() antes de pop():</strong> Hacer pop() sobre una pila vacía accede a <code>null.dato</code>, causando NullPointerException. <em>Diagnóstico: el error ocurre solo cuando la pila ya está vacía, no siempre.</em></li>
+                        <li style="margin-bottom: 1rem;"><strong>Confundir peek() y pop():</strong> Usar pop() cuando solo querías ver el tope, eliminando accidentalmente el elemento. En el verificador de paréntesis esto corrompe el resultado. <em>Diagnóstico: la pila tiene menos elementos de los esperados.</em></li>
+                        <li><strong>No actualizar el contador:</strong> Olvidar <code>contador--</code> en pop() o <code>contador++</code> en push(). La pila funciona correctamente, pero <code>tamaño()</code> devuelve valores incorrectos. <em>Diagnóstico: el comportamiento es correcto pero las estadísticas de tamaño son incorrectas.</em></li>
+                    </ol>
+                </div>
+
+                <!-- Checkpoint metacognitivo -->
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo — COMPRENDE</h4>
+                    <div class="pregunta">¿Puedes explicar en tus propias palabras por qué usar la cabeza de la lista enlazada como tope hace que push y pop sean O(1)?</div>
+                    <div class="pregunta">Si alguien te pregunta "¿para qué sirve una pila y dame dos ejemplos reales?", ¿puedes responder sin consultar estas notas? Si no, relee la sección de aplicaciones.</div>
+                    <div class="pregunta">¿Cuál es la diferencia funcional entre peek() y pop()? ¿En qué situación usarías uno vs el otro en el verificador de paréntesis?</div>
+                    <div class="pregunta">⚠️ Alerta IA: Si le pediste a la IA que "te explicara las pilas", ¿puedes reproducir esa explicación con tus propias palabras? Si no, vuelve a preguntar pidiendo que use analogías más simples.</div>
+                </div>
+
+                <!-- Invariantes -->
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que no deben romperse — COMPRENDE</h4>
+                    <ul style="margin-left: 1.2rem;">
+                        <li>Una pila vacía siempre tiene <code>tope = null</code> y <code>contador = 0</code>.</li>
+                        <li>Si <code>contador > 0</code>, entonces <code>tope ≠ null</code>. Y viceversa.</li>
+                        <li>El elemento devuelto por <code>peek()</code> SIEMPRE debe ser el mismo que devolvería <code>pop()</code> antes de vaciarse.</li>
+                        <li>Después de <code>n</code> push seguidos de <code>n</code> pop, la pila debe quedar exactamente en su estado inicial.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 2: APLICA                                            -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="aplica" class="fase-section">
+            <div class="fase-header aplica">
+                <div class="fase-icon">⚡</div>
+                <div class="fase-info">
+                    <h2>FASE 2: APLICA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Aplicar / Analizar</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Implementar</strong> una Pila propia usando lista enlazada con operaciones push, pop, peek, estaVacía y tamaño</li>
+                        <li><strong>Construir</strong> un sistema de Deshacer/Rehacer funcional usando dos pilas</li>
+                        <li><strong>Aplicar</strong> la pila para verificar el balanceo de paréntesis/brackets en código fuente</li>
+                        <li><strong>Analizar</strong> los casos frontera de cada operación y manejarlos explícitamente</li>
+                    </ul>
+                </div>
+
+                <!-- STARTER CODE -->
+                <div class="starter-code-box">
+                    <h4>🧰 Código Base de Referencia (Starter Code)</h4>
+                    <div class="empathy-msg">
+                        Si tu implementación de lista enlazada de semanas anteriores funcionó correctamente y te sientes cómodo extendiéndola, úsala como base. Si tuviste problemas, aquí tienes un esqueleto mínimo y bien probado para que empieces con confianza. No es "hacer trampa": es usar una base sólida para enfocarte en aprender <strong>Pilas</strong>, no en depurar bugs de semanas pasadas.
+                    </div>
+                    <pre><code>
+// ══════════════════════════════════════════
+//  STARTER CODE — SEMANA 5: PILAS
+//  Completa los métodos marcados con TODO
+// ══════════════════════════════════════════
+
+clase Nodo:
+    dato
+    siguiente = null
+    constructor(valor):
+        this.dato = valor
+
+clase Pila:
+    tope = null
+    contador = 0
+
+    metodo push(valor):
+        // TODO: 
+        // 1. Crear nuevo nodo con valor
+        // 2. El nuevo nodo.siguiente apunta al tope actual
+        // 3. Actualizar tope al nuevo nodo
+        // 4. Incrementar contador
+
+    metodo pop():
+        // TODO:
+        // 1. Verificar si está vacía (lanzar error si sí)
+        // 2. Guardar el dato del tope
+        // 3. Mover tope al nodo siguiente
+        // 4. Decrementar contador
+        // 5. Devolver el dato guardado
+
+    metodo peek():
+        // TODO:
+        // 1. Verificar si está vacía
+        // 2. Devolver tope.dato SIN modificar tope
+
+    metodo estaVacía():
+        devolver (tope == null)  // ← Ya implementado
+
+    metodo tamaño():
+        devolver contador         // ← Ya implementado
+
+// ══════════════════════════════════════════
+//  MÓDULO DE DESHACER/REHACER
+//  (lo completarás en Etapa 2 del Reto 1)
+// ══════════════════════════════════════════
+
+clase EditorCodeLeap:
+    pilaDeshacer = nueva Pila()   // Historial de acciones realizadas
+    pilaRehacer  = nueva Pila()   // Historial de acciones deshechas
+    textoActual  = ""
+
+    metodo escribir(cambio):
+        // TODO: guardar estado actual en pilaDeshacer, limpiar pilaRehacer
+    
+    metodo deshacer():
+        // TODO: usar pilaDeshacer y pilaRehacer
+    
+    metodo rehacer():
+        // TODO: usar pilaRehacer y pilaDeshacer
+                    </code></pre>
+                </div>
+
+                <!-- Elección de lenguaje -->
+                <div class="context-box info">
+                    <div class="box-title">🖥️ ¿En qué lenguaje implementar?</div>
+                    <p>Elige el que mejor se adapte a tu objetivo de aprendizaje:</p>
+                    <ul style="margin-left: 1.2rem; margin-top: 0.5rem;">
+                        <li><strong>Python:</strong> Clases simples, sin tipos explícitos. Te enfocas en la lógica pura. Ideal para aprender el algoritmo sin ruido.</li>
+                        <li><strong>Java / C#:</strong> Tipos genéricos (<code>Stack&lt;T&gt;</code>), null safety explícito. Te enseña a pensar en tipos y excepciones.</li>
+                        <li><strong>C / C++:</strong> Gestión manual de memoria con punteros reales. Máxima comprensión de lo que ocurre en hardware.</li>
+                        <li><strong>JavaScript:</strong> Objetos dinámicos como nodos. Fácil de probar en el navegador inmediatamente.</li>
+                    </ul>
+                    <p style="margin-top: 0.8rem;">El objetivo no es copiar código en ningún lenguaje — es <strong>entender qué decisiones impone cada lenguaje</strong> (¿cómo maneja null? ¿cómo lanzo una excepción? ¿cómo libero memoria?).</p>
+                </div>
+
+                <!-- RETO UNIFICADO -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">1</div>
+                        <h4>Reto 1: Proyecto — Sistema de Edición CodeLeap con Pila propia <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Co-constructor que guía paso a paso sin dar el código completo. Debe validar cada etapa antes de continuar.
+                        </div>
+
+                        <div class="prompt-box">Explica de forma simple, usando analogías cotidianas (como una pila de papeles en un escritorio, o el botón "Atrás" del navegador) antes de entrar en detalles técnicos. Usa lenguaje de estudiante de segundo-tercer semestre.
+
+Actúa como un instructor que me guía a construir el Sistema de Edición CodeLeap cuya estructura interna sea una Pila que yo mismo construya en [MI LENGUAJE].
+
+Vamos a trabajar en dos etapas dentro del MISMO proyecto:
+
+═══ ETAPA 1: Construir la Pila (TAD) ═══
+
+Guíame a implementar la clase Pila con lista enlazada, método por método:
+
+1. Clase Nodo: dato y siguiente. Valida que lo entiendo antes de continuar.
+2. Clase Pila con atributo tope y contador inicializados.
+3. Método push(valor): guíame con preguntas antes de dar el código.
+   - ¿Qué debe pasar con el nodo nuevo?
+   - ¿Qué referencia actualizo y en qué orden?
+4. Método pop(): guíame paso a paso.
+   - ¿Qué debo verificar PRIMERO?
+   - ¿Qué hago con el nodo retirado?
+5. Métodos peek(), estaVacía() y tamaño().
+
+Después de cada método, dame UN caso de prueba mental para que yo verifique mi implementación.
+
+═══ ETAPA 2: Construir el Sistema Deshacer/Rehacer ═══
+
+Usando la Pila que construí, guíame a implementar la clase EditorCodeLeap:
+
+1. ¿Por qué necesito DOS pilas para deshacer Y rehacer?
+   Explícame la lógica con la analogía de "pilas de versiones".
+2. Método escribir(cambio): ¿qué pasa con la pilaRehacer cuando escribo algo nuevo?
+3. Método deshacer(): ¿de qué pila saco? ¿a qué pila muevo?
+4. Método rehacer(): misma lógica pero al revés.
+5. Agrega un método mostrarHistorial() que imprima el estado de ambas pilas.
+
+Al final, dame un escenario de prueba completo:
+  - Escribir "def funcion():", luego "    x = 5", luego "    return x"
+  - Deshacer dos veces, luego Rehacer una vez
+  - Verificar que el estado final es correcto
+
+NO me des la solución directa. Quiero escribirlo yo y que tú valides.</div>
+
+                        <div class="entregable-box">
+                            Archivo de código con: (1) Clase Nodo y Clase Pila completamente implementadas con comentarios explicando cada línea clave, (2) Clase EditorCodeLeap con métodos escribir, deshacer, rehacer y mostrarHistorial, (3) Escenario de prueba del enunciado ejecutado con salida visible, (4) Comentario al inicio explicando con tus palabras por qué se necesitan dos pilas para el sistema deshacer/rehacer.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="context-box tip">
+                    <div class="box-title">💡 ¿Quieres practicar la pila como estructura genérica pura antes del proyecto?</div>
+                    <p>No es obligatorio, pero si quieres consolidar las operaciones básicas antes de entrar al proyecto, puedes pedir a la IA que te guíe con ejercicios de push/pop simples: invertir una palabra, convertir decimal a binario usando una pila. Después regresa al Reto 1.</p>
+                </div>
+
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">2</div>
+                        <h4>Reto 2: Verificador de Paréntesis para el Linter de CodeLeap <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Mentor algorítmico que me hace descubrir el patrón antes de codificarlo.
+                        </div>
+
+                        <div class="prompt-box">Explica de forma simple, usando analogías cotidianas (como emparejar zapatos de diferentes pares, o comparar una llave con su cerradura) antes de entrar en detalles técnicos. Usa lenguaje de estudiante de segundo-tercer semestre.
+
+Quiero implementar el verificador de paréntesis/brackets para el editor CodeLeap usando la Pila que ya construí en el Reto 1.
+
+ANTES de mostrarme código, hazme estas preguntas para que yo descubra el algoritmo:
+1. Si encuentro un '(' al leer el código, ¿qué debo hacer con él?
+2. Si encuentro un ')' al leer el código, ¿con qué lo debo comparar?
+3. ¿Por qué una PILA es mejor que una simple variable contador aquí?
+   (Pista: piensa en qué pasa con '{[}]' — los contadores dirían "ok" pero está mal)
+4. ¿Qué significa si al TERMINAR de leer, la pila no está vacía?
+
+Luego, guíame a implementar el método:
+   verificarBalanceo(codigoFuente: texto) → devuelve (esValido: booleano, mensaje: texto)
+
+El método debe manejar estos tres tipos de brackets: ( ) , [ ] , { }
+y debe distinguir correctamente los siguientes casos:
+  - "({}[])"     → VÁLIDO
+  - "({[]})"     → VÁLIDO  
+  - "({[}])"     → INVÁLIDO (bracket incorrecto al cerrar)
+  - "((("        → INVÁLIDO (faltan cierres)
+  - ")))"        → INVÁLIDO (cierre sin apertura)
+
+Integra este método dentro de la clase EditorCodeLeap del Reto 1.
+
+NO me des el algoritmo completo. Primero responde mis preguntas para que YO lo deduzca.</div>
+
+                        <div class="entregable-box">
+                            Método verificarBalanceo() integrado en la clase EditorCodeLeap, con las 5 pruebas del enunciado ejecutadas y sus resultados. Incluye un comentario personal de 3-4 líneas explicando por qué una pila es esencial aquí y un simple contador no funcionaría.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invariantes -->
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que no deben romperse — APLICA</h4>
+                    <ul style="margin-left: 1.2rem;">
+                        <li>Nunca llamar a <code>pop()</code> o <code>peek()</code> sin verificar <code>estaVacía()</code> primero.</li>
+                        <li>Después de <code>push(x)</code>, la pila tiene exactamente un elemento más. <code>peek()</code> debe devolver <code>x</code>.</li>
+                        <li>En el sistema Deshacer/Rehacer: al hacer una nueva escritura, la pilaRehacer debe vaciarse (no tiene sentido rehacer acciones de un flujo abandonado).</li>
+                        <li>En el verificador: cuando se encuentra un bracket de cierre, el bracket en el tope de la pila DEBE ser su correspondiente de apertura. Si no lo es, es inválido — no basta con que los conteos coincidan.</li>
+                    </ul>
+                </div>
+
+                <!-- Checkpoint -->
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo — APLICA</h4>
+                    <div class="pregunta">¿Puedes explicar sin mirar el código por qué se necesitan DOS pilas para implementar Deshacer + Rehacer, y no una sola?</div>
+                    <div class="pregunta">¿Puedes trazar a mano el estado de la pila con la cadena <code>"{[}]"</code> para demostrar que el verificador la rechaza correctamente?</div>
+                    <div class="pregunta">⚠️ Alerta IA: ¿La IA te dio el código completo directamente? Si eso pasó, cierra el chat, relee el prompt y comienza de nuevo diciéndole explícitamente "No me des el código aún, primero hazme preguntas".</div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 3: REFLEXIONA                                        -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="reflexiona" class="fase-section">
+            <div class="fase-header reflexiona">
+                <div class="fase-icon">🔍</div>
+                <div class="fase-info">
+                    <h2>FASE 3: REFLEXIONA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Analizar</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Analizar</strong> los trade-offs entre implementar pilas con arreglo vs lista enlazada en contextos reales</li>
+                        <li><strong>Explicar</strong> por qué la restricción LIFO es una fortaleza, no una limitación, en ciertos problemas</li>
+                        <li><strong>Identificar</strong> situaciones en las que una pila NO es la estructura adecuada</li>
+                    </ul>
+                </div>
+
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">3</div>
+                        <h4>Reto 3: Trade-offs y Decisiones Técnicas <span class="reto-badge avanzado">Avanzado</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Interlocutor de debate técnico que desafía mis argumentos.
+                        </div>
+
+                        <div class="prompt-box">Explica de forma simple, usando analogías cotidianas (como comparar usar una libreta vs un post-it para recordar cosas, o elegir entre un estante fijo y uno extensible) antes de entrar en detalles técnicos. Usa lenguaje de estudiante de segundo-tercer semestre.
+
+Quiero reflexionar sobre las decisiones de diseño de mi implementación de Pila.
+
+Debate conmigo los siguientes trade-offs. Para cada uno, primero escucha MI argumento y luego desafíalo o refuérzalo:
+
+DEBATE 1: Lista enlazada vs Arreglo dinámico
+Mi posición inicial: "Use lista enlazada porque no tiene límite de tamaño."
+- ¿Qué argumento daría alguien que prefiere el arreglo dinámico?
+- ¿En qué contexto real de producción cada uno sería mejor?
+
+DEBATE 2: ¿Guardar el texto completo o solo el delta (cambio)?
+En mi EditorCodeLeap, al hacer push() de un estado guardé [el texto completo / solo el cambio — lo que haya hecho].
+- ¿Cuál es más eficiente en memoria?
+- ¿Cuál es más simple de implementar?
+- ¿Cuál usan editores como VS Code en la realidad?
+
+DEBATE 3: ¿Cuándo NO usar una pila?
+Dame 2 escenarios donde alguien podría estar tentado a usar una pila pero sería un error.
+Yo tengo esta idea: [escribe tu idea aquí antes de preguntarle a la IA].
+
+Al final, resume qué criterios debería usar para decidir si una pila es la estructura correcta para un problema nuevo.</div>
+
+                        <div class="entregable-box">
+                            Documento escrito (no código) de media página con: (1) Tu posición final sobre lista enlazada vs arreglo para pilas, justificada, (2) La decisión que tomarías para el historial del editor y por qué, (3) Un criterio personal para elegir cuándo usar pila vs otra estructura.
+                        </div>
+                    </div>
+                </div>
+
+                <h3>La Pila como Modelo Mental</h3>
+
+                <p>La pila no es solo una estructura de datos — es un <strong>modelo mental</strong> que aparece en múltiples capas del software. La pila de llamadas del sistema operativo, la pila de contextos en un intérprete de expresiones, la pila de estados de una interfaz con pantallas de navegación. Cuando dominas la pila, empiezas a ver este patrón en todos lados.</p>
+
+                <div class="context-box warning">
+                    <div class="box-title">🤔 Reflexión crítica: ¿Cuándo la restricción LIFO es un problema?</div>
+                    <p>La pila es perfecta cuando necesitas exactamente el inverso del orden de inserción. Pero si necesitas acceder al elemento más "importante" sin importar cuándo llegó, la pila falla. Para ese caso existe la Cola de Prioridad — que veremos la semana siguiente. ¿Puedes pensar en un ejemplo donde esto importa?</p>
+                </div>
+
+                <!-- Checkpoint -->
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo — REFLEXIONA</h4>
+                    <div class="pregunta">Explica en una oración: ¿por qué la pila de llamadas del sistema operativo usa exactamente el principio LIFO?</div>
+                    <div class="pregunta">¿Podrías defender ante un colega tu elección de implementación (lista enlazada vs arreglo) para la pila de CodeLeap? ¿Qué criterio usaste?</div>
+                    <div class="pregunta">⚠️ Alerta IA: Si el "debate" del Reto 3 fue que la IA simplemente te dio la respuesta sin escuchar tu argumento, repite el ejercicio siendo más explícito: "Primero escucha mi argumento: [tu argumento]. Ahora desafíalo."</div>
+                </div>
+
+                <!-- Invariantes -->
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que no deben romperse — REFLEXIONA</h4>
+                    <ul style="margin-left: 1.2rem;">
+                        <li>Un argumento técnico válido debe incluir: qué se gana, qué se pierde, y en qué contexto aplica. Sin las tres partes, el argumento está incompleto.</li>
+                        <li>La restricción LIFO de la pila no es un defecto de diseño — es su definición. Si necesitas acceso arbitrario, la estructura correcta no es una pila.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 4: VALIDA                                            -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="valida" class="fase-section">
+            <div class="fase-header valida">
+                <div class="fase-icon">✔</div>
+                <div class="fase-info">
+                    <h2>FASE 4: VALIDA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Evaluar</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Evaluar</strong> la correctitud de la implementación mediante casos de prueba exhaustivos</li>
+                        <li><strong>Detectar</strong> errores en código propio o ajeno mediante auditoría crítica</li>
+                        <li><strong>Verificar</strong> que los invariantes de la pila se mantienen bajo todas las operaciones</li>
+                    </ul>
+                </div>
+
+                <!-- Checklist de autoevaluación -->
+                <div class="checklist-box">
+                    <h4>✅ Checklist de Autoevaluación Rápida — Verifica ANTES de entregar</h4>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c1">
+                        <label for="c1" class="check-text">
+                            <strong>¿Push y Pop son correctos en secuencia?</strong> Haz push(1), push(2), push(3) y luego tres pop(). ¿Obtienes 3, 2, 1 en ese orden?
+                            <div class="check-diagnostico">→ Si no: revisa el orden en push() — ¿asignas siguiente ANTES de actualizar tope?</div>
+                        </label>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c2">
+                        <label for="c2" class="check-text">
+                            <strong>¿Pop() en pila vacía lanza error?</strong> Crea una pila vacía y llama pop(). ¿Tu código lanza una excepción o error claro, no un null silencioso?
+                            <div class="check-diagnostico">→ Si no: falta el guard de estaVacía() al inicio de pop() y peek()</div>
+                        </label>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c3">
+                        <label for="c3" class="check-text">
+                            <strong>¿Peek() no destruye la pila?</strong> Después de peek(), ¿el tamaño de la pila sigue siendo el mismo?
+                            <div class="check-diagnostico">→ Si no: estás moviendo tope en peek() cuando solo debes leer tope.dato</div>
+                        </label>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c4">
+                        <label for="c4" class="check-text">
+                            <strong>¿El sistema Deshacer/Rehacer mantiene consistencia?</strong> Escribe 3 acciones, deshaz 2, rehaz 1, escribe 1 nueva. ¿La pilaRehacer se limpió al escribir la nueva acción?
+                            <div class="check-diagnostico">→ Si no: falta vaciar pilaRehacer al escribir una nueva acción</div>
+                        </label>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c5">
+                        <label for="c5" class="check-text">
+                            <strong>¿El verificador rechaza <code>({[}])</code>?</strong> Esta cadena tiene el mismo número de aperturas y cierres, pero está mal ordenada. ¿Tu verificador devuelve INVÁLIDO?
+                            <div class="check-diagnostico">→ Si no: estás comparando contadores en lugar de comparar con el tope de la pila</div>
+                        </label>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c6">
+                        <label for="c6" class="check-text">
+                            <strong>¿El verificador detecta brackets sin cerrar?</strong> Prueba con <code>"((("</code>. ¿Devuelve INVÁLIDO después de recorrer toda la cadena?
+                            <div class="check-diagnostico">→ Si no: falta verificar que la pila esté vacía al TERMINAR de recorrer la cadena</div>
+                        </label>
+                    </div>
+
+                    <p style="margin-top: 1rem; font-style: italic; color: var(--primary);">💡 Tip: Si encuentras un error con este checklist, dibuja el estado de la pila (los nodos y flechas) antes y después de la operación problemática. Los bugs de punteros solo se ven claramente cuando los dibujas.</p>
+                </div>
+
+                <h3>Casos de Prueba Detallados</h3>
+
+                <h4 style="margin-top: 1.5rem; margin-bottom: 1rem;">Casos de Prueba: Pila Básica</h4>
+                <table class="tabla-comparativa">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Operaciones</th>
+                            <th>Resultado Esperado</th>
+                            <th>Propósito del test</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><code>pila nueva → estaVacía()</code></td>
+                            <td><code>true</code></td>
+                            <td>Pila vacía inicial</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><code>push(10) → peek()</code></td>
+                            <td><code>10</code></td>
+                            <td>Push con un elemento</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><code>push(1) push(2) push(3) → pop() pop() pop()</code></td>
+                            <td><code>3, 2, 1</code></td>
+                            <td>Orden LIFO correcto</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><code>push(5) pop() → estaVacía()</code></td>
+                            <td><code>true</code></td>
+                            <td>Pila queda vacía después de pop total</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><code>pop() en pila vacía</code></td>
+                            <td>Error/Excepción clara</td>
+                            <td>Stack Underflow manejado</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td><code>push(7) push(8) → peek() → tamaño()</code></td>
+                            <td><code>peek=8, tamaño=2</code></td>
+                            <td>Peek no destruye la pila</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 style="margin-top: 1.5rem; margin-bottom: 1rem;">Casos de Prueba: Verificador de Paréntesis</h4>
+                <table class="tabla-comparativa">
+                    <thead>
+                        <tr>
+                            <th>Entrada</th>
+                            <th>Resultado Esperado</th>
+                            <th>Razón</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>"({}[])"</code></td>
+                            <td>VÁLIDO</td>
+                            <td>Anidamiento correcto</td>
+                        </tr>
+                        <tr>
+                            <td><code>"({[]})"</code></td>
+                            <td>VÁLIDO</td>
+                            <td>Anidamiento múltiple correcto</td>
+                        </tr>
+                        <tr>
+                            <td><code>"({[}])"</code></td>
+                            <td>INVÁLIDO</td>
+                            <td>Bracket incorrecto al cerrar</td>
+                        </tr>
+                        <tr>
+                            <td><code>"((("</code></td>
+                            <td>INVÁLIDO</td>
+                            <td>Pila no vacía al terminar</td>
+                        </tr>
+                        <tr>
+                            <td><code>")))"</code></td>
+                            <td>INVÁLIDO</td>
+                            <td>Pop en pila vacía</td>
+                        </tr>
+                        <tr>
+                            <td><code>""</code> (vacía)</td>
+                            <td>VÁLIDO</td>
+                            <td>Caso frontera: cadena vacía</td>
+                        </tr>
+                        <tr>
+                            <td><code>"if (x &gt; 0) { return [a, b]; }"</code></td>
+                            <td>VÁLIDO</td>
+                            <td>Código real con texto mezclado</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Checkpoint -->
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo — VALIDA</h4>
+                    <div class="pregunta">¿Pasaron TODOS los casos de prueba del checklist? Si alguno falló, ¿ya identificaste la línea de código específica que lo causa?</div>
+                    <div class="pregunta">¿Puedes explicar por qué el caso <code>"({[}])"</code> es inválido sin ejecutar el código — solo razonando con el estado de la pila en cada paso?</div>
+                    <div class="pregunta">⚠️ Alerta IA: Si le pediste a la IA que "revisara tu código y te dijera qué está mal", intenta primero usar el checklist tú mismo. La IA puede no detectar errores de lógica sutil — tú los verás mejor al trazar el estado manualmente.</div>
+                </div>
+
+                <!-- Invariantes -->
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que no deben romperse — VALIDA</h4>
+                    <ul style="margin-left: 1.2rem;">
+                        <li>Un caso de prueba que "pasa" pero con la salida incorrecta no cuenta. Verificar el valor, no solo "que no explote".</li>
+                        <li>El verificador de paréntesis debe funcionar con cadenas que contienen texto normal mezclado con brackets (como código real), no solo cadenas de brackets puros.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 5: PROFUNDIZA                                        -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="profundiza" class="fase-section">
+            <div class="fase-header profundiza">
+                <div class="fase-icon">🚀</div>
+                <div class="fase-info">
+                    <h2>FASE 5: PROFUNDIZA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Crear — Temas opcionales</span>
+                </div>
+            </div>
+            
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Crear</strong> extensiones de la pila para resolver problemas clásicos de algoritmos (opcionales)</li>
+                        <li><strong>Conectar</strong> la pila con el proyecto integrador del curso</li>
+                        <li><strong>Anticipar</strong> cómo las Colas complementan y se distinguen de las Pilas</li>
+                    </ul>
+                </div>
+
+                <div class="context-box info">
+                    <div class="box-title">ℹ️ Esta fase es opcional — elige lo que te interese</div>
+                    <p>Si completaste los Retos 1 y 2 satisfactoriamente, ya alcanzaste todos los objetivos esenciales de la semana. Los siguientes temas son para quienes quieran profundizar o tienen tiempo disponible. No hay penalización por no completarlos.</p>
+                </div>
+
+                <h3>🔌 Conexión con el Proyecto Integrador: Biblioteca Digital</h3>
+
+                <div class="orientacion-semanal">
+                    <h4>📚 Sistema de Gestión de Biblioteca Digital — Módulos con Pila</h4>
+                    <p>Tu Biblioteca Digital puede incorporar pilas en al menos tres módulos:</p>
+                    <ul>
+                        <li><strong>Historial de navegación:</strong> Cada libro o sección visitada se apila. El botón "Volver" hace pop(). Similar a tu implementación de CodeLeap.</li>
+                        <li><strong>Pila de préstamos activos:</strong> Cuando un usuario pide un libro de una colección con restricción LIFO (ej. colecciones físicas apiladas), la pila modela el acceso correctamente.</li>
+                        <li><strong>Validador de XML/HTML en metadatos:</strong> Los metadatos de los libros (títulos, autores) suelen estar en XML. El verificador de brackets que implementaste hoy es la base de un validador XML completo.</li>
+                    </ul>
+                    <p style="margin-top: 0.8rem;">Reflexiona: ¿en cuál de estos módulos incorporarías tu implementación de <code>Pila</code> de esta semana directamente?</p>
+                </div>
+
+                <h3>🧩 Extensiones Opcionales</h3>
+
+                <h4 style="margin-top: 1.2rem;">Extensión A: Evaluación de expresiones con postfija</h4>
+                <p>Las calculadoras y compiladores usan pilas para evaluar expresiones matemáticas. La expresión <code>3 + 4 * 2</code> se convierte a notación postfija <code>3 4 2 * +</code> y se evalúa con una pila: al encontrar un operando, push; al encontrar un operador, pop dos operandos, opera, push resultado.</p>
+
+                <div class="context-box tip">
+                    <div class="box-title">💡 Para explorar: Algoritmo Shunting Yard de Dijkstra</div>
+                    <p>El algoritmo de Edsger Dijkstra convierte expresiones infijas a postfijas usando una pila. Es uno de los usos más elegantes de pilas en ciencias de la computación. Busca "Shunting Yard Algorithm" si te interesa.</p>
+                </div>
+
+                <h4 style="margin-top: 1.2rem;">Extensión B: Pila mínima (Min-Stack)</h4>
+                <p>Diseña una pila que, además de las operaciones estándar, tenga un método <code>getMin()</code> que devuelva el mínimo elemento de la pila en O(1). Pista: necesitarás una segunda pila auxiliar.</p>
+
+                <h4 style="margin-top: 1.2rem;">Extensión C: DFS con pila explícita</h4>
+                <p>El algoritmo de búsqueda en profundidad (DFS) en grafos o árboles funciona internamente con una pila. La versión recursiva usa la pila de llamadas del sistema; la versión iterativa usa una pila explícita. Implementa DFS en un árbol binario simple usando tu pila.</p>
+
+                <h3>🔭 Preview de la Semana 6: Colas y Colas de Prioridad</h3>
+
+                <div class="context-box warning">
+                    <div class="box-title">📅 Lo que viene la próxima semana</div>
+                    <p>La semana siguiente estudiarás las <strong>Colas (Queues)</strong>: si la pila es LIFO, la cola es <strong>FIFO</strong> (First In, First Out). El primero en llegar es el primero en ser atendido — como una fila del banco o la cola de impresión. También explorarás la <strong>Cola de Prioridad</strong>, donde el orden no depende de cuándo llegó el elemento, sino de qué tan "importante" es. Dominar la pila esta semana es base directa para entender por qué las colas resuelven problemas que las pilas no pueden — y viceversa.</p>
+                    <p style="margin-top: 0.8rem;">Pregunta para prepararte: ¿En qué escenarios real te importa que el <em>primero</em> en llegar sea el primero en ser atendido? ¿Cómo difiere eso del deshacer/rehacer que implementaste hoy?</p>
+                </div>
+
+                <!-- Checkpoint final -->
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo Final — PROFUNDIZA</h4>
+                    <div class="pregunta">Si tuvieras que enseñarle pilas a un compañero en 5 minutos con un solo ejemplo de código, ¿qué código usarías y por qué?</div>
+                    <div class="pregunta">¿Hay algún aspecto de tu implementación que todavía no entiendes completamente? Si sí, ¿cuál es la pregunta específica que harías a la IA o al instructor para resolverlo?</div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- EVALUACIÓN                                                 -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="evaluacion" class="evaluacion-section">
+            <div class="evaluacion-header">
+                <h2>📊 Criterios de Evaluación — Semana 5</h2>
+                <p style="opacity: 0.9; margin-top: 0.5rem;">Alineados con las fases AETL · Total: 100%</p>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">COMPRENDE</span>
+                <div>
+                    <strong>Reto 1 — Clase Pila funcional con lista enlazada:</strong> Implementación correcta de push, pop, peek, estaVacía. Comentarios línea por línea en los métodos push y pop. El código demuestra comprensión del orden correcto de operaciones.
+                </div>
+                <span class="puntos">35%</span>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">APLICA</span>
+                <div>
+                    <strong>Reto 1 — Sistema Deshacer/Rehacer:</strong> Implementación correcta de EditorCodeLeap con dos pilas. La pilaRehacer se limpia al escribir una nueva acción. El escenario de prueba del enunciado produce la salida correcta.
+                </div>
+                <span class="puntos">25%</span>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">APLICA</span>
+                <div>
+                    <strong>Reto 2 — Verificador de paréntesis:</strong> Método verificarBalanceo() integrado que pasa los 7 casos de prueba del enunciado. Incluye comentario personal explicando por qué la pila es esencial aquí.
+                </div>
+                <span class="puntos">25%</span>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">REFLEXIONA</span>
+                <div>
+                    <strong>Reflexión técnica escrita:</strong> Documento de media página con posición justificada sobre lista enlazada vs arreglo, decisión sobre historial del editor, y criterio personal para elegir cuándo usar pila. La reflexión debe mostrar pensamiento propio, no solo copiar lo que dijo la IA.
+                </div>
+                <span class="puntos">10%</span>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">VALIDA</span>
+                <div>
+                    <strong>Autoevaluación y pruebas:</strong> Checklist del fase Valida completado con evidencia (screenshot o texto). Al menos 3 casos de prueba adicionales con sus resultados documentados.
+                </div>
+                <span class="puntos">5%</span>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 1rem 1.5rem; border-top: 2px solid var(--accent);">
+                <p style="color: var(--gray); font-size: 0.9rem;"><strong>Nota:</strong> El Reto 3 (Reflexiona) y las extensiones de Profundiza son <strong>opcionales</strong> y pueden otorgar puntos extra según acuerdo con el instructor. Los porcentajes arriba suman 100% considerando solo los retos esenciales.</p>
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- GLOSARIO                                                   -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="glosario" class="glosario-section">
+            <div class="glosario-header">
+                <h2>📖 Glosario — Semana 5</h2>
+                <p style="opacity: 0.8; margin-top: 0.3rem;">Términos disciplinares y del modelo AETL</p>
+            </div>
+            <div class="glosario-grid">
+
+                <dl class="termino-card">
+                    <dt>Pila (Stack)</dt>
+                    <dd>TAD que organiza elementos bajo el principio LIFO. Solo permite acceder al elemento del tope.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>LIFO</dt>
+                    <dd>Last In, First Out. El último elemento insertado es el primero en ser retirado.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Push</dt>
+                    <dd>Operación que inserta un elemento en el tope de la pila. Complejidad O(1) con lista enlazada.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Pop</dt>
+                    <dd>Operación que retira y devuelve el elemento del tope. Genera error si la pila está vacía (Stack Underflow).</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Peek / Top</dt>
+                    <dd>Operación que devuelve el elemento del tope sin eliminarlo. No modifica la pila.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Stack Underflow</dt>
+                    <dd>Error que ocurre al intentar pop() o peek() sobre una pila vacía. Debe manejarse explícitamente.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>TAD (Tipo Abstracto de Dato)</dt>
+                    <dd>Definición de una estructura por sus operaciones y comportamiento, independiente de su implementación interna.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Pila de Llamadas (Call Stack)</dt>
+                    <dd>Estructura interna del sistema operativo que gestiona el contexto de ejecución de funciones usando el principio LIFO.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Notación Postfija</dt>
+                    <dd>Representación de expresiones matemáticas donde el operador sigue a sus operandos: "3 4 +" = 3+4. Se evalúa eficientemente con una pila.</dd>
+                </dl>
+
+                <dl class="termino-card aetl">
+                    <dt>Agencia Compartida (AETL)</dt>
+                    <dd>Principio donde el estudiante mantiene el rol de Arquitecto de sus productos, usando la IA como co-constructor pero sin ceder la toma de decisiones.</dd>
+                </dl>
+
+                <dl class="termino-card aetl">
+                    <dt>Caso Frontera</dt>
+                    <dd>Situación extrema que puede romper una implementación: pila vacía, un solo elemento, o condición límite del problema.</dd>
+                </dl>
+
+                <dl class="termino-card aetl">
+                    <dt>Trade-off</dt>
+                    <dd>Compromiso entre dos propiedades deseables que no pueden maximizarse simultáneamente (ej: velocidad vs memoria, simplicidad vs generalidad).</dd>
+                </dl>
+
+                <dl class="termino-card aetl">
+                    <dt>Verificación de Integridad</dt>
+                    <dd>Comprobación sistemática de que los invariantes de una estructura se mantienen antes y después de cada operación.</dd>
+                </dl>
+
+                <dl class="termino-card aetl">
+                    <dt>Prompt Progresivo</dt>
+                    <dd>Técnica AETL de formular preguntas a la IA de menor a mayor complejidad, construyendo comprensión por capas en lugar de pedir la respuesta completa de una vez.</dd>
+                </dl>
+
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- REFERENCIAS                                                -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="referencias" class="referencias-section">
+            <h2>📚 Referencias — Semana 5</h2>
+
+            <h3>Contenido Disciplinar</h3>
+            <div class="referencia-item">
+                Cormen, T. H., Leiserson, C. E., Rivest, R. L., &amp; Stein, C. (2022). <em>Introduction to Algorithms</em> (4th ed.). MIT Press. [Cap. 10.1: Pilas y Colas]
+            </div>
+            <div class="referencia-item">
+                Sedgewick, R., &amp; Wayne, K. (2011). <em>Algorithms</em> (4th ed.). Addison-Wesley. [Cap. 1.3: Bags, Queues, and Stacks]
+            </div>
+            <div class="referencia-item">
+                Goodrich, M. T., Tamassia, R., &amp; Goldwasser, M. H. (2014). <em>Data Structures and Algorithms in Python</em>. Wiley. [Cap. 6: Stacks, Queues, and Deques]
+            </div>
+            <div class="referencia-item">
+                Skiena, S. S. (2020). <em>The Algorithm Design Manual</em> (3rd ed.). Springer. [Cap. 3.2: Stacks and Queues]
+            </div>
+            <div class="referencia-item">
+                Knuth, D. E. (1997). <em>The Art of Computer Programming, Vol. 1: Fundamental Algorithms</em> (3rd ed.). Addison-Wesley. [§2.2.1: Stacks, Queues, and Deques]
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Documentación Técnica</h3>
+            <div class="referencia-item">
+                Python Software Foundation. (2024). <em>Collections — Container datatypes: deque</em>. docs.python.org/3/library/collections.html#collections.deque
+            </div>
+            <div class="referencia-item">
+                Oracle. (2024). <em>Stack (Java SE 21)</em>. docs.oracle.com/en/java/se/21/docs/api/java.base/java/util/Stack.html
+            </div>
+            <div class="referencia-item">
+                cppreference.com. (2024). <em>std::stack</em>. en.cppreference.com/w/cpp/container/stack
+            </div>
+            <div class="referencia-item">
+                MDN Web Docs. (2024). <em>Array.prototype.push() / pop()</em>. developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Fundamentos Pedagógicos</h3>
+            <div class="referencia-item">
+                Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. <em>Cognitive Science, 12</em>(2), 257–285.
+            </div>
+            <div class="referencia-item">
+                Sweller, J., van Merriënboer, J. J. G., &amp; Paas, F. (2020). Cognitive architecture and instructional design: 20 years later. <em>Educational Psychology Review, 32</em>, 261–292.
+            </div>
+            <div class="referencia-item">
+                Vygotsky, L. S. (1978). <em>Mind in society: The development of higher psychological processes</em>. Harvard University Press.
+            </div>
+            <div class="referencia-item">
+                Zimmerman, B. J. (2000). Self-efficacy: An essential motive to learn. <em>Contemporary Educational Psychology, 25</em>(1), 82–91.
+            </div>
+            <div class="referencia-item">
+                Anderson, L. W., Krathwohl, D. R., et al. (2001). <em>A taxonomy for learning, teaching, and assessing: A revision of Bloom's taxonomy</em>. Longman.
+            </div>
+            <div class="referencia-item">
+                Bandura, A. (2001). Social cognitive theory: An agentic perspective. <em>Annual Review of Psychology, 52</em>, 1–26.
+            </div>
+            <div class="referencia-item">
+                Chiu, T. K. F. (2024). Generative AI and self-regulated learning in higher education. <em>Computers &amp; Education, 195</em>, 104–117.
+            </div>
+            <div class="referencia-item">
+                Mahdi, M., et al. (2025). AI-assisted learning and cognitive load management: Implications for computer science education. <em>Journal of Educational Technology, 41</em>(1), 55–72.
+            </div>
+            <div class="referencia-item">
+                Bognár, B. (2024). Constructivist approaches in AI-augmented learning environments. <em>Educational Research Review, 43</em>, 100–115.
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Estándares Curriculares</h3>
+            <div class="referencia-item">
+                ACM/IEEE-CS/AAAI. (2023). <em>CS2023: ACM/IEEE-CS/AAAI Computer Science Curricula</em>. Association for Computing Machinery. [DS: Data Structures, unidad DS/Linear Structures]
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="modelo-badge">Modelo AETL</div>
+        <p>Aprendizaje Técnico Aumentado por IA</p>
+        <p style="margin-top: 0.5rem; opacity: 0.8;">Estructura de Datos Básica · Semana 5: Pilas</p>
+        <p style="margin-top: 0.5rem; opacity: 0.7;">Universidad Autónoma de Nayarit · Licenciatura en Sistemas Computacionales</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.6;">Diseñado bajo el marco AETL · Fundamentado en Vygotsky, Sweller, Bloom, Zimmerman y Bandura</p>
+        <p>Dr. Eligardo Cruz Sánchez</p>
+	</footer>
+
+    <!-- Script: Barra de Progreso Interactiva -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const steps = document.querySelectorAll('.progress-step');
+            const sections = ['comprende', 'aplica', 'reflexiona', 'valida', 'profundiza'];
+
+            function updateProgress() {
+                let currentSection = 0;
+                const scrollPos = window.scrollY + window.innerHeight / 3;
+
+                sections.forEach((id, index) => {
+                    const el = document.getElementById(id);
+                    if (el && el.offsetTop <= scrollPos) {
+                        currentSection = index;
+                    }
+                });
+
+                steps.forEach((step, index) => {
+                    step.classList.remove('active', 'completed');
+                    if (index < currentSection) {
+                        step.classList.add('completed');
+                    } else if (index === currentSection) {
+                        step.classList.add('active');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', updateProgress);
+            updateProgress();
+
+            // Smooth scroll para los enlaces de la barra de progreso
+            steps.forEach(step => {
+                step.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = this.getAttribute('href');
+                    const el = document.querySelector(target);
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
