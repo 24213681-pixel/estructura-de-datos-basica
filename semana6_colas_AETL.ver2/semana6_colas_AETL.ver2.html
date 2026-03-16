@@ -1,0 +1,2509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 6: Colas y Colas de Prioridad | AETL</title>
+    <style>
+:root {
+    --primary: #003a63;
+    --secondary: #005b96;
+    --accent: #f2a900;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --gray: #6c757d;
+    --border-radius: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.7;
+    color: var(--dark);
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+    min-height: 100vh;
+}
+
+/* =====================================================
+   HEADER INSTITUCIONAL
+   ===================================================== */
+
+.header-institucional {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,58,99,0.3);
+}
+
+.header-institucional .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.header-institucional .escudo {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.header-institucional h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.header-institucional .subtitulo {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.header-institucional .badge-semana {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+
+/* =====================================================
+   BARRA DE PROGRESO
+   ===================================================== */
+
+.progress-container {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e0e0e0;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+    transition: transform 0.3s;
+    text-decoration: none;
+}
+
+.progress-step:hover {
+    transform: scale(1.1);
+}
+
+.progress-step .step-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: white;
+    border: 3px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.progress-step.active .step-icon {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,91,150,0.4);
+}
+
+.progress-step.completed .step-icon {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.progress-step .step-label {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.progress-step.active .step-label {
+    color: var(--secondary);
+}
+
+/* =====================================================
+   NAVEGACIÓN
+   ===================================================== */
+
+.nav-container {
+    background: var(--primary);
+    padding: 0.8rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--accent);
+}
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* =====================================================
+   SECCIONES DE FASE
+   ===================================================== */
+
+.fase-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.fase-header {
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fase-header.comprende { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.fase-header.aplica { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.fase-header.reflexiona { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.fase-header.valida { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.fase-header.profundiza { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+.fase-header .fase-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fase-header .fase-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.fase-header .fase-info .bloom-tag {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.fase-content {
+    padding: 2rem;
+}
+
+/* =====================================================
+   OBJETIVOS
+   ===================================================== */
+
+.objetivos-box {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d1e8fa 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.objetivos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.objetivos-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.objetivos-box li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.objetivos-box li::before {
+    content: '🎯';
+    position: absolute;
+    left: 0;
+}
+
+/* =====================================================
+   CAJAS CONTEXTUALES
+   ===================================================== */
+
+.context-box {
+    padding: 1.2rem 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border-left: 4px solid;
+}
+
+.context-box.tip {
+    background: linear-gradient(135deg, #e3f9e5 0%, #c8f7dc 100%);
+    border-color: var(--success);
+}
+
+.context-box.warning {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border-color: var(--warning);
+}
+
+.context-box.danger {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border-color: var(--danger);
+}
+
+.context-box.success {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: var(--success);
+}
+
+.context-box.info {
+    background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+    border-color: var(--info);
+}
+
+.context-box .box-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* =====================================================
+   RETOS IA
+   ===================================================== */
+
+.reto-ia {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.reto-ia-header {
+    background: linear-gradient(90deg, var(--accent) 0%, #e89900 100%);
+    color: var(--primary);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reto-ia-header .reto-numero {
+    background: var(--primary);
+    color: var(--accent);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.reto-ia-header h4 {
+    flex: 1;
+    font-size: 1.1rem;
+}
+
+.reto-ia-body {
+    padding: 1.5rem;
+}
+
+.reto-ia .rol-ia {
+    background: rgba(242,169,0,0.15);
+    border: 1px solid var(--accent);
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.reto-ia .rol-ia strong {
+    color: var(--accent);
+}
+
+.prompt-box {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: var(--border-radius);
+    padding: 1.2rem;
+    margin: 1rem 0;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    color: #c9d1d9;
+}
+
+.prompt-box::before {
+    content: '📝 PROMPT';
+    display: block;
+    color: var(--accent);
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.entregable-box {
+    background: rgba(40,167,69,0.15);
+    border: 1px dashed var(--success);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+}
+
+.entregable-box::before {
+    content: '📦 ENTREGABLE ESPERADO';
+    display: block;
+    color: var(--success);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKPOINT METACOGNITIVO
+   ===================================================== */
+
+.checkpoint {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checkpoint h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkpoint .pregunta {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 0.8rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    padding-left: 3rem;
+}
+
+.checkpoint .pregunta::before {
+    content: '❓';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+}
+
+/* =====================================================
+   DIAGRAMA ASCII
+   ===================================================== */
+
+.ascii-diagram {
+    background: #1e1e1e;
+    color: #00ff00;
+    font-family: 'Consolas', 'Monaco', monospace;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: pre;
+}
+
+.diagrama-descripcion {
+    background: #f8f9fa;
+    border-left: 4px solid var(--info);
+    padding: 1rem;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+/* =====================================================
+   ESCENARIO INMERSIVO
+   ===================================================== */
+
+.escenario-inmersivo {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.escenario-inmersivo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.1;
+}
+
+.escenario-inmersivo h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.escenario-inmersivo .personaje {
+    background: rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    border-left: 3px solid var(--accent);
+}
+
+.escenario-inmersivo .dialogo {
+    font-style: italic;
+    margin: 1rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(255,255,255,0.3);
+}
+
+/* =====================================================
+   FUNDAMENTOS TEÓRICOS
+   ===================================================== */
+
+.fundamentos-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.fundamentos-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.constructo-card {
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius);
+    margin: 1rem;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.constructo-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.constructo-card .card-header {
+    padding: 1rem 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.constructo-card:nth-child(1) .card-header { background: #e8f4fd; color: var(--primary); }
+.constructo-card:nth-child(2) .card-header { background: #fff3e0; color: #e65100; }
+.constructo-card:nth-child(3) .card-header { background: #e8f5e9; color: #2e7d32; }
+.constructo-card:nth-child(4) .card-header { background: #f3e5f5; color: #7b1fa2; }
+.constructo-card:nth-child(5) .card-header { background: #fce4ec; color: #c2185b; }
+
+.constructo-card .card-body {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.constructo-card .referencia {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 0.8rem;
+}
+
+.constructo-card .operacional {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--accent);
+}
+
+/* =====================================================
+   GLOSARIO
+   ===================================================== */
+
+.glosario-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.glosario-header {
+    background: var(--dark);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.glosario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.termino-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--secondary);
+}
+
+.termino-card.aetl {
+    border-left-color: var(--accent);
+}
+
+.termino-card dt {
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.termino-card dd {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+/* =====================================================
+   EVALUACIÓN
+   ===================================================== */
+
+.evaluacion-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.evaluacion-header {
+    background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.criterio-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.criterio-item:last-child {
+    border-bottom: none;
+}
+
+.criterio-item .fase-badge {
+    background: var(--secondary);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 1rem;
+    min-width: 100px;
+    text-align: center;
+}
+
+.criterio-item .puntos {
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    margin-left: auto;
+}
+
+/* =====================================================
+   REFERENCIAS
+   ===================================================== */
+
+.referencias-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.referencias-section h3 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+}
+
+.referencia-item {
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed #e0e0e0;
+    font-size: 0.95rem;
+}
+
+.referencia-item:last-child {
+    border-bottom: none;
+}
+
+/* =====================================================
+   CÓDIGO
+   ===================================================== */
+
+.codigo-bloque {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Consolas', 'Monaco', monospace;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+code {
+    background: #f1f3f4;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.9em;
+    color: #d63384;
+}
+
+pre code {
+    display: block;
+    padding: 1rem;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    overflow-x: auto;
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.footer {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.footer .modelo-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* =====================================================
+   TABLAS
+   ===================================================== */
+
+.tabla-comparativa {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.tabla-comparativa th {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+}
+
+.tabla-comparativa td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tabla-comparativa tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-comparativa tr:hover {
+    background: #f8f9fa;
+}
+
+/* =====================================================
+   ESTILOS ADICIONALES
+   ===================================================== */
+
+.prerrequisitos-box {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border: 2px solid var(--accent);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.prerrequisitos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.prerrequisitos-box ul {
+    margin-left: 1.5rem;
+}
+
+.prerrequisitos-box li {
+    margin-bottom: 0.5rem;
+}
+
+.diagnostico-box {
+    background: rgba(0,91,150,0.08);
+    border-left: 3px solid var(--secondary);
+    padding: 1rem 1.2rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-top: 1rem;
+}
+
+.diagnostico-box p {
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
+}
+
+.diagnostico-box .ref-link {
+    font-size: 0.85rem;
+    color: var(--secondary);
+    font-style: italic;
+}
+
+.ruta-minima-box {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ruta-minima-box h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ruta-minima-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.ruta-minima-box li {
+    padding: 0.4rem 0;
+    padding-left: 1.8rem;
+    position: relative;
+    font-size: 0.95rem;
+}
+
+.ruta-minima-box li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--success);
+    font-weight: bold;
+}
+
+.conexion-semana-anterior {
+    background: linear-gradient(135deg, #e8f4fd 0%, #bbdefb 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.conexion-semana-anterior h4 {
+    color: var(--primary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reto-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+}
+
+.reto-badge.esencial {
+    background: var(--success);
+    color: white;
+}
+
+.reto-badge.avanzado {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+    color: white;
+}
+
+.invariantes-box {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+    border: 2px dashed #c2185b;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.invariantes-box h4 {
+    color: #880e4f;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.orientacion-semanal {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.orientacion-semanal h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+}
+
+.orientacion-semanal ul {
+    margin-left: 1.5rem;
+}
+
+.orientacion-semanal li {
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKLIST DE AUTOEVALUACIÓN
+   ===================================================== */
+
+.checklist-box {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checklist-box h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checklist-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.8rem;
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 0.6rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    align-items: flex-start;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-top: 0.2rem;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checklist-item .check-text {
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+.checklist-item .check-diagnostico {
+    font-size: 0.85rem;
+    color: var(--danger);
+    margin-top: 0.3rem;
+    font-style: italic;
+}
+
+.starter-code-box {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px solid var(--secondary);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.starter-code-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.starter-code-box .empathy-msg {
+    background: rgba(0,91,150,0.1);
+    border-left: 3px solid var(--secondary);
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    font-style: italic;
+    font-size: 0.95rem;
+}
+
+/* =====================================================
+   ANIMACIONES
+   ===================================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .header-institucional h1 {
+        font-size: 1.4rem;
+    }
+    
+    .container {
+        padding: 1rem;
+    }
+    
+    .fase-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .progress-step .step-label {
+        display: none;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .criterio-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .criterio-item .puntos {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+}
+
+/* =====================================================
+   IMPRESIÓN
+   ===================================================== */
+
+@media print {
+    .progress-container,
+    .nav-container {
+        display: none;
+    }
+
+    body {
+        background: white;
+    }
+
+    .reto-ia {
+        break-inside: avoid;
+    }
+}
+
+/* =====================================================
+   UTILIDADES
+   ===================================================== */
+
+.text-center { text-align: center; }
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--gray); }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Header Institucional -->
+    <header class="header-institucional">
+        <div class="logo-container">
+            <div class="escudo">UAN</div>
+            <div>
+                <h1>Estructura de Datos Básica</h1>
+                <p class="subtitulo">Licenciatura en Sistemas Computacionales</p>
+            </div>
+            <div class="escudo">LSC</div>
+        </div>
+        <span class="badge-semana">📅 Semana 6: Colas y Colas de Prioridad</span>
+    </header>
+
+    <!-- Barra de Progreso AETL -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <a href="#comprende" class="progress-step active">
+                <div class="step-icon">📖</div>
+                <span class="step-label">Comprende</span>
+            </a>
+            <a href="#aplica" class="progress-step">
+                <div class="step-icon">⚡</div>
+                <span class="step-label">Aplica</span>
+            </a>
+            <a href="#reflexiona" class="progress-step">
+                <div class="step-icon">🔍</div>
+                <span class="step-label">Reflexiona</span>
+            </a>
+            <a href="#valida" class="progress-step">
+                <div class="step-icon">✔</div>
+                <span class="step-label">Valida</span>
+            </a>
+            <a href="#profundiza" class="progress-step">
+                <div class="step-icon">🚀</div>
+                <span class="step-label">Profundiza</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="nav-container">
+        <div class="nav-links">
+            <a href="#escenario">🎬 Escenario</a>
+            <a href="#fundamentos">📚 Fundamentos</a>
+            <a href="#comprende">📖 Comprende</a>
+            <a href="#aplica">⚡ Aplica</a>
+            <a href="#reflexiona">🔍 Reflexiona</a>
+            <a href="#valida">✔ Valida</a>
+            <a href="#profundiza">🚀 Profundiza</a>
+            <a href="#evaluacion">📊 Evaluación</a>
+            <a href="#glosario">📖 Glosario</a>
+            <a href="#referencias">📚 Referencias</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- PRERREQUISITOS                                             -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div class="prerrequisitos-box">
+            <h4>⚠️ Para tener éxito esta semana, asegúrate de dominar...</h4>
+            <ul>
+                <li><strong>Principio LIFO y la Pila (Semana 5):</strong> Entender que push/pop operan en el mismo extremo, y por qué eso es útil.</li>
+                <li><strong>Lista enlazada simple (Semana 3):</strong> Insertar al inicio y al final, acceso a <code>cabeza</code> y <code>cola</code>.</li>
+                <li><strong>Referencia nula como centinela:</strong> Detectar cuándo una estructura está vacía comprobando si el puntero es <code>null</code>.</li>
+                <li><strong>Complejidad O(1) vs O(n):</strong> Distinguir operaciones de tiempo constante de operaciones que dependen del tamaño.</li>
+                <li><strong>Casos frontera:</strong> Estructura vacía, un solo elemento, enqueue/dequeue en casos límite.</li>
+            </ul>
+
+            <div class="diagnostico-box">
+                <p><strong>🧠 Antes de continuar, responde mentalmente:</strong></p>
+                <p>1. ¿Cuál es la diferencia entre <em>push</em> en una pila y <em>enqueue</em> en una cola? ¿En qué extremo opera cada uno?<br>
+                <span class="ref-link">→ Si no estás seguro, revisa la sección "Principio LIFO" en el módulo Semana 5 antes de seguir.</span></p>
+                <p>2. Si tienes una lista enlazada con referencias <code>cabeza</code> y <code>cola</code>, ¿dónde insertas y dónde extraes para lograr comportamiento FIFO?<br>
+                <span class="ref-link">→ Si no puedes responderlo, revisa "Inserción en diferentes extremos" en Semana 3.</span></p>
+                <p>3. ¿Por qué insertar al final de una lista enlazada sin referencia <code>cola</code> es O(n) y no O(1)?<br>
+                <span class="ref-link">→ Si la respuesta no es inmediata, repasa la sección de complejidad en Semana 2 o Semana 3.</span></p>
+            </div>
+        </div>
+
+        <!-- Ruta Mínima -->
+        <div class="ruta-minima-box">
+            <h4>⏰ ¿Tiempo muy limitado esta semana?</h4>
+            <p style="margin-bottom: 1rem; font-size: 0.95rem;">Esta es una semana importante: el HITO 1 se entrega aquí. Si tu agenda está muy cargada, asegúrate al menos de:</p>
+            <ul>
+                <li>Leer la sección COMPRENDE completa — especialmente los diagramas de Cola FIFO y Cola Circular.</li>
+                <li>Completar el Reto 2 — Etapa 1 (implementar la Cola básica con lista enlazada).</li>
+                <li>Completar el Reto 2 — Etapa 2 (el Sistema de Triage usa tu Cola para el HITO 1).</li>
+                <li>Ejecutar al menos 3 casos del Checklist de VALIDA antes de entregar.</li>
+            </ul>
+            <p style="margin-top: 0.8rem; font-size: 0.9rem; color: #2e7d32;"><em>El Reto 1 (conceptual) y PROFUNDIZA son opcionales si el tiempo apremia. Lo esencial para el HITO 1 está en el Reto 2.</em></p>
+        </div>
+
+        <!-- Conexión con semana anterior -->
+        <div class="conexion-semana-anterior">
+            <h4>🔗 Conexión con la Semana 5: Pilas — Implementación y Aplicaciones</h4>
+            <p>La semana pasada construiste una <strong>Pila (LIFO)</strong>: el último elemento en entrar es el primero en salir. Esta semana estudiarás la <strong>Cola (FIFO)</strong>, el complemento directo: el primero en entrar es el primero en salir, como una fila real. La diferencia no es trivial — mientras la pila accede a un solo extremo, la cola necesita dos: uno para entrar (enqueue) y otro para salir (dequeue). Esto introduce el desafío de la <strong>cola circular</strong>, que resolverás esta semana. Además, llevarás la idea de "orden de atención" al siguiente nivel con la <strong>Cola de Prioridad</strong>, donde el orden depende de la importancia del elemento, no de cuándo llegó. Tu Pila de la Semana 5 y tu Cola de esta semana juntas forman el <strong>HITO 1</strong> del proyecto integrador.</p>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- ESCENARIO INMERSIVO                                        -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="escenario" class="escenario-inmersivo">
+            <h3>🎬 ESCENARIO: El Sistema de Triage del Hospital General</h3>
+
+            <div class="personaje">
+                <strong>Contexto:</strong> El <em>Hospital General Regional</em> necesita digitalizar su sistema de urgencias. La Dra. Carmen Solís, jefa de informática hospitalaria, busca un equipo de desarrollo para construir el sistema de gestión de pacientes de urgencias.
+            </div>
+
+            <div class="dialogo">
+                "Tenemos dos problemas críticos. Primero: la cola de recepción. Cuando un paciente llega a urgencias, entra a una fila FIFO — el primero que llegó es el primero en ser atendido, como debe ser. Pero el sistema actual en papel se corrompe fácilmente y perdemos el orden. Necesito una cola digital que no pierda datos aunque el buffer se llene."
+            </div>
+
+            <div class="personaje">
+                <strong>La Dra. Solís continúa:</strong>
+            </div>
+
+            <div class="dialogo">
+                "Segundo, y más urgente: el triage. No todos los pacientes pueden esperar igual. Un paciente con paro cardíaco tiene prioridad sobre uno con fiebre leve, aunque el de la fiebre llegó primero. Necesito una cola donde los pacientes se ordenen por nivel de urgencia: P1 (crítico), P2 (urgente), P3 (moderado), P4 (leve). ¿Pueden construir eso?"
+            </div>
+
+            <div class="personaje">
+                <strong>El analista de sistemas, Ing. Ramírez, agrega:</strong>
+            </div>
+
+            <div class="dialogo">
+                "El sistema también necesita el historial de atenciones del turno. Cada vez que un paciente es atendido, se registra en un log. Si hay un error médico, el auditor necesita revertir las últimas N atenciones — lo que suena exactamente a lo que hicieron con la pila la semana pasada. Así que el sistema final combina Cola FIFO para espera, Cola de Prioridad para triage, y Pila para el historial reversible."
+            </div>
+
+            <p style="margin-top: 1rem; opacity: 0.8; font-size: 0.9rem;">🎯 <em>Esta semana implementarás las estructuras de Cola y Cola de Prioridad. La integración completa con la Pila de la Semana 5 es el HITO 1.</em></p>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FUNDAMENTOS TEÓRICOS AETL                                 -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="fundamentos" class="fundamentos-section">
+            <div class="fundamentos-header">
+                <h2>📚 Fundamentos Teóricos AETL — Semana 6</h2>
+                <p style="opacity: 0.9; margin-top: 0.5rem;">Cómo el aprendizaje de Colas activa los cinco constructos del modelo</p>
+            </div>
+            <div style="padding: 1rem;">
+
+                <div class="constructo-card">
+                    <div class="card-header">🏗️ 1. Constructivismo y Socioconstructivismo (Piaget; Vygotsky; Bognár 2024)</div>
+                    <div class="card-body">
+                        <p class="referencia">Piaget (1978); Vygotsky (1978); Bognár (2024)</p>
+                        <p>Aprender colas no es memorizar la definición FIFO: es <em>construir</em> la comprensión a través de la analogía. Una fila de banco, una cola de impresión, el turno del médico — tu mente ya tiene el modelo. La IA actúa como andamiaje cognitivo en la Zona de Desarrollo Próximo: te ayuda a conectar esa intuición cotidiana con la implementación técnica de nodos, punteros <code>frente</code> y <code>final</code>, y el problema del buffer circular.</p>
+                        <div class="operacional"><strong>Constructo operacional:</strong> Antes de pedir código a la IA, explica en tus propias palabras qué debe pasar con los punteros cuando la cola está vacía, tiene un elemento, o está llena. Si puedes explicarlo, puedes verificar si la IA lo implementa correctamente.</div>
+                    </div>
+                </div>
+
+                <div class="constructo-card">
+                    <div class="card-header">🔄 2. Aprendizaje Autorregulado — SRL (Zimmerman 2000; Chiu 2024)</div>
+                    <div class="card-body">
+                        <p class="referencia">Zimmerman (2000); Chiu (2024); Sari et al. (2025)</p>
+                        <p>El ciclo SRL — planificación → ejecución → autorreflexión — aparece con claridad en las colas: antes de programar, planifica qué operaciones necesitas y qué casos frontera existen (¿qué pasa cuando la cola circular está llena?). Ejecuta prueba por prueba. Luego reflexiona: ¿funcionó enqueue cuando el buffer estaba al límite? Las estimaciones de tiempo al inicio de cada fase son el disparador de la planificación.</p>
+                        <div class="operacional"><strong>Constructo operacional:</strong> Formula preguntas progresivas a la IA: primero "¿qué es un buffer circular?", luego "¿cómo se mueve el puntero frente en un arreglo circular?", luego "¿qué pasa si frente == final cuando la cola está llena vs cuando está vacía?"</div>
+                    </div>
+                </div>
+
+                <div class="constructo-card">
+                    <div class="card-header">🧠 3. Teoría de la Carga Cognitiva (Sweller 1988/2020; Mahdi et al. 2025)</div>
+                    <div class="card-body">
+                        <p class="referencia">Sweller (1988, 2020); Mahdi et al. (2025)</p>
+                        <p>La Cola de Prioridad con heap binario es el concepto técnicamente más denso de esta semana. Para no sobrecargar la memoria de trabajo, el módulo separa los conceptos en capas: primero Cola FIFO (ya tienes el modelo mental), luego Cola Circular (variante de implementación), luego Cola de Prioridad (nuevo modelo mental), y el heap como implementación eficiente del concepto. Cada capa usa la anterior como base.</p>
+                        <div class="operacional"><strong>Constructo operacional:</strong> Si sientes que dos conceptos nuevos se mezclan en tu mente, detente y dibuja un diagrama de cada uno por separado antes de continuar. El dibujo externaliza la carga cognitiva.</div>
+                    </div>
+                </div>
+
+                <div class="constructo-card">
+                    <div class="card-header">🤝 4. Agencia Compartida (Bandura 2001; Brod et al. 2023)</div>
+                    <div class="card-body">
+                        <p class="referencia">Bandura (2001); Brod et al. (2023)</p>
+                        <p>Esta semana el riesgo de delegación excesiva a la IA es alto porque la Cola de Prioridad con heap es un concepto relativamente "buscable" — hay mucho código disponible. El principio de Agencia Compartida exige que tú tomes las decisiones de diseño: ¿usas un heap mínimo o máximo? ¿Cómo representas los niveles de prioridad del triage? La IA puede generar código, pero solo tú sabes los requisitos del escenario hospitalario.</p>
+                        <div class="operacional"><strong>Constructo operacional (Arquitecto):</strong> Antes de ejecutar cualquier código de la IA, escribe en comentarios cuál es tu decisión de diseño y por qué. Si no puedes justificarlo, no lo ejecutes todavía.</div>
+                    </div>
+                </div>
+
+                <div class="constructo-card">
+                    <div class="card-header">🎓 5. Taxonomía de Bloom para la Era Digital (Anderson et al. 2001)</div>
+                    <div class="card-body">
+                        <p class="referencia">Anderson et al. (2001)</p>
+                        <p>Esta semana opera en todos los niveles: <strong>Recordar</strong> (FIFO, enqueue, dequeue), <strong>Comprender</strong> (por qué la cola circular resuelve el problema del "desperdicio" de espacio), <strong>Aplicar</strong> (implementar la cola y el triage), <strong>Analizar</strong> (trade-offs entre implementación con arreglo vs lista enlazada), <strong>Evaluar</strong> (auditar el código de la IA, detectar errores en casos frontera) y <strong>Crear</strong> (el Sistema de Triage como producto original).</p>
+                        <div class="operacional"><strong>Constructo operacional:</strong> "Crear = co-autoría con IA" significa que el Sistema de Triage debe reflejar TUS decisiones sobre estructura de datos, niveles de prioridad y manejo de errores — la IA es el asistente, no el arquitecto.</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 1: COMPRENDE                                          -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="comprende" class="fase-section">
+            <div class="fase-header comprende">
+                <div class="fase-icon">📖</div>
+                <div class="fase-info">
+                    <h2>Fase 1: COMPRENDE</h2>
+                    <p class="bloom-tag">Bloom: Recordar / Comprender — Identificar y explicar con precisión los conceptos</p>
+                </div>
+            </div>
+            <div class="fase-content">
+
+                <p style="font-size: 0.95rem; color: var(--gray); margin-bottom: 1.5rem;">⏱ Tiempo estimado: 30–45 min</p>
+
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de aprendizaje</h4>
+                    <ul>
+                        <li><strong>Identificar</strong> el principio FIFO y diferenciarlo del LIFO de la pila.</li>
+                        <li><strong>Explicar</strong> por qué la cola requiere dos referencias (frente y final) para operar en O(1).</li>
+                        <li><strong>Reconocer</strong> el problema del "desperdicio de espacio" en la cola con arreglo y cómo la implementación circular lo resuelve.</li>
+                        <li><strong>Identificar</strong> cuándo una cola de prioridad es necesaria vs una cola FIFO simple.</li>
+                        <li><strong>Describir</strong> la estructura de un heap binario mínimo/máximo sin necesidad de implementarlo (eso viene en APLICA).</li>
+                    </ul>
+                </div>
+
+                <h3>1.1 El Principio FIFO — "El primero en llegar, primero en ser atendido"</h3>
+
+                <p>Una <strong>Cola (Queue)</strong> es una estructura de datos lineal que sigue el principio <strong>FIFO: First In, First Out</strong>. El primer elemento que entró es el primero en salir. Piensa en la fila del banco, la impresora de la oficina, o la sala de espera del médico: nadie se "cuela" — el orden de llegada define el orden de atención.</p>
+
+                <p style="margin-top: 1rem;">Las dos operaciones fundamentales son:</p>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li><strong>Enqueue</strong> (encolar): agregar un elemento al <em>final</em> de la cola.</li>
+                    <li><strong>Dequeue</strong> (desencolar): extraer el elemento del <em>frente</em> de la cola.</li>
+                </ul>
+
+                <div class="ascii-diagram">
+COLA (Queue) — Principio FIFO
+
+  ENQUEUE entra aquí               DEQUEUE sale por aquí
+       │                                    │
+       ▼                                    ▼
+  ┌─────────────────────────────────────────────┐
+  │   [D]    [C]    [B]    [A]                  │
+  │  nuevo  ───►  ───►  ───►  frente ──► SALIDA │
+  └─────────────────────────────────────────────┘
+     final                         frente
+
+  Estado: frente → [A] → [B] → [C] → [D] ← final
+
+  Enqueue(E):  frente → [A] → [B] → [C] → [D] → [E] ← final
+  Dequeue():   retorna A
+               frente → [B] → [C] → [D] → [E] ← final
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> Este diagrama muestra la cola como un tubo: los elementos entran por un extremo (final) y salen por el otro (frente). La referencia <code>frente</code> apunta al próximo elemento a salir; la referencia <code>final</code> apunta al último elemento que llegó. Ambas referencias deben mantenerse actualizadas en todo momento. El diagrama simplifica la representación de nodos enlazados para ilustrar el flujo de datos.
+                </div>
+
+                <h3>1.2 Implementación con Lista Enlazada — O(1) en ambas operaciones</h3>
+
+                <p>La forma más limpia de implementar una Cola es con una lista enlazada simple que mantiene dos referencias: <code>frente</code> y <code>final</code>. Así, tanto <strong>enqueue</strong> (insertar al final) como <strong>dequeue</strong> (eliminar del frente) operan en <strong>O(1)</strong> sin recorrer la lista.</p>
+
+                <div class="codigo-bloque">// ══════════════════════════════════════════════════════
+// PSEUDOCÓDIGO: Cola con Lista Enlazada — Comentado línea a línea
+// ══════════════════════════════════════════════════════
+
+CLASE Nodo:
+    dato     // el valor almacenado
+    siguiente ← null  // puntero al siguiente nodo
+
+CLASE Cola:
+    frente ← null  // apunta al próximo elemento a salir (el más antiguo)
+    final  ← null  // apunta al último elemento que entró (el más nuevo)
+    tamaño ← 0     // opcional pero útil para saber si está llena/vacía
+
+FUNCIÓN enqueue(valor):
+    // PASO 1: Crear el nuevo nodo
+    nuevoNodo ← Nodo(valor)
+    // PASO 2: Caso especial — cola vacía
+    // Si no hay elementos, frente y final apuntan al mismo nodo
+    SI frente == null:
+        frente ← nuevoNodo
+        final  ← nuevoNodo
+    SINO:
+        // PASO 3: Cola no vacía — conectar al final
+        // El nodo que era el último ahora apunta al nuevo
+        final.siguiente ← nuevoNodo
+        // PASO 4: Mover la referencia final al nuevo último nodo
+        final ← nuevoNodo
+    tamaño ← tamaño + 1
+    // Complejidad: O(1) — no recorremos nada
+
+FUNCIÓN dequeue():
+    // PASO 1: Verificar que no esté vacía
+    SI frente == null:
+        ERROR "Cola vacía — no hay qué desencolar"
+    // PASO 2: Guardar el dato del frente antes de perderlo
+    valorSaliente ← frente.dato
+    // PASO 3: Mover frente al siguiente nodo
+    frente ← frente.siguiente
+    // PASO 4: Caso especial — la cola quedó vacía
+    // Si frente ahora es null, final también debe serlo
+    SI frente == null:
+        final ← null
+    tamaño ← tamaño - 1
+    RETORNAR valorSaliente
+    // Complejidad: O(1) — solo movemos un puntero
+
+FUNCIÓN verFrente():
+    // Solo consultar sin extraer
+    SI frente == null:
+        ERROR "Cola vacía"
+    RETORNAR frente.dato
+    // Complejidad: O(1)
+
+FUNCIÓN estaVacia():
+    RETORNAR frente == null
+                </div>
+
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que no deben romperse — Cola con Lista Enlazada</h4>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Si <code>estaVacia()</code> es verdadero, entonces <strong>ambos</strong> punteros, <code>frente</code> y <code>final</code>, deben ser <code>null</code>. Si solo uno es <code>null</code>, hay un bug.</li>
+                        <li>Si la cola tiene exactamente un elemento, <code>frente</code> y <code>final</code> deben apuntar al <strong>mismo nodo</strong>.</li>
+                        <li><code>final.siguiente</code> debe ser siempre <code>null</code>. Si no lo es, la lista tiene un ciclo o un error de enlace.</li>
+                        <li>El <code>tamaño</code> nunca puede ser negativo. Si decrece por debajo de 0, se llamó <code>dequeue()</code> sin verificar la cola vacía.</li>
+                    </ul>
+                </div>
+
+                <h3>1.3 El Problema del Arreglo y la Cola Circular</h3>
+
+                <p>Si implementas una cola con un arreglo fijo, surge un problema clásico: aunque hagas dequeue y "liberes" el espacio del frente, el índice <code>frente</code> avanza hacia la derecha y ese espacio queda inutilizable. Eventualmente la cola reporta "llena" aunque haya espacio libre al inicio. La solución es la <strong>Cola Circular</strong>.</p>
+
+                <div class="ascii-diagram">
+PROBLEMA DEL ARREGLO LINEAL (sin circular):
+
+  Índices:    [0]   [1]   [2]   [3]   [4]
+              [ ]   [ ]   [C]   [D]   [E]
+                           ↑               ↑
+                         frente          final
+  
+  ¿Podemos hacer enqueue(F)?
+  → final está en [4] = último índice → "Cola llena"
+  → Pero [0] y [1] están libres (dequeue los limpió)
+  → ¡Espacio desperdiciado! Esto es el problema.
+
+SOLUCIÓN: COLA CIRCULAR (con arreglo de capacidad 5)
+
+  Los índices se envuelven: después del [4] viene el [0]
+  
+  Fórmula: nuevoIndice = (indiceActual + 1) % capacidad
+
+  Estado inicial:
+  Índices:    [0]   [1]   [2]   [3]   [4]
+              [F]   [ ]   [C]   [D]   [E]
+               ↑           ↑
+             final        frente
+
+  Después de enqueue(F): final avanzó de [4] a [0] usando módulo
+  → (4 + 1) % 5 = 0    ✓ El espacio libre se reutiliza
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> El diagrama muestra cómo el arreglo lineal desperdicia espacio al desencolar (los primeros índices quedan libres pero inaccesibles). La cola circular resuelve esto usando aritmética modular: cuando el índice llega al final del arreglo, "da la vuelta" al inicio. Esto requiere manejar con cuidado la condición de "cola llena" vs "cola vacía", ya que en ambos casos <code>frente == (final + 1) % capacidad</code> puede confundirse.
+                </div>
+
+                <h3>1.4 Cola de Prioridad — Cuando el orden de llegada no es suficiente</h3>
+
+                <p>Una <strong>Cola de Prioridad</strong> no respeta el orden de llegada: el elemento con mayor prioridad (o menor, según el criterio) siempre sale primero, independientemente de cuándo llegó. Es como la sala de urgencias: el paciente con paro cardíaco pasa antes que el de la fractura, aunque llegó después.</p>
+
+                <p style="margin-top: 0.8rem;">La implementación más eficiente de una Cola de Prioridad usa un <strong>Heap Binario</strong>:</p>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li><strong>Min-Heap:</strong> el elemento de <em>menor</em> valor (mayor urgencia si los números son menores) está siempre en la raíz.</li>
+                    <li><strong>Max-Heap:</strong> el elemento de <em>mayor</em> valor está en la raíz.</li>
+                </ul>
+
+                <div class="ascii-diagram">
+MIN-HEAP BINARIO — Triage Hospitalario (prioridad 1 = crítico)
+
+          [P1: García]
+           /          \
+    [P2: López]    [P1: Martínez]
+      /     \          /
+[P3: Cruz] [P2: Ríos] [P4: Díaz]
+
+  Propiedad del heap: el padre siempre tiene prioridad ≤ que sus hijos
+  (en un min-heap). El nodo raíz siempre es el de mayor urgencia.
+
+  Representación en arreglo (más común):
+  Índice:   [0]      [1]      [2]       [3]      [4]      [5]
+  Dato:  [P1:Grc] [P2:Lpz] [P1:Mrt] [P3:Cruz] [P2:Ríos] [P4:Díaz]
+
+  Para el nodo en índice i:
+  → Hijo izquierdo: índice 2i + 1
+  → Hijo derecho:   índice 2i + 2
+  → Padre:          índice (i - 1) / 2
+                </div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> El heap binario se visualiza como un árbol completo donde cada nodo padre tiene prioridad menor o igual a sus hijos (min-heap). Lo notable es que se puede representar eficientemente en un arreglo sin necesidad de punteros — la posición de los nodos está determinada matemáticamente por sus índices. Las operaciones clave son <em>sift-up</em> (después de insertar, el nuevo elemento "sube" hasta su posición correcta) y <em>sift-down</em> (después de extraer la raíz, el último elemento "baja" a su posición). Ambas son O(log n).
+                </div>
+
+                <div class="context-box info">
+                    <div class="box-title">💡 Profundidad del heap en COMPRENDE</div>
+                    <p>En esta fase solo necesitas <strong>identificar</strong> la estructura del heap y entender por qué es eficiente (O(log n) para insertar y extraer). La implementación completa de sift-up y sift-down la construirás paso a paso en APLICA con apoyo de la IA. No te preocupes si aún no entiendes todos los detalles — eso viene después.</p>
+                </div>
+
+                <h3>1.5 Tabla Comparativa de Complejidades</h3>
+
+                <table class="tabla-comparativa">
+                    <thead>
+                        <tr>
+                            <th>Operación</th>
+                            <th>Cola (lista enlazada)</th>
+                            <th>Cola Circular (arreglo)</th>
+                            <th>Cola de Prioridad (heap)</th>
+                            <th>Pila (Semana 5)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Insertar</strong> (enqueue/push)</td>
+                            <td>O(1)</td>
+                            <td>O(1)</td>
+                            <td>O(log n)</td>
+                            <td>O(1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Extraer</strong> (dequeue/pop)</td>
+                            <td>O(1)</td>
+                            <td>O(1)</td>
+                            <td>O(log n)</td>
+                            <td>O(1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ver primero</strong> (peek/frente)</td>
+                            <td>O(1)</td>
+                            <td>O(1)</td>
+                            <td>O(1) — solo la raíz</td>
+                            <td>O(1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Búsqueda arbitraria</strong></td>
+                            <td>O(n)</td>
+                            <td>O(n)</td>
+                            <td>O(n)</td>
+                            <td>O(n)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Uso de memoria</strong></td>
+                            <td>O(n) + punteros</td>
+                            <td>O(capacidad fija)</td>
+                            <td>O(n)</td>
+                            <td>O(n) + punteros</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Reto 1 - COMPRENDE -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">1</span>
+                        <h4>Exploración Conceptual: Cola FIFO vs Cola de Prioridad <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <p style="margin-bottom: 0.8rem;">⏱ Tiempo estimado: 15–20 min</p>
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> Tutor socrático que guía la comprensión mediante preguntas y analogías cotidianas, sin dar implementaciones de código.
+                        </div>
+
+                        <div class="prompt-box">Explica de forma simple, usando analogías cotidianas (como una fila del banco o una sala de urgencias) antes de entrar en detalles técnicos. Usa lenguaje de estudiante de segundo-tercer semestre.
+
+Actúa como un tutor que me ayuda a entender mediante preguntas, sin darme código.
+
+Necesito responder estas tres preguntas con mis propias palabras:
+
+1. Si tengo una cola con lista enlazada y quiero enqueue(X), ¿qué pasa exactamente con los punteros frente y final? Dibuja el estado antes y después con 3 nodos ya en la cola.
+
+2. ¿Por qué en una cola circular necesito diferenciar entre "cola vacía" y "cola llena" si en ambos casos frente podría ser igual a (final + 1) % capacidad? ¿Cómo se resuelve ese problema?
+
+3. En el escenario del hospital, ¿por qué una cola FIFO simple no es suficiente para el triage? Dame un ejemplo concreto donde la cola FIFO falle y la cola de prioridad lo resuelva.
+
+Para cada pregunta, primero hazme una pregunta guía, luego espera mi respuesta, y solo entonces confirma o corrige.
+
+REGLA ESTRICTA PARA LA IA: Bajo ninguna circunstancia me des la respuesta completa de golpe. Si lo haces, arruinarás mi proceso de aprendizaje. Dame solo pistas y preguntas guía paso a paso.</div>
+
+                        <div class="entregable-box">
+                            Bloque de texto al inicio del archivo de código principal (como comentarios de encabezado) con tus respuestas propias a las tres preguntas. Prefija cada respuesta con <code># COMPRENDE-1:</code>, <code># COMPRENDE-2:</code>, <code># COMPRENDE-3:</code>. No se entrega código en este reto — solo tu explicación escrita con tus propias palabras antes de comenzar a programar.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo — COMPRENDE</h4>
+                    <div class="pregunta">¿Puedes explicar qué hace el Paso 4 de <code>dequeue()</code> en el pseudocódigo (ajustar <code>final = null</code> cuando la cola queda vacía) sin leer el código? Si no puedes, ¿por qué ese paso es crítico para el invariante de la estructura?</div>
+                    <div class="pregunta">¿Buscaste en la IA la explicación de la cola circular antes de leer el pseudocódigo de esta sección? Si sí, ¿coincidió con lo que encontraste aquí? Si no coincidió, ¿cuál fue la diferencia y cuál es correcta?</div>
+                    <div class="pregunta">¿Podrías implementar <code>enqueue()</code> ahora mismo en papel sin mirar el pseudocódigo? Si no, ¿cuál es la línea que no entiendes del todo?</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 2: APLICA                                             -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="aplica" class="fase-section">
+            <div class="fase-header aplica">
+                <div class="fase-icon">⚡</div>
+                <div class="fase-info">
+                    <h2>Fase 2: APLICA</h2>
+                    <p class="bloom-tag">Bloom: Aplicar / Analizar — Construir con IA como co-constructor</p>
+                </div>
+            </div>
+            <div class="fase-content">
+
+                <p style="font-size: 0.95rem; color: var(--gray); margin-bottom: 1.5rem;">⏱ Tiempo estimado: 50–70 min</p>
+
+                <!-- Starter Code -->
+                <div class="starter-code-box">
+                    <h4>🧱 Código Base de Referencia (Starter Code)</h4>
+                    <div class="empathy-msg">
+                        Si tu implementación de Pila de la Semana 5 funcionó correctamente y te sientes cómodo extendiéndola, úsala como referencia de estilo. Si tuviste problemas o quieres empezar con una base limpia, aquí tienes el esqueleto mínimo bien definido para la Cola y la Cola de Prioridad. No es "hacer trampa": es usar una base sólida para enfocarte en aprender Colas, no en depurar problemas de la semana anterior.
+                    </div>
+
+                    <div class="codigo-bloque">// ══════════════════════════════════════════════════════
+// STARTER CODE — Esqueleto de Cola y Cola de Prioridad
+// Completa los métodos: el esqueleto define la interfaz
+// ══════════════════════════════════════════════════════
+
+// --- NODO BASE (reutilizable para la Cola con lista enlazada) ---
+CLASE Nodo:
+    dato
+    siguiente ← null
+
+// --- COLA SIMPLE (FIFO) ---
+CLASE Cola:
+    frente ← null
+    final  ← null
+    tamaño ← 0
+
+    FUNCIÓN enqueue(valor):
+        // TODO: Crear nodo, enlazar al final, actualizar punteros
+        // Caso especial: cola vacía (frente y final apuntan al mismo nodo)
+
+    FUNCIÓN dequeue():
+        // TODO: Verificar vacía, guardar dato del frente, avanzar frente
+        // Caso especial: cola quedó vacía después del dequeue
+
+    FUNCIÓN verFrente():
+        // TODO: Retornar frente.dato sin extraer
+
+    FUNCIÓN estaVacia():
+        // TODO: Retornar si frente == null
+
+    FUNCIÓN obtenerTamaño():
+        RETORNAR tamaño
+
+// --- NODO CON PRIORIDAD ---
+CLASE NodoPrioridad:
+    dato
+    prioridad   // número entero — menor número = mayor urgencia (P1 > P2 > P3 > P4)
+
+// --- COLA DE PRIORIDAD (Implementación basada en Lista Ordenada) ---
+// Versión introductoria: inserción en posición correcta por prioridad
+// NOTA: esto NO es un heap — el heap con arreglo es la extensión avanzada en PROFUNDIZA
+CLASE ColaPrioridad:
+    cabeza ← null   // apunta al nodo de mayor prioridad (menor número)
+    tamaño ← 0
+
+    FUNCIÓN enqueue(valor, prioridad):
+        // TODO: Crear NodoPrioridad, insertar en posición ordenada por prioridad
+        // Si prioridad < cabeza.prioridad, insertar al inicio
+        // Si no, recorrer hasta encontrar dónde insertar
+
+    FUNCIÓN dequeue():
+        // TODO: Extraer el nodo de la cabeza (siempre el de mayor prioridad)
+
+    FUNCIÓN verFrente():
+        // TODO: Retornar cabeza.dato sin extraer
+
+    FUNCIÓN estaVacia():
+        RETORNAR cabeza == null</div>
+
+                    <div class="context-box success" style="margin-top: 1.5rem;">
+                        <div class="box-title">🔗 Esqueleto de Integración — HITO 1 (<code>SistemaTriage</code>)</div>
+                        <p>Para aliviar la carga cognitiva del HITO 1, aquí tienes el cascarón de la clase integradora. Tu única tarea es <strong>conectar</strong> las estructuras que ya implementaste — no rediseñar la arquitectura desde cero mientras peleas con punteros nulos:</p>
+                        <div class="codigo-bloque">// ══════════════════════════════════════════════════════
+// ESQUELETO INTEGRADOR — SistemaTriage (HITO 1)
+// Conecta aquí tus clases Cola y ColaPrioridad ya implementadas
+// ══════════════════════════════════════════════════════
+
+CLASE SistemaTriage:
+    recepcion  ← Cola()           // Cola FIFO — orden de llegada
+    triage     ← ColaPrioridad()  // Cola de Prioridad — por urgencia
+    historial  ← Pila()           // Pila Semana 5 — log reversible
+
+    FUNCIÓN registrar_llegada(nombre, prioridad):
+        // TODO: enqueue en recepcion
+
+    FUNCIÓN asignar_triage():
+        // TODO: dequeue de recepcion → enqueue en triage con prioridad
+        // Si recepcion está vacía → error claro
+
+    FUNCIÓN siguiente_a_atender():
+        // TODO: dequeue de triage
+        // TODO: push del paciente a historial (para log reversible)
+        // Retornar el nombre del paciente atendido
+
+    FUNCIÓN revertir_ultima_atencion():
+        // TODO: pop de historial (usa tu Pila de Semana 5)</div>
+                        <p style="margin-top: 0.8rem; font-size: 0.9rem; color: #2e7d32;"><em>Implementa cada función por separado y pruébala antes de pasar a la siguiente. No necesitas el sistema completo para probar <code>registrar_llegada()</code>.</em></p>
+                    </div>
+
+                    <div class="context-box info">
+                        <div class="box-title">💡 Lenguajes de implementación sugeridos</div>
+                        <p>Elige según lo que quieres aprender más allá del algoritmo:</p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li><strong>Python:</strong> Ideal para enfocarte en la lógica pura sin distracciones de sintaxis. <code>None</code> como null, clases simples, ideal para prototipar rápido.</li>
+                            <li><strong>Java / C#:</strong> Te obliga a pensar en tipos genéricos y null safety explícito. Mejor para entender colas en contextos empresariales.</li>
+                            <li><strong>C / C++:</strong> Gestión manual de memoria — verás exactamente qué pasa cuando liberas un nodo con <code>free()</code> o <code>delete</code>.</li>
+                            <li><strong>JavaScript:</strong> Los objetos como nodos son muy naturales. Útil si quieres conectar la cola con una interfaz de usuario.</li>
+                        </ul>
+                        <p style="margin-top: 0.8rem;"><strong>El objetivo no es copiar código sino entender las decisiones que el lenguaje te obliga a tomar.</strong></p>
+                    </div>
+                </div>
+
+                <!-- Reto 2 — UNIFICADO -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">2</span>
+                        <h4>Proyecto: Sistema de Triage Hospitalario con Cola propia <span class="reto-badge esencial">Esencial — HITO 1</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <p style="margin-bottom: 0.8rem;">⏱ Tiempo estimado: 45–60 min</p>
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> Co-constructor que guía el desarrollo paso a paso, valida decisiones de diseño y detecta errores sin dar soluciones completas de una sola vez.
+                        </div>
+
+                        <div class="prompt-box">Explica de forma simple, usando analogías cotidianas (como una fila del banco, la impresora de la oficina o la sala de urgencias) antes de entrar en detalles técnicos. Usa lenguaje de estudiante de segundo-tercer semestre.
+
+Actúa como un instructor que me guía a construir un Sistema de Triage Hospitalario cuyas estructuras internas sean una Cola FIFO y una Cola de Prioridad que yo mismo construya en [MI LENGUAJE: Python / Java / C++ / JavaScript].
+
+Vamos a trabajar en dos etapas dentro del MISMO proyecto:
+
+══════════════════════════════════════════════
+ETAPA 1: Construir las estructuras internas
+══════════════════════════════════════════════
+
+1.1 Cola FIFO con lista enlazada:
+   - Implementa el método enqueue(paciente) que agrega al final
+   - Implementa dequeue() que extrae del frente
+   - Implementa verFrente() y estaVacia()
+   → Después de cada método, muéstrame un caso de prueba simple y espera que yo lo ejecute
+
+1.2 Cola de Prioridad (inserción ordenada):
+   - Implementa enqueue(paciente, prioridad) donde prioridad es 1-4 (1=crítico)
+   - El enqueue debe insertar en la posición correcta según prioridad
+   - Implementa dequeue() que extrae siempre el de mayor prioridad (menor número)
+   → Muéstrame cómo queda la lista después de insertar: P3-Ana, P1-José, P2-María
+
+══════════════════════════════════════════════
+ETAPA 2: Construir el Sistema de Triage
+══════════════════════════════════════════════
+
+2.1 El sistema debe tener:
+   - Una Cola FIFO de "recepción" donde llegan todos los pacientes en orden de llegada
+   - Una Cola de Prioridad de "triage" donde se reubican según su nivel de urgencia
+   - Una función registrar_llegada(nombre, prioridad) que pone el paciente en recepción
+   - Una función asignar_triage() que mueve al paciente del frente de recepción a triage según su prioridad
+   - Una función siguiente_a_atender() que extrae al paciente más urgente de triage
+
+2.2 Simula este flujo de 5 pacientes:
+   → Llegan: Ana (P3), José (P1), María (P2), Carlos (P4), Luisa (P1)
+   → Cada llegada va a recepción (orden FIFO)
+   → Asigna triage a todos
+   → Muestra el orden en que serían atendidos
+
+NO me des toda la solución directa. Quiero escribirlo yo y que tú valides cada método antes de continuar al siguiente.
+
+REGLA ESTRICTA PARA LA IA: Bajo ninguna circunstancia me des el código completo de golpe. Si lo haces, arruinarás mi proceso de aprendizaje. Dame solo pistas y validaciones paso a paso.</div>
+
+                        <div class="entregable-box">
+                            <strong>Entregable único del proyecto:</strong> Un solo archivo de código en tu lenguaje elegido con todo integrado. La evidencia va <strong>dentro del mismo archivo como comentarios</strong>:
+                            <ul style="margin-top: 0.6rem; margin-left: 1.2rem;">
+                                <li>Clases <code>Cola</code> y <code>ColaPrioridad</code> completas con pruebas unitarias como bloques de código comentados al final del archivo.</li>
+                                <li>Clase <code>SistemaTriage</code> funcional con la simulación de 5 pacientes ejecutándose correctamente.</li>
+                                <li>Al menos 3 comentarios de decisión de diseño propios con el prefijo <code># DECISIÓN:</code> (o <code>// DECISIÓN:</code>), por ejemplo: <code># DECISIÓN: Usé inserción ordenada en lugar de heap porque con &lt;100 pacientes simultáneos la diferencia es despreciable y el código es más fácil de depurar.</code></li>
+                                <li>El checklist de VALIDA resuelto como comentarios al final del archivo con el prefijo <code># VALIDA:</code>, indicando qué caso pasó o falló.</li>
+                            </ul>
+                            <p style="margin-top: 0.6rem; font-size: 0.9rem;"><em>No se requiere ningún documento separado. Todo queda en el código.</em></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reto 3 — AVANZADO -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">3</span>
+                        <h4>Cola Circular con Arreglo — Implementación con Módulo <span class="reto-badge avanzado">Avanzado — Opcional</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <p style="margin-bottom: 0.8rem;">⏱ Tiempo estimado: 25–35 min (opcional)</p>
+                        <div class="context-box warning">
+                            <div class="box-title">⚠️ Este reto es opcional</div>
+                            <p>Si completaste el Reto 2 y tienes tiempo, este reto profundiza en la implementación de cola con arreglo circular — útil para entender buffers en sistemas embebidos y colas de red. No es obligatorio para el HITO 1, pero aparecerá como concepto en semanas posteriores.</p>
+                        </div>
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> Instructor que explica la aritmética modular como mecanismo de "dar la vuelta" en el arreglo.
+                        </div>
+
+                        <div class="prompt-box">Explica de forma simple, usando analogías cotidianas (como un reloj que da vueltas, o una pista circular de carreras) antes de entrar en detalles técnicos. Usa lenguaje de estudiante de segundo-tercer semestre.
+
+Actúa como instructor que me guía a implementar una Cola Circular usando un arreglo de tamaño fijo en [MI LENGUAJE].
+
+El reto específico es:
+
+1. Implementar enqueue() y dequeue() usando aritmética modular:
+   indice_nuevo = (indice_actual + 1) % capacidad
+
+2. Resolver el problema de distinguir "cola vacía" vs "cola llena":
+   → Muéstrame UNA sola estrategia (la que uses tú en tus ejemplos).
+   → Explícame por qué este problema existe con diagramas ASCII en texto.
+
+3. Probar con capacidad = 5:
+   → Enqueue: A, B, C, D, E (llena)
+   → Dequeue: A, B
+   → Enqueue: F, G (debe reutilizar los índices 0 y 1)
+   → Verificar que el estado final es correcto
+
+NO avances al paso siguiente sin que yo ejecute el código y te confirme el resultado.
+
+REGLA ESTRICTA PARA LA IA: Bajo ninguna circunstancia me des el código completo de golpe. Si lo haces, arruinarás mi proceso de aprendizaje. Dame solo pistas y validaciones paso a paso.</div>
+
+                        <div class="entregable-box">
+                            Implementación de <code>ColaCircular</code> en un mismo archivo de código. La estrategia elegida para distinguir vacía vs llena debe quedar documentada con el prefijo <code># ESTRATEGIA:</code> explicando por qué elegiste esa solución. Incluye la simulación completa del caso de prueba (A–E, dequeue A-B, enqueue F-G) ejecutándose correctamente y con el estado final comentado.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invariantes-box">
+                    <h4>🔒 Invariantes que no deben romperse — Cola de Prioridad</h4>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>El elemento en la cabeza (o raíz en heap) <strong>siempre</strong> debe tener la mayor prioridad (menor número en un sistema min-priority).</li>
+                        <li>Después de cada <code>enqueue()</code>, la propiedad de orden debe verificarse: el nuevo elemento debe estar en la posición correcta respecto a sus vecinos.</li>
+                        <li>Después de cada <code>dequeue()</code>, la propiedad de orden debe restaurarse antes de retornar.</li>
+                        <li>Dos elementos con la misma prioridad deben respetarse entre sí en orden FIFO (el que llegó primero sale primero dentro del mismo nivel).</li>
+                    </ul>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo — APLICA</h4>
+                    <div class="pregunta">¿Cuánto código de la Etapa 1 generaste tú vs cuánto generó la IA sin modificación? Si la IA generó más del 70%, ¿puedes explicar cada línea como si tuvieras que defenderla ante el instructor?</div>
+                    <div class="pregunta">¿Tu Cola de Prioridad mantiene el orden correcto cuando dos pacientes tienen la misma prioridad? Prueba: enqueue(Ana, P2) luego enqueue(María, P2). ¿Quién sale primero? ¿Debería ser Ana? ¿Lo es?</div>
+                    <div class="pregunta">¿Hay alguna decisión de diseño en tu implementación que la IA tomó y tú no cuestionaste? Identifica una y explica si cambiarías algo ahora que lo reflexionas.</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 3: REFLEXIONA                                         -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="reflexiona" class="fase-section">
+            <div class="fase-header reflexiona">
+                <div class="fase-icon">🔍</div>
+                <div class="fase-info">
+                    <h2>Fase 3: REFLEXIONA</h2>
+                    <p class="bloom-tag">Bloom: Analizar — Explicitar razonamientos, trade-offs y decisiones técnicas</p>
+                </div>
+            </div>
+            <div class="fase-content">
+
+                <p style="font-size: 0.95rem; color: var(--gray); margin-bottom: 1.5rem;">⏱ Tiempo estimado: 15–25 min</p>
+
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de esta fase</h4>
+                    <ul>
+                        <li><strong>Analizar</strong> los trade-offs entre implementar la Cola de Prioridad con lista enlazada ordenada vs heap binario.</li>
+                        <li><strong>Evaluar</strong> cuándo usar Cola FIFO vs Cola de Prioridad en problemas reales.</li>
+                        <li><strong>Detectar</strong> posibles dependencias de la IA en tu proceso de desarrollo.</li>
+                    </ul>
+                </div>
+
+                <h3>3.1 Trade-offs: Lista ordenada vs Heap para Cola de Prioridad</h3>
+
+                <p>El Reto 2 te pidió implementar la Cola de Prioridad con <em>inserción ordenada</em> en lista enlazada. Esto es conceptualmente claro pero tiene un costo: cada <code>enqueue()</code> puede recorrer toda la lista para encontrar la posición correcta — O(n). El heap binario, en cambio, mantiene solo la propiedad del padre-hijo, logrando O(log n) para ambas operaciones. La pregunta real no es "¿cuál es mejor?" sino "¿cuál es mejor para este problema específico?"</p>
+
+                <table class="tabla-comparativa">
+                    <thead>
+                        <tr>
+                            <th>Criterio</th>
+                            <th>Lista enlazada ordenada</th>
+                            <th>Heap binario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>enqueue()</strong></td>
+                            <td>O(n) — recorre para insertar en posición</td>
+                            <td>O(log n) — sift-up</td>
+                        </tr>
+                        <tr>
+                            <td><strong>dequeue()</strong></td>
+                            <td>O(1) — siempre extrae la cabeza</td>
+                            <td>O(log n) — sift-down después de extraer raíz</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Complejidad conceptual</strong></td>
+                            <td>Baja — fácil de entender y depurar</td>
+                            <td>Media — requiere entender árbol + arreglo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>¿Cuándo usar?</strong></td>
+                            <td>Colas pequeñas (&lt;100 elementos), prototipado</td>
+                            <td>Colas grandes, sistemas en producción</td>
+                        </tr>
+                        <tr>
+                            <td><strong>¿Se mantiene orden FIFO dentro del mismo nivel?</strong></td>
+                            <td>✅ Sí — insertar con <code>&lt;=</code> (no <code>&lt;</code>) garantiza que los elementos de igual prioridad se mantengan en orden de llegada sin esfuerzo adicional.</td>
+                            <td>⚠️ No automáticamente — el heap no conserva orden de inserción entre elementos de igual prioridad. Requiere un campo adicional <code>ordenLlegada</code> (timestamp o contador) como criterio de desempate secundario, lo que aumenta la complejidad del comparador.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <span class="reto-numero">4</span>
+                        <h4>Análisis de Trade-offs y Decisiones de Diseño <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <p style="margin-bottom: 0.8rem;">⏱ Tiempo estimado: 15–20 min</p>
+                        <div class="rol-ia">
+                            <strong>🤖 Rol de la IA:</strong> Interlocutor crítico que cuestiona tus decisiones de diseño y presenta escenarios que ponen a prueba tus conclusiones.
+                        </div>
+
+                        <div class="prompt-box">Explica de forma simple, usando analogías cotidianas (como comparar herramientas para distintos trabajos) antes de entrar en detalles técnicos. Usa lenguaje de estudiante de segundo-tercer semestre.
+
+Actúa como un interlocutor técnico que cuestiona mis decisiones.
+
+En mi sistema de triage implementé la Cola de Prioridad con lista enlazada ordenada (inserción O(n), extracción O(1)).
+
+Quiero que me hagas reflexionar sobre estas tres decisiones:
+
+1. DECISIÓN DE ESTRUCTURA: ¿En qué tamaño de cola (número de pacientes simultáneos) empieza a importar la diferencia entre O(n) y O(log n) para la inserción? Dame un ejemplo numérico concreto con tiempos estimados.
+
+2. DECISIÓN DE PRIORIDAD: En el triage real, dos pacientes pueden llegar al mismo tiempo con la misma prioridad. ¿Mi lista ordenada garantiza que el primero en llegar sale primero dentro del mismo nivel? ¿Qué cambiaría si no lo garantiza?
+
+3. DECISIÓN DE INTEGRACIÓN: ¿Cómo conectaría mi Cola FIFO de recepción con la Cola de Prioridad de triage y la Pila de historial de la semana pasada? Describe el flujo de datos sin código.
+
+Para cada punto, primero dame tu análisis, luego hazme UNA pregunta que me obligue a pensar.
+
+REGLA ESTRICTA PARA LA IA: No redactes mis conclusiones por mí. Si me preguntas algo, espera mi respuesta antes de continuar. Si me das un análisis completo que yo solo copie, arruinas el propósito del reto.</div>
+
+                        <div class="entregable-box">
+                            La evidencia del análisis va <strong>dentro del mismo archivo de código del HITO 1</strong>, como un bloque de comentarios al final con el prefijo <code># REFLEXIONA:</code>. Debe incluir tres respuestas propias:
+                            <ul style="margin-top: 0.6rem; margin-left: 1.2rem;">
+                                <li><code># REFLEXIONA-1:</code> A partir de cuántos pacientes simultáneos cambiarías de lista ordenada a heap, con un número justificado.</li>
+                                <li><code># REFLEXIONA-2:</code> Cómo tu implementación maneja el empate de prioridad (¿sale Ana antes que María si ambas son P2?). Incluye el resultado de la prueba.</li>
+                                <li><code># REFLEXIONA-3:</code> Describe en 3-5 líneas el flujo de datos entre Cola, ColaPrioridad y Pila en el sistema.</li>
+                            </ul>
+                            <p style="margin-top: 0.6rem; font-size: 0.9rem;"><em>No se requiere documento separado. Los comentarios en el código son la evidencia.</em></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo — REFLEXIONA</h4>
+                    <div class="pregunta">¿Tu análisis de trade-offs fue tuyo o fue esencialmente lo que la IA dijo? Si fue lo que dijo la IA, ¿puedes reformularlo con un ejemplo diferente que no usó la IA?</div>
+                    <div class="pregunta">Si tuvieras que elegir ahora entre lista ordenada y heap para un hospital con 500 pacientes simultáneos, ¿qué elegirías? ¿Por qué es ahora más fácil responder esta pregunta que antes de implementar?</div>
+                    <div class="pregunta">¿Identificaste alguna limitación de tu implementación que la IA no mencionó? Si no encontraste ninguna, intenta un caso extremo: ¿qué pasa si haces 1000 enqueue seguidos sin hacer dequeue?</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 4: VALIDA                                             -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="valida" class="fase-section">
+            <div class="fase-header valida">
+                <div class="fase-icon">✔</div>
+                <div class="fase-info">
+                    <h2>Fase 4: VALIDA</h2>
+                    <p class="bloom-tag">Bloom: Evaluar — Auditoría crítica, pruebas y detección de errores</p>
+                </div>
+            </div>
+            <div class="fase-content">
+
+                <p style="font-size: 0.95rem; color: var(--gray); margin-bottom: 1.5rem;">⏱ Tiempo estimado: 20–30 min</p>
+
+                <!-- Checklist de Autoevaluación -->
+                <div class="checklist-box">
+                    <h4>☑️ Checklist de Autoevaluación Rápida — Verifica antes de entregar</h4>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c1">
+                        <div class="check-text">
+                            <label for="c1"><strong>¿enqueue en cola vacía funciona correctamente?</strong> Prueba: crea una cola nueva, haz enqueue(X), verifica que frente Y final apunten al mismo nodo.</label>
+                            <div class="check-diagnostico">→ Si falla: revisa el caso especial "cola vacía" en el método enqueue. frente y final deben inicializarse al mismo nodo nuevo.</div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c2">
+                        <div class="check-text">
+                            <label for="c2"><strong>¿dequeue deja la cola completamente limpia cuando se extrae el último elemento?</strong> Prueba: enqueue(A), dequeue(), verifica que TANTO frente COMO final sean null.</label>
+                            <div class="check-diagnostico">→ Si solo frente es null pero final no: falta el caso especial en dequeue() cuando frente queda vacío. Este es el bug más común de la semana.</div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c3">
+                        <div class="check-text">
+                            <label for="c3"><strong>¿dequeue en cola vacía lanza error/excepción en lugar de colapsar silenciosamente?</strong> Prueba: crea cola vacía, llama dequeue(), verifica que el mensaje de error sea claro.</label>
+                            <div class="check-diagnostico">→ Si el programa colapsa sin mensaje: falta la verificación estaVacia() al inicio de dequeue(). Los errores silenciosos son más peligrosos que los ruidosos.</div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c4">
+                        <div class="check-text">
+                            <label for="c4"><strong>¿La Cola de Prioridad extrae siempre el elemento de mayor prioridad (menor número)?</strong> Prueba: enqueue(A, P3), enqueue(B, P1), enqueue(C, P2). El primero en salir debe ser B (P1), no A.</label>
+                            <div class="check-diagnostico">→ Si sale A primero: la inserción ordenada no está comparando prioridades correctamente, o está insertando al final en vez de en la posición correcta.</div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c5">
+                        <div class="check-text">
+                            <label for="c5"><strong>¿Los empates de prioridad respetan el orden de llegada (FIFO dentro del mismo nivel)?</strong> Prueba: enqueue(Ana, P2), enqueue(María, P2). Ana debe salir primero.</label>
+                            <div class="check-diagnostico">→ Si María sale primero: la inserción ordenada está usando estrictamente menor en lugar de menor o igual para saltar elementos del mismo nivel. Ajusta la condición de comparación.</div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c6">
+                        <div class="check-text">
+                            <label for="c6"><strong>¿El tamaño de la cola se actualiza correctamente con cada enqueue y dequeue?</strong> Prueba: enqueue 3 veces, dequeue 1 vez. El tamaño debe ser 2, no 3 ni 1.</label>
+                            <div class="check-diagnostico">→ Si el tamaño no coincide: revisa que ambas operaciones incrementen/decrementen el contador. También verifica que no se incremente en el caso especial.</div>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 1rem; font-style: italic; color: #2e7d32; font-size: 0.9rem;">💡 Si encuentras un error con este checklist, dibuja el estado de <code>frente</code> y <code>final</code> <em>antes y después</em> de la operación problemática. Muchos bugs de colas se hacen evidentes cuando ves el diagrama de punteros.</p>
+                </div>
+
+                <h3>Casos de Prueba Detallados</h3>
+
+                <div class="context-box tip">
+                    <div class="box-title">✅ Caso 1 — Operaciones básicas FIFO</div>
+                    <p><strong>Secuencia:</strong> enqueue(1) → enqueue(2) → enqueue(3) → dequeue() → verFrente()<br>
+                    <strong>Resultado esperado:</strong> dequeue() retorna 1, verFrente() retorna 2, tamaño = 2<br>
+                    <strong>Qué verifica:</strong> Orden FIFO correcto y que verFrente() no extrae.</p>
+                </div>
+
+                <div class="context-box tip">
+                    <div class="box-title">✅ Caso 2 — Cola vacía con múltiples ciclos</div>
+                    <p><strong>Secuencia:</strong> enqueue(A) → dequeue() → enqueue(B) → dequeue() → estaVacia()<br>
+                    <strong>Resultado esperado:</strong> estaVacia() = verdadero, tamaño = 0, frente = null, final = null<br>
+                    <strong>Qué verifica:</strong> El ciclo completo enqueue-dequeue restablece correctamente el estado vacío.</p>
+                </div>
+
+                <div class="context-box tip">
+                    <div class="box-title">✅ Caso 3 — Triage con 5 pacientes</div>
+                    <p><strong>Secuencia de llegada:</strong> Ana(P3), José(P1), María(P2), Carlos(P4), Luisa(P1)<br>
+                    <strong>Orden esperado de atención:</strong> José(P1), Luisa(P1), María(P2), Ana(P3), Carlos(P4)<br>
+                    <strong>Nota sobre empates:</strong> José y Luisa tienen la misma prioridad P1. José llegó primero, debe salir primero.<br>
+                    <strong>Qué verifica:</strong> Orden de prioridad correcto Y manejo de empates FIFO.</p>
+                </div>
+
+                <div class="context-box warning">
+                    <div class="box-title">⚠️ Caso 4 — Casos frontera críticos</div>
+                    <p><strong>Prueba A:</strong> dequeue() en cola vacía → debe lanzar error, no colapsar.<br>
+                    <strong>Prueba B:</strong> enqueue seguido inmediato de dequeue (un solo elemento) → frente y final deben ser null después.<br>
+                    <strong>Prueba C:</strong> enqueue(X, P1) cuando ya hay un P1 en cola → verifica que X quede DESPUÉS del P1 existente (FIFO dentro del mismo nivel).</p>
+                </div>
+
+                <div class="context-box danger">
+                    <div class="box-title">🔴 Errores Comunes Esta Semana</div>
+                    <p><strong>1. Olvidar actualizar <code>final = null</code> cuando la cola queda vacía:</strong> frente avanza a null pero final sigue apuntando al nodo eliminado. El siguiente enqueue crea un ciclo fantasma.</p>
+                    <p style="margin-top: 0.5rem;"><strong>2. Confundir FIFO con LIFO en la Cola de Prioridad:</strong> La prioridad define <em>quién pasa primero en su nivel</em>, pero dentro del mismo nivel debe respetarse el orden de llegada. La IA frecuentemente no maneja el empate FIFO correctamente.</p>
+                    <p style="margin-top: 0.5rem;"><strong>3. Usar la cola circular con el arreglo pero sin el módulo:</strong> El índice <code>final</code> llega al último elemento y el sistema reporta "lleno" aunque haya espacio libre al inicio. La aritmética modular no es opcional.</p>
+                    <p style="margin-top: 0.5rem;"><strong>4. No verificar estaVacia() en dequeue():</strong> Desencolar de una cola vacía resulta en acceso a <code>null.dato</code> — error de puntero nulo que la IA frecuentemente no coloca en el código generado a menos que se lo pidas explícitamente.</p>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo — VALIDA</h4>
+                    <div class="pregunta">¿Encontraste algún bug con el checklist que no habrías detectado solo ejecutando el Caso de Prueba 1? ¿Cuál fue y qué lo causó?</div>
+                    <div class="pregunta">¿Los casos de prueba que usaste para validar tu código los escribiste tú o los generó la IA? Si los generó la IA, ¿agregaste algún caso adicional propio? Si no, ¿por qué no?</div>
+                    <div class="pregunta">¿Alguno de los 4 errores comunes apareció en tu implementación? Si sí, ¿cómo lo corregiste? ¿La IA detectó ese error sola o necesitaste señalárselo?</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 5: PROFUNDIZA                                         -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="profundiza" class="fase-section">
+            <div class="fase-header profundiza">
+                <div class="fase-icon">🚀</div>
+                <div class="fase-info">
+                    <h2>Fase 5: PROFUNDIZA</h2>
+                    <p class="bloom-tag">Bloom: Crear — Extensiones, conexiones y fronteras del conocimiento</p>
+                </div>
+            </div>
+            <div class="fase-content">
+
+                <p style="font-size: 0.95rem; color: var(--gray); margin-bottom: 1.5rem;">⏱ Tiempo estimado: 15–25 min (el contenido avanzado es opcional)</p>
+
+                <div class="context-box info">
+                    <div class="box-title">💡 Esta fase es en su mayoría opcional</div>
+                    <p>Si completaste los Retos 2 y 4 y pasaste el checklist de VALIDA, el núcleo de la semana está completo. Lo que sigue son extensiones para quienes quieren profundizar o adelantar conceptos de semanas futuras.</p>
+                </div>
+
+                <h3>Extensión A: Heap Binario "real" con arreglo</h3>
+                <p>La Cola de Prioridad que implementaste usa inserción ordenada en lista enlazada — conceptualmente clara pero O(n) para enqueue. La implementación estándar usa un <strong>heap binario representado en arreglo</strong> con operaciones sift-up y sift-down en O(log n). Si quieres explorarla:</p>
+
+                <div class="context-box tip">
+                    <div class="box-title">📋 Lo que necesitarías agregar</div>
+                    <p>Añade a tu ColaPrioridad: (a) un arreglo interno en lugar de lista enlazada, (b) la función <code>siftUp(indice)</code> que sube un elemento hasta su posición correcta comparando con su padre, y (c) la función <code>siftDown(indice)</code> que baja el elemento raíz hasta su posición correcta comparando con sus hijos. Los índices del árbol en el arreglo siguen las fórmulas del diagrama en COMPRENDE.</p>
+                </div>
+
+                <h3>Extensión B: Deque (Double-Ended Queue)</h3>
+                <p>Una <strong>Deque</strong> (pronunciado "deck") permite insertar y extraer por <em>ambos</em> extremos en O(1). Es una generalización que unifica Pila y Cola: puedes usar una deque como pila (operando solo por el frente) o como cola (enqueue por un extremo, dequeue por el otro). Se implementa naturalmente con una <strong>lista doblemente enlazada</strong> — la que construiste en la Semana 4.</p>
+
+                <h3>Conexión con el Proyecto Integrador — Sistema de Biblioteca Digital</h3>
+
+                <div class="context-box success">
+                    <div class="box-title">📋 HITO 1: Sistema de Simulación con Pilas y Colas</div>
+                    <p>Esta semana cierra el <strong>HITO 1</strong> del Sistema de Gestión de Biblioteca Digital. La integración completa es:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li><strong>Cola FIFO de préstamos:</strong> Los usuarios que solicitan un libro en lista de espera se atienden en orden de llegada — el primero que solicitó es el primero en recibir el libro devuelto.</li>
+                        <li><strong>Cola de Prioridad de reservas urgentes:</strong> Estudiantes en período de examen o con fecha de entrega próxima tienen prioridad sobre reservas regulares.</li>
+                        <li><strong>Pila de historial (Semana 5):</strong> El bibliotecario puede revertir los últimos N préstamos registrados si hay un error de sistema.</li>
+                        <li><strong>Integración:</strong> Una función <code>procesarSiguiente()</code> que: (1) verifica si hay reservas urgentes en la Cola de Prioridad y las atiende primero, (2) si no hay, atiende la Cola FIFO regular, (3) registra la transacción en la Pila de historial.</li>
+                    </ul>
+                </div>
+
+                <h3>🔭 Preview de la Semana 7: Recursión — Fundamentos y Trazado</h3>
+
+                <div class="context-box warning">
+                    <div class="box-title">📅 Lo que viene la próxima semana</div>
+                    <p>La Semana 7 introduce la <strong>Recursión</strong>: funciones que se llaman a sí mismas. El concepto es elegante pero puede ser confuso al principio — ¿cómo una función que "no termina" puede dar un resultado? La clave está en entender la <strong>pila de llamadas</strong> del sistema, que funciona exactamente como la Pila que implementaste en la Semana 5. Cada llamada recursiva "apila" un frame; cuando llega al caso base, comienza a "desapilar" y devolver resultados. Dominar pilas y colas ahora es base directa para visualizar qué ocurre en memoria durante la recursión.</p>
+                    <p style="margin-top: 0.8rem;">Pregunta para prepararte: Si tienes la función <code>factorial(n) = n * factorial(n-1)</code> con caso base <code>factorial(0) = 1</code>, ¿cuántos frames de llamada se apilan en la pila del sistema para calcular <code>factorial(5)</code>?</p>
+                </div>
+
+                <div class="checkpoint">
+                    <h4>🧠 Checkpoint Metacognitivo Final — PROFUNDIZA</h4>
+                    <div class="pregunta">Si tuvieras que explicar la diferencia entre Cola FIFO y Cola de Prioridad a un compañero que no tomó el curso, ¿qué ejemplo cotidiano usarías para cada una? ¿Podrías hacerlo sin mencionar código?</div>
+                    <div class="pregunta">¿Hay alguna operación de tu implementación del HITO 1 que todavía no entiendes completamente? Si sí, formula la pregunta específica que le harías a la IA o al instructor para resolverla.</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- EVALUACIÓN                                                 -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="evaluacion" class="evaluacion-section">
+            <div class="evaluacion-header">
+                <h2>📊 Criterios de Evaluación — Semana 6</h2>
+                <p style="opacity: 0.9; margin-top: 0.5rem;">Alineados con las fases AETL · Total: 100%</p>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">COMPRENDE</span>
+                <div>
+                    <strong>Reto 1 — Exploración conceptual Cola FIFO vs Cola de Prioridad:</strong> Archivo de texto o comentarios al inicio del archivo de código principal con: estado de punteros antes/después de enqueue/dequeue, solución al problema "vacía vs llena" en cola circular, y escenario hospitalario concreto donde FIFO falla. No se requiere código en este reto — solo la explicación escrita con tus propias palabras.
+                </div>
+                <span class="puntos">15%</span>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">APLICA</span>
+                <div>
+                    <strong>Reto 2 — Etapa 1 — Estructuras internas (Cola FIFO + Cola de Prioridad):</strong> Implementación correcta de ambas estructuras con pruebas unitarias comentadas. enqueue, dequeue, verFrente y estaVacia funcionan en todos los casos, incluyendo casos frontera.
+                </div>
+                <span class="puntos">25%</span>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">APLICA</span>
+                <div>
+                    <strong>Reto 2 — Etapa 2 — Sistema de Triage (HITO 1):</strong> Sistema funcional con recepción FIFO, triage por prioridad y simulación de 5 pacientes en el orden correcto. Incluye integración coherente con la Pila de la Semana 5. Al menos 3 comentarios de decisiones de diseño propias.
+                </div>
+                <span class="puntos">30%</span>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">REFLEXIONA</span>
+                <div>
+                    <strong>Reto 4 — Análisis de trade-offs (evidencia en código):</strong> Bloques <code># REFLEXIONA-1/2/3</code> en el archivo de código con: umbral de tamaño justificado, resultado de prueba de empate de prioridad, y flujo de integración de tres estructuras. <br>
+                    <span style="color: var(--secondary); font-size: 0.9rem; margin-top: 0.4rem; display: block;">🗣️ <strong>Verificación humana:</strong> El estudiante deberá defender verbalmente al menos una de sus tres decisiones de diseño — ya sea en clase o en un video corto de máximo 1 minuto. La IA puede redactar comentarios; la verbalización propia es la evidencia de apropiación real del conocimiento.</span>
+                </div>
+                <span class="puntos">15%</span>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">VALIDA</span>
+                <div>
+                    <strong>Checklist de autoevaluación completado + Casos de prueba:</strong> Los 6 ítems del checklist deben estar resueltos como comentarios <code># VALIDA:</code> al final del archivo de código principal (estado: ✓ pasó / ✗ falló + diagnóstico). Los Casos 1, 2 y 3 producen los resultados esperados (salida en el propio código). El Caso 4 (frontera) no colapsa silenciosamente.
+                </div>
+                <span class="puntos">15%</span>
+            </div>
+
+            <div class="criterio-item" style="background: #f8f9fa;">
+                <span class="fase-badge" style="background: #9c27b0;">AVANZADO</span>
+                <div>
+                    <strong>Reto 3 — Cola Circular (opcional):</strong> Implementación de cola circular con arreglo usando aritmética modular y manejo correcto de vacía vs llena.
+                </div>
+                <span class="puntos" style="background: #9c27b0; color: white;">+10% extra</span>
+            </div>
+
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- GLOSARIO                                                   -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="glosario" class="glosario-section">
+            <div class="glosario-header">
+                <h2>📖 Glosario — Semana 6</h2>
+            </div>
+            <div class="glosario-grid">
+
+                <dl class="termino-card">
+                    <dt>Cola (Queue)</dt>
+                    <dd>Estructura de datos lineal que sigue el principio FIFO. Dos extremos: frente (salida) y final (entrada). Operaciones principales: enqueue y dequeue.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>FIFO (First In, First Out)</dt>
+                    <dd>Principio de ordenamiento donde el primer elemento que entró es el primero en salir. Contraste con LIFO de las pilas.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Enqueue</dt>
+                    <dd>Operación de inserción en una cola: agrega un elemento al extremo final. O(1) con lista enlazada manteniendo referencia al final.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Dequeue</dt>
+                    <dd>Operación de extracción en una cola: elimina y retorna el elemento del extremo frente. O(1) con lista enlazada.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Cola Circular</dt>
+                    <dd>Implementación de cola con arreglo de tamaño fijo donde los índices se envuelven usando aritmética modular: (índice + 1) % capacidad. Resuelve el desperdicio de espacio del arreglo lineal.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Aritmética Modular</dt>
+                    <dd>Operación % (módulo) que retorna el residuo de una división. Fundamental para la cola circular: permite que el índice "dé la vuelta" al inicio del arreglo.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Cola de Prioridad (Priority Queue)</dt>
+                    <dd>Estructura donde cada elemento tiene una prioridad asociada. El elemento de mayor prioridad siempre sale primero, independientemente del orden de llegada.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Heap Binario</dt>
+                    <dd>Árbol binario completo donde cada padre tiene prioridad ≤ (min-heap) o ≥ (max-heap) que sus hijos. Representable eficientemente en arreglo. Base de la Cola de Prioridad eficiente.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Min-Heap</dt>
+                    <dd>Heap donde el elemento de menor valor está siempre en la raíz. Usado cuando "menor número = mayor prioridad" (ej: P1 crítico &lt; P4 leve).</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Sift-Up / Sift-Down</dt>
+                    <dd>Operaciones de restauración del heap: sift-up sube un elemento hasta su posición correcta tras inserción; sift-down baja la nueva raíz hasta su posición correcta tras extracción. Ambas O(log n).</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Deque (Double-Ended Queue)</dt>
+                    <dd>Cola de doble extremo: permite insertar y extraer por ambos lados en O(1). Generaliza tanto la pila como la cola. Implementación natural con lista doblemente enlazada.</dd>
+                </dl>
+
+                <dl class="termino-card">
+                    <dt>Triage</dt>
+                    <dd>Proceso de clasificación de pacientes por urgencia médica. Contexto del escenario que motiva la Cola de Prioridad: P1 (crítico) siempre antes que P4 (leve).</dd>
+                </dl>
+
+                <dl class="termino-card aetl">
+                    <dt>Agencia Compartida (AETL)</dt>
+                    <dd>Principio donde el estudiante mantiene el rol de Arquitecto. En esta semana: el estudiante decide si usar lista ordenada o heap, cómo manejar empates, y cómo integrar las tres estructuras.</dd>
+                </dl>
+
+                <dl class="termino-card aetl">
+                    <dt>Trade-off</dt>
+                    <dd>Compromiso entre propiedades deseables. Esta semana: lista ordenada (enqueue O(n), dequeue O(1), simple) vs heap (ambas O(log n), más complejo). No hay respuesta única correcta — depende del contexto.</dd>
+                </dl>
+
+                <dl class="termino-card aetl">
+                    <dt>Caso Frontera</dt>
+                    <dd>Situación límite que puede romper una implementación: cola vacía, un solo elemento, empates de prioridad, buffer lleno en cola circular. Siempre deben probarse explícitamente.</dd>
+                </dl>
+
+                <dl class="termino-card aetl">
+                    <dt>Invariante de Estructura</dt>
+                    <dd>Condición que debe ser verdadera siempre en la estructura. En la Cola: si está vacía, ambos frente y final son null. Si tiene un elemento, frente y final apuntan al mismo nodo.</dd>
+                </dl>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- REFERENCIAS                                                -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="referencias" class="referencias-section">
+            <h2>📚 Referencias — Semana 6</h2>
+
+            <h3>Contenido Disciplinar</h3>
+            <div class="referencia-item">
+                Cormen, T. H., Leiserson, C. E., Rivest, R. L., &amp; Stein, C. (2022). <em>Introduction to Algorithms</em> (4th ed.). MIT Press. [Cap. 6: Heapsort; Cap. 10.1: Pilas y Colas]
+            </div>
+            <div class="referencia-item">
+                Sedgewick, R., &amp; Wayne, K. (2011). <em>Algorithms</em> (4th ed.). Addison-Wesley. [Cap. 2.4: Priority Queues; Cap. 1.3: Queues]
+            </div>
+            <div class="referencia-item">
+                Goodrich, M. T., Tamassia, R., &amp; Goldwasser, M. H. (2014). <em>Data Structures and Algorithms in Python</em>. Wiley. [Cap. 6.2: Queues; Cap. 9: Priority Queues]
+            </div>
+            <div class="referencia-item">
+                Skiena, S. S. (2020). <em>The Algorithm Design Manual</em> (3rd ed.). Springer. [Cap. 3.5: Priority Queues]
+            </div>
+            <div class="referencia-item">
+                Knuth, D. E. (1997). <em>The Art of Computer Programming, Vol. 1: Fundamental Algorithms</em> (3rd ed.). Addison-Wesley. [Sec. 2.2.1: Stacks, Queues, and Deques]
+            </div>
+
+            <h3>Documentación Técnica</h3>
+            <div class="referencia-item">
+                Python Software Foundation. (2024). <em>collections.deque — Python 3 Documentation</em>. <a href="https://docs.python.org/3/library/collections.html#collections.deque" style="color: var(--secondary);">docs.python.org</a>
+            </div>
+            <div class="referencia-item">
+                Python Software Foundation. (2024). <em>queue — A synchronized queue class</em>. <a href="https://docs.python.org/3/library/queue.html" style="color: var(--secondary);">docs.python.org</a> [incluye PriorityQueue]
+            </div>
+            <div class="referencia-item">
+                Oracle Corporation. (2024). <em>java.util.PriorityQueue — Java SE 21 Documentation</em>. <a href="https://docs.oracle.com/en/java/docs" style="color: var(--secondary);">docs.oracle.com</a>
+            </div>
+            <div class="referencia-item">
+                cppreference.com. (2024). <em>std::priority_queue — C++ Reference</em>. <a href="https://en.cppreference.com/w/cpp/container/priority_queue" style="color: var(--secondary);">cppreference.com</a>
+            </div>
+
+            <h3>Fundamentos Pedagógicos</h3>
+            <div class="referencia-item">
+                Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. <em>Cognitive Science, 12</em>(2), 257–285.
+            </div>
+            <div class="referencia-item">
+                Sweller, J., van Merriënboer, J. J. G., &amp; Paas, F. (2020). Cognitive architecture and instructional design: 20 years later. <em>Educational Psychology Review, 31</em>(2), 261–292.
+            </div>
+            <div class="referencia-item">
+                Vygotsky, L. S. (1978). <em>Mind in society: The development of higher psychological processes</em>. Harvard University Press.
+            </div>
+            <div class="referencia-item">
+                Zimmerman, B. J. (2000). Attaining self-regulation: A social cognitive perspective. In M. Boekaerts, P. Pintrich, &amp; M. Zeidner (Eds.), <em>Handbook of self-regulation</em> (pp. 13–39). Academic Press.
+            </div>
+            <div class="referencia-item">
+                Bandura, A. (2001). Social cognitive theory: An agentic perspective. <em>Annual Review of Psychology, 52</em>(1), 1–26.
+            </div>
+            <div class="referencia-item">
+                Anderson, L. W., &amp; Krathwohl, D. R. (Eds.). (2001). <em>A taxonomy for learning, teaching, and assessing: A revision of Bloom's taxonomy</em>. Longman.
+            </div>
+            <div class="referencia-item">
+                Bognár, L. (2024). AI as a cognitive scaffold in the Zone of Proximal Development. <em>Educational Technology Research and Development</em>.
+            </div>
+            <div class="referencia-item">
+                Chiu, T. K. F. (2024). Applying the self-determination theory (SDT) to explain student engagement in AI-supported learning. <em>Computers and Education: Artificial Intelligence, 6</em>, 100232.
+            </div>
+            <div class="referencia-item">
+                Mahdi, H. S., et al. (2025). Cognitive load in AI-augmented learning environments. <em>Computers &amp; Education, 200</em>, 105012.
+            </div>
+
+            <h3>Estándares Curriculares</h3>
+            <div class="referencia-item">
+                ACM/IEEE-CS/AAAI. (2023). <em>Computer Science Curricula 2023 (CS2023)</em>. Joint Task Force on Computing Curricula. [Sección DS: Data Structures — Queues and Priority Queues]
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span class="modelo-badge">AETL — Aprendizaje Técnico Aumentado por IA</span>
+        <p>Universidad Autónoma de Nayarit · Licenciatura en Sistemas Computacionales</p>
+        <p style="opacity: 0.7; margin-top: 0.5rem;">Estructura de Datos Básica · Semana 6: Colas y Colas de Prioridad</p>
+        <p style="opacity: 0.6; margin-top: 0.3rem; font-size: 0.85rem;">HITO 1: Sistema de Simulación con Pilas y Colas</p>
+		<p>Dr. Eligardo Cruz Sánchez</p>
+    </footer>
+
+    <script>
+        // ── Barra de progreso interactiva con scroll ──────────────────
+        const sections = ['comprende', 'aplica', 'reflexiona', 'valida', 'profundiza'];
+        const steps = document.querySelectorAll('.progress-step');
+
+        function updateProgress() {
+            const scrollPos = window.scrollY + window.innerHeight / 3;
+            let currentSection = null;
+
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && el.offsetTop <= scrollPos) {
+                    currentSection = id;
+                }
+            });
+
+            if (!currentSection) return;
+
+            const currentIndex = sections.indexOf(currentSection);
+            steps.forEach((step, i) => {
+                step.classList.remove('active', 'completed');
+                if (i < currentIndex) step.classList.add('completed');
+                else if (i === currentIndex) step.classList.add('active');
+            });
+        }
+
+        window.addEventListener('scroll', updateProgress);
+        updateProgress();
+
+        // ── Smooth scroll para los enlaces de navegación ─────────────
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // ── Feedback visual al marcar checkboxes ─────────────────────
+        document.querySelectorAll('.checklist-item input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const item = this.closest('.checklist-item');
+                if (this.checked) {
+                    item.style.background = '#e8f5e9';
+                    item.style.borderLeft = '3px solid #28a745';
+                } else {
+                    item.style.background = 'white';
+                    item.style.borderLeft = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
