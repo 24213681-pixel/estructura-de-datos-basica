@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "actividad": "Preparación Examen 1 — Estructuras Lineales",
+    "modelo": "AETL — UAN Sistemas Computacionales",
+    "generado_en": "2026-03-23T22:55:04.992Z",
+    "version": "2.0"
+  },
+  "diagnostico": {
+    "confianza_declarada": {
+      "arreglos": "media",
+      "pilas": "alta",
+      "colas": "alta",
+      "lista-simple": "alta",
+      "lista-dc": "alta",
+      "complejidad": "media"
+    },
+    "quiz_verificacion": {
+      "pregunta_1": {
+        "respuesta_dada": "c",
+        "correcta": true,
+        "respuesta_correcta": "c"
+      },
+      "pregunta_2": {
+        "respuesta_dada": "b",
+        "correcta": true,
+        "respuesta_correcta": "b"
+      },
+      "pregunta_3": {
+        "respuesta_dada": "b",
+        "correcta": true,
+        "respuesta_correcta": "b"
+      }
+    },
+    "disonancias_detectadas": [],
+    "nota": "No se detectaron disonancias entre autopercepción y desempeño en quiz."
+  },
+  "simulacro": {
+    "por_problema": {
+      "problema_1": "correcto",
+      "problema_2": "correcto",
+      "problema_3": "correcto",
+      "problema_4": "correcto",
+      "problema_5": "correcto",
+      "problema_6": "correcto"
+    },
+    "resumen": {
+      "correctos": 6,
+      "para_revisar": 0,
+      "sin_marcar": 0
+    },
+    "nota": "Sin problemas marcados para revisión."
+  },
+  "respuestas_escritas": {
+    "problema_1": {
+      "caracteres": 545,
+      "preview": "Función A: buscar\n\nComplejidad: O(n)\n\nJustificación:\nAunque hay un ciclo interno..."
+    },
+    "problema_2": {
+      "caracteres": 1112,
+      "preview": "a) ¿Qué ocurre internamente al ejecutar agregar(50)?\n\nComo el arreglo está lleno..."
+    },
+    "problema_3": {
+      "caracteres": 823,
+      "preview": "a) Estado de la lista después de eliminar(12)\nLista original:\ncabeza → [5] → [12..."
+    },
+    "problema_4": {
+      "caracteres": 475,
+      "preview": " Símbolo │ Acción          │ Estado pila\n ────────┼─────────────────┼───────────..."
+    },
+    "problema_5": {
+      "caracteres": 586,
+      "preview": "a) dequeue()\nSe elimina el elemento en frente = 2 → \"A\"\nLuego, el frente avanza ..."
+    },
+    "problema_6": {
+      "caracteres": 906,
+      "preview": "a) Historial de rutas para “volver”\n\nEstructura: Pila (stack)\nJustificación: Per..."
+    }
+  }
+}
