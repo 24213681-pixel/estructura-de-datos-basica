@@ -1,0 +1,2946 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 11: Búsqueda Lineal y Binaria · HITO 2 | AETL</title>
+    <style>
+:root {
+    --primary: #003a63;
+    --secondary: #005b96;
+    --accent: #f2a900;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --gray: #6c757d;
+    --border-radius: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.7;
+    color: var(--dark);
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+    min-height: 100vh;
+}
+
+/* =====================================================
+   HEADER INSTITUCIONAL
+   ===================================================== */
+
+.header-institucional {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,58,99,0.3);
+}
+
+.header-institucional .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.header-institucional .escudo {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.header-institucional h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.header-institucional .subtitulo {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.header-institucional .badge-semana {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+
+/* =====================================================
+   BARRA DE PROGRESO
+   ===================================================== */
+
+.progress-container {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e0e0e0;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+    transition: transform 0.3s;
+    text-decoration: none;
+}
+
+.progress-step:hover {
+    transform: scale(1.1);
+}
+
+.progress-step .step-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: white;
+    border: 3px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.progress-step.active .step-icon {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,91,150,0.4);
+}
+
+.progress-step.completed .step-icon {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.progress-step .step-label {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.progress-step.active .step-label {
+    color: var(--secondary);
+}
+
+/* =====================================================
+   NAVEGACIÓN
+   ===================================================== */
+
+.nav-container {
+    background: var(--primary);
+    padding: 0.8rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--accent);
+}
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* =====================================================
+   SECCIONES DE FASE
+   ===================================================== */
+
+.fase-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.fase-header {
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fase-header.comprende { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.fase-header.aplica { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.fase-header.reflexiona { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.fase-header.valida { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.fase-header.profundiza { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+.fase-header .fase-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fase-header .fase-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.fase-header .fase-info .bloom-tag {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.fase-content {
+    padding: 2rem;
+}
+
+/* =====================================================
+   OBJETIVOS
+   ===================================================== */
+
+.objetivos-box {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d1e8fa 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.objetivos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.objetivos-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.objetivos-box li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.objetivos-box li::before {
+    content: '🎯';
+    position: absolute;
+    left: 0;
+}
+
+/* =====================================================
+   CAJAS CONTEXTUALES
+   ===================================================== */
+
+.context-box {
+    padding: 1.2rem 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border-left: 4px solid;
+}
+
+.context-box.tip {
+    background: linear-gradient(135deg, #e3f9e5 0%, #c8f7dc 100%);
+    border-color: var(--success);
+}
+
+.context-box.warning {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border-color: var(--warning);
+}
+
+.context-box.danger {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border-color: var(--danger);
+}
+
+.context-box.success {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: var(--success);
+}
+
+.context-box.info {
+    background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+    border-color: var(--info);
+}
+
+.context-box .box-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* =====================================================
+   RETOS IA
+   ===================================================== */
+
+.reto-ia {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.reto-ia-header {
+    background: linear-gradient(90deg, var(--accent) 0%, #e89900 100%);
+    color: var(--primary);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reto-ia-header .reto-numero {
+    background: var(--primary);
+    color: var(--accent);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.reto-ia-header h4 {
+    flex: 1;
+    font-size: 1.1rem;
+}
+
+.reto-ia-body {
+    padding: 1.5rem;
+}
+
+/* context-box dentro de reto-ia hereda color:white — forzar texto oscuro */
+.reto-ia-body .context-box {
+    color: var(--dark);
+}
+
+.reto-ia-body .context-box .box-title {
+    color: var(--dark);
+}
+
+.reto-ia .rol-ia {
+    background: rgba(242,169,0,0.15);
+    border: 1px solid var(--accent);
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.reto-ia .rol-ia strong {
+    color: var(--accent);
+}
+
+.prompt-box {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: var(--border-radius);
+    padding: 1.2rem;
+    margin: 1rem 0;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    color: #c9d1d9;
+}
+
+.prompt-box::before {
+    content: '📝 PROMPT';
+    display: block;
+    color: var(--accent);
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.entregable-box {
+    background: rgba(40,167,69,0.15);
+    border: 1px dashed var(--success);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+}
+
+.entregable-box::before {
+    content: '📦 ENTREGABLE ESPERADO';
+    display: block;
+    color: var(--success);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKPOINT METACOGNITIVO
+   ===================================================== */
+
+.checkpoint {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checkpoint h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkpoint .pregunta {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 0.8rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    padding-left: 3rem;
+}
+
+.checkpoint .pregunta::before {
+    content: '❓';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+}
+
+/* =====================================================
+   DIAGRAMA ASCII
+   ===================================================== */
+
+.ascii-diagram {
+    background: #1e1e1e;
+    color: #00ff00;
+    font-family: 'Consolas', 'Monaco', monospace;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: pre;
+}
+
+.diagrama-descripcion {
+    background: #f8f9fa;
+    border-left: 4px solid var(--info);
+    padding: 1rem;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+/* =====================================================
+   ESCENARIO INMERSIVO
+   ===================================================== */
+
+.escenario-inmersivo {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.escenario-inmersivo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.1;
+}
+
+.escenario-inmersivo h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.escenario-inmersivo .personaje {
+    background: rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    border-left: 3px solid var(--accent);
+}
+
+.escenario-inmersivo .dialogo {
+    font-style: italic;
+    margin: 1rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(255,255,255,0.3);
+}
+
+/* =====================================================
+   FUNDAMENTOS TEÓRICOS
+   ===================================================== */
+
+.fundamentos-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.fundamentos-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.constructo-card {
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius);
+    margin: 1rem;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.constructo-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.constructo-card .card-header {
+    padding: 1rem 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.constructo-card:nth-child(1) .card-header { background: #e8f4fd; color: var(--primary); }
+.constructo-card:nth-child(2) .card-header { background: #fff3e0; color: #e65100; }
+.constructo-card:nth-child(3) .card-header { background: #e8f5e9; color: #2e7d32; }
+.constructo-card:nth-child(4) .card-header { background: #f3e5f5; color: #7b1fa2; }
+.constructo-card:nth-child(5) .card-header { background: #fce4ec; color: #c2185b; }
+
+.constructo-card .card-body {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.constructo-card .referencia {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 0.8rem;
+}
+
+.constructo-card .operacional {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--accent);
+}
+
+/* =====================================================
+   GLOSARIO
+   ===================================================== */
+
+.glosario-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.glosario-header {
+    background: var(--dark);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.glosario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.termino-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--secondary);
+}
+
+.termino-card.aetl {
+    border-left-color: var(--accent);
+}
+
+.termino-card dt {
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.termino-card dd {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+/* =====================================================
+   EVALUACIÓN
+   ===================================================== */
+
+.evaluacion-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.evaluacion-header {
+    background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.criterio-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.criterio-item:last-child {
+    border-bottom: none;
+}
+
+.criterio-item .fase-badge {
+    background: var(--secondary);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 1rem;
+    min-width: 100px;
+    text-align: center;
+}
+
+.criterio-item .puntos {
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    margin-left: auto;
+}
+
+/* =====================================================
+   REFERENCIAS
+   ===================================================== */
+
+.referencias-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.referencias-section h3 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+}
+
+.referencia-item {
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed #e0e0e0;
+    font-size: 0.95rem;
+}
+
+.referencia-item:last-child {
+    border-bottom: none;
+}
+
+/* =====================================================
+   CÓDIGO
+   ===================================================== */
+
+code {
+    background: #f1f3f4;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.9em;
+    color: #d63384;
+}
+
+pre code {
+    display: block;
+    padding: 1rem;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    overflow-x: auto;
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.footer {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.footer .modelo-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* =====================================================
+   TABLAS
+   ===================================================== */
+
+.tabla-comparativa {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.tabla-comparativa th {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+}
+
+.tabla-comparativa td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tabla-comparativa tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-comparativa tr:hover {
+    background: #f8f9fa;
+}
+
+/* =====================================================
+   ESTILOS ADICIONALES
+   ===================================================== */
+
+.prerrequisitos-box {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border: 2px solid var(--accent);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.prerrequisitos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.prerrequisitos-box ul {
+    margin-left: 1.5rem;
+}
+
+.prerrequisitos-box li {
+    margin-bottom: 0.5rem;
+}
+
+.conexion-semana-anterior {
+    background: linear-gradient(135deg, #e8f4fd 0%, #bbdefb 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.conexion-semana-anterior h4 {
+    color: var(--primary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reto-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+}
+
+.reto-badge.esencial {
+    background: var(--success);
+    color: white;
+}
+
+.reto-badge.avanzado {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+    color: white;
+}
+
+.invariantes-box {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+    border: 2px dashed #c2185b;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.invariantes-box h4 {
+    color: #880e4f;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.orientacion-semanal {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.orientacion-semanal h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+}
+
+.orientacion-semanal ul {
+    margin-left: 1.5rem;
+}
+
+.orientacion-semanal li {
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKLIST DE AUTOEVALUACIÓN
+   ===================================================== */
+
+.checklist-box {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checklist-box h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checklist-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.8rem;
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 0.6rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    align-items: flex-start;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-top: 0.2rem;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checklist-item .check-text {
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+.checklist-item .check-diagnostico {
+    font-size: 0.85rem;
+    color: var(--danger);
+    margin-top: 0.3rem;
+    font-style: italic;
+}
+
+.starter-code-box {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px solid var(--secondary);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.starter-code-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.starter-code-box .empathy-msg {
+    background: rgba(0,91,150,0.1);
+    border-left: 3px solid var(--secondary);
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    font-style: italic;
+    font-size: 0.95rem;
+}
+
+/* =====================================================
+   ANIMACIONES
+   ===================================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .header-institucional h1 {
+        font-size: 1.4rem;
+    }
+    
+    .container {
+        padding: 1rem;
+    }
+    
+    .fase-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .progress-step .step-label {
+        display: none;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .criterio-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .criterio-item .puntos {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+}
+
+/* =====================================================
+   IMPRESIÓN
+   ===================================================== */
+
+@media print {
+    .progress-container,
+    .nav-container {
+        display: none;
+    }
+
+    body {
+        background: white;
+    }
+
+    .reto-ia {
+        break-inside: avoid;
+    }
+}
+
+/* =====================================================
+   UTILIDADES
+   ===================================================== */
+
+.text-center { text-align: center; }
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--gray); }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+
+/* Veredicto box específico S10 */
+.veredicto-box {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+    border: 2px solid var(--accent);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    color: white;
+}
+
+.veredicto-box h4 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.andamiaje-box {
+    background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+    border: 2px solid #3f51b5;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.andamiaje-box h4 {
+    color: #1a237e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nivel-rescate {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin: 0.8rem 0;
+    border-left: 4px solid;
+}
+
+.nivel-rescate.nivel-1 { border-color: var(--success); }
+.nivel-rescate.nivel-2 { border-color: var(--warning); }
+.nivel-rescate.nivel-0 { border-color: var(--danger); }
+
+.nivel-rescate .nivel-titulo {
+    font-weight: bold;
+    margin-bottom: 0.4rem;
+}
+
+.nivel-rescate.nivel-1 .nivel-titulo { color: #1b5e20; }
+.nivel-rescate.nivel-2 .nivel-titulo { color: #e65100; }
+.nivel-rescate.nivel-0 .nivel-titulo { color: #b71c1c; }
+
+.ruta-minima {
+    background: linear-gradient(135deg, #e8f5e9 0%, #dcedc8 100%);
+    border: 2px dashed var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ruta-minima h4 {
+    color: #2e7d32;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.corte-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.corte-table th {
+    padding: 1rem;
+    text-align: left;
+    color: white;
+}
+
+.corte-table th:first-child { background: var(--secondary); }
+.corte-table th:last-child { background: #9c27b0; }
+
+.corte-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: top;
+}
+
+.corte-table tr:last-child td { border-bottom: none; }
+
+/* S11 específico */
+.hito-box {
+    background: linear-gradient(135deg, #0d1117 0%, #1a1a2e 100%);
+    border: 3px solid var(--accent);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin: 2rem 0;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+.hito-box::before {
+    content: 'HITO 2';
+    position: absolute;
+    top: -15px;
+    right: 20px;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.3rem 1rem;
+    border-radius: 0 0 8px 8px;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+.hito-box h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.pipeline-step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255,255,255,0.07);
+    border-radius: var(--border-radius);
+    margin: 0.6rem 0;
+    border-left: 4px solid var(--accent);
+}
+.pipeline-step .step-num {
+    background: var(--accent);
+    color: var(--primary);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+    </style>
+</head>
+<body>
+
+<!-- ========================================================
+     HEADER INSTITUCIONAL
+     ======================================================== -->
+<header class="header-institucional">
+    <div class="logo-container">
+        <div class="escudo">UAN</div>
+        <div>
+            <h1>Estructura de Datos Básica</h1>
+            <p class="subtitulo">Licenciatura en Sistemas Computacionales · Dr. Eligardo Cruz Sánchez</p>
+        </div>
+        <div class="escudo">LSC</div>
+    </div>
+    <div class="badge-semana">🔍 Semana 11 — Búsqueda Lineal y Binaria · HITO 2</div>
+</header>
+
+<!-- ========================================================
+     BARRA DE PROGRESO AETL (sticky)
+     ======================================================== -->
+<div class="progress-container">
+    <div class="progress-bar">
+        <a href="#comprende" class="progress-step" id="step-comprende">
+            <div class="step-icon">🧠</div>
+            <span class="step-label">Comprende</span>
+        </a>
+        <a href="#aplica" class="progress-step" id="step-aplica">
+            <div class="step-icon">⚙️</div>
+            <span class="step-label">Aplica</span>
+        </a>
+        <a href="#reflexiona" class="progress-step" id="step-reflexiona">
+            <div class="step-icon">🪞</div>
+            <span class="step-label">Reflexiona</span>
+        </a>
+        <a href="#valida" class="progress-step" id="step-valida">
+            <div class="step-icon">✅</div>
+            <span class="step-label">Valida</span>
+        </a>
+        <a href="#profundiza" class="progress-step" id="step-profundiza">
+            <div class="step-icon">🚀</div>
+            <span class="step-label">Profundiza</span>
+        </a>
+    </div>
+</div>
+
+<!-- ========================================================
+     NAVEGACIÓN
+     ======================================================== -->
+<nav class="nav-container">
+    <div class="nav-links">
+        <a href="#prerrequisitos">📋 Prerrequisitos</a>
+        <a href="#ruta-minima">⚡ Ruta Mínima</a>
+        <a href="#escenario">🎬 Escenario</a>
+        <a href="#fundamentos">📚 Fundamentos</a>
+        <a href="#comprende">🧠 Comprende</a>
+        <a href="#aplica">⚙️ Aplica</a>
+        <a href="#reflexiona">🪞 Reflexiona</a>
+        <a href="#valida">✅ Valida</a>
+        <a href="#profundiza">🚀 Profundiza</a>
+        <a href="#hito2">🏁 HITO 2</a>
+        <a href="#rubrica">📊 Rúbrica</a>
+        <a href="#glosario">📖 Glosario</a>
+    </div>
+</nav>
+
+<!-- ========================================================
+     CONTENIDO PRINCIPAL
+     ======================================================== -->
+<main class="container">
+
+<!-- ──────────────────────────────────────────────────────────
+     PRERREQUISITOS
+     ────────────────────────────────────────────────────────── -->
+<section id="prerrequisitos">
+    <div class="prerrequisitos-box">
+        <h4>📋 Prerrequisitos — Diagnóstico rápido (Semanas 9 y 10)</h4>
+        <p style="margin-bottom:1rem;">Responder en voz alta como equipo antes de continuar. Si alguna genera duda, revisar el módulo correspondiente.</p>
+        <ul>
+            <li><strong>P1.</strong> ¿Por qué Quick Sort con Lomuto y distribución ordenada genera un <code>RecursionError</code> en Python con n ≥ 1 000? ¿Qué propiedad de la recursión lo causa?</li>
+            <li><strong>P2.</strong> Del Veredicto StreamMX del equipo: ¿qué algoritmo recomendaron para la Distribución A (datos casi ordenados)? ¿Con qué estrategia de pivote y por qué?</li>
+            <li><strong>P3.</strong> Si el catálogo de StreamMX ya está ordenado por puntaje, ¿cuántas comparaciones hacen falta en el <em>peor caso</em> para encontrar una película con puntaje exacto usando búsqueda lineal? ¿Y con búsqueda binaria? (Estimar para n = 5 000 000.)</li>
+        </ul>
+        <div class="context-box info" style="margin-top:1rem; margin-bottom:0;">
+            <div class="box-title">💡 Conexión directa con el HITO 2</div>
+            P3 es el núcleo del HITO 2: el equipo ya ordenó el catálogo (S9–S10). Esta semana lo hace consultable eficientemente. La diferencia entre 5 000 000 comparaciones y 23 es el argumento técnico que entregarán a la Ing. Sofía.
+        </div>
+    </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────
+     RUTA MÍNIMA VIABLE
+     ────────────────────────────────────────────────────────── -->
+<section id="ruta-minima">
+    <div class="ruta-minima">
+        <h4>⚡ Ruta Mínima Viable — Para equipos con carga alta esta semana</h4>
+        <ol style="margin-left:1.5rem; margin-top:0.8rem;">
+            <li>Leer el escenario (5 min) y COMPRENDE hasta el checkpoint (30 min).</li>
+            <li>Completar <strong>Reto 5 — esencial</strong>: implementar búsqueda lineal y binaria + benchmark de las dos.</li>
+            <li>Registrar evidencias <code># COMPRENDE-1/2/3</code>, <code># REFLEXIONA-1/2/3</code> y <code># VALIDA:</code>.</li>
+            <li>Ensamblar el <strong>HITO 2</strong>: pipeline ordenar → buscar con los datos reales del benchmark.</li>
+        </ol>
+        <p style="margin-top:0.8rem; font-size:0.9rem; color:#2e7d32;"><strong>Reto 6</strong> (búsqueda binaria con variantes — primera/última ocurrencia) es avanzado y agrega 10 pts de crédito extra.</p>
+    </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────
+     CONEXIÓN SEMANAS 9-10
+     ────────────────────────────────────────────────────────── -->
+<section id="conexion-s10">
+    <div class="conexion-semana-anterior">
+        <h4>🔗 Puente desde Semanas 9–10 — Del orden a la consulta</h4>
+        <p>El equipo pasó dos semanas resolviendo cómo <em>ordenar</em> el catálogo de StreamMX eficientemente. Merge Sort resolvió el tiempo pero colapsó la RAM. Quick Sort resolvió la RAM pero reveló el riesgo de degeneración con duplicados. El Veredicto StreamMX documentó qué algoritmo usar según la distribución.</p>
+        <p style="margin-top:0.8rem;">Ahora la Ing. Sofía plantea la siguiente capa del problema: <strong>un catálogo ordenado no tiene valor si los usuarios no pueden consultarlo rápidamente</strong>. Cada búsqueda de película necesita ser respondida en milisegundos, no en segundos. Con 5 000 000 de registros, recorrer el arreglo completo es inaceptable.</p>
+    </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────
+     ESCENARIO INMERSIVO
+     ────────────────────────────────────────────────────────── -->
+<section id="escenario">
+    <div class="escenario-inmersivo">
+        <h3>🎬 StreamMX — Semana 11: "Ahora encuéntrala"</h3>
+        <div class="personaje">
+            <strong>🏢 Contexto:</strong> Reunión de revisión técnica. La Ing. Sofía abre una terminal y ejecuta una búsqueda sobre el catálogo recién ordenado.
+        </div>
+        <div class="dialogo">
+            "Perfecto — el catálogo ya ordena en 3 minutos y no revienta la RAM. Pero acabo de medir lo siguiente: cada vez que un usuario busca una película por puntaje, el sistema recorre los 5 millones de registros de principio a fin. En hora pico tenemos 200 000 búsquedas simultáneas. Calculen cuántas comparaciones está haciendo el servidor por segundo."
+        </div>
+        <div class="personaje" style="background:rgba(220,53,69,0.15); border-left-color:#dc3545;">
+            <strong>📊 Cálculo rápido del equipo:</strong> 200 000 búsquedas/s × 2 500 000 comparaciones promedio (lineal) = <strong>500 000 000 000 comparaciones por segundo</strong>. El servidor está saturado en búsquedas, no en ordenamiento.
+        </div>
+        <div class="dialogo">
+            "Exacto. Tienen el catálogo ordenado — aprovechen eso. Quiero que implementen una búsqueda que en el <em>peor caso</em> haga no más de 23 comparaciones sobre 5 millones de registros. Y que me demuestren con un benchmark que realmente funciona así. Eso es lo que entra en el HITO 2."
+        </div>
+        <div class="personaje">
+            <strong>🎯 Objetivo HITO 2:</strong> Pipeline completo — ordenar el catálogo con el algoritmo del Veredicto StreamMX + buscar con búsqueda binaria. Benchmark que demuestre la diferencia entre O(n) y O(log n) en datos reales.
+        </div>
+    </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────────
+     FUNDAMENTOS TEÓRICOS AETL
+     ────────────────────────────────────────────────────────── -->
+<section id="fundamentos">
+    <div class="fundamentos-section">
+        <div class="fundamentos-header">
+            <h2>📚 Fundamentos Teóricos del Módulo</h2>
+            <p style="opacity:0.9; margin-top:0.3rem;">Marco pedagógico AETL — por qué aprendemos así</p>
+        </div>
+        <div style="padding:1.5rem;">
+
+            <div class="constructo-card">
+                <div class="card-header">🏗️ Constructivismo Activo (Vygotsky, 1978)</div>
+                <div class="card-body">
+                    <p class="referencia">Vygotsky, L. S. (1978). <em>Mind in Society</em>. Harvard University Press.</p>
+                    <p>El conocimiento sobre búsqueda binaria se construye cuando el equipo experimenta primero la lentitud de la búsqueda lineal sobre datos reales, y <em>luego</em> observa el salto cualitativo de O(log n). Sin la comparación empírica, el número "23 comparaciones" es abstracto.</p>
+                    <div class="operacional">💡 Operacional: El benchmark comparativo (lineal vs binaria en n = 1 000 000) es el artefacto constructor. Los datos del equipo convierten el logaritmo en experiencia concreta.</div>
+                </div>
+            </div>
+
+            <div class="constructo-card">
+                <div class="card-header">🎯 Aprendizaje Autorregulado — SRL (Zimmerman, 2000)</div>
+                <div class="card-body">
+                    <p class="referencia">Zimmerman, B. J. (2000). Attaining self-regulation. En <em>Handbook of self-regulation</em>. Academic Press.</p>
+                    <p>El ciclo SRL culmina esta semana en el HITO 2: el equipo evalúa si su pipeline (ordenar + buscar) cumple el requerimiento de la Ing. Sofía. La evidencia no es subjetiva — es el tiempo medido del benchmark.</p>
+                    <div class="operacional">💡 Operacional: Los comentarios <code># ESTRATEGIA:</code> del HITO 2 son el artefacto de planificación SRL; el benchmark es el artefacto de evaluación.</div>
+                </div>
+            </div>
+
+            <div class="constructo-card">
+                <div class="card-header">⚡ Teoría de la Carga Cognitiva (Sweller, 1988)</div>
+                <div class="card-body">
+                    <p class="referencia">Sweller, J. (1988). Cognitive load during problem solving. <em>Cognitive Science, 12</em>(2), 257–285.</p>
+                    <p>La búsqueda binaria tiene un invariante conceptualmente más sutil que la partición Lomuto. El pseudocódigo con índices explícitos <code>izq</code>, <code>der</code>, <code>mid</code> y la traza ASCII paso a paso reducen la carga extrínseca, dejando recursos para comprender por qué el invariante garantiza corrección.</p>
+                    <div class="operacional">💡 Operacional: El error más común (off-by-one en <code>mid</code> y en la actualización de <code>izq/der</code>) está explicitamente señalizado antes del TODO — no como trampa sino como advertencia preventiva.</div>
+                </div>
+            </div>
+
+            <div class="constructo-card">
+                <div class="card-header">🤝 Agencia Compartida (Bandura, 2001)</div>
+                <div class="card-body">
+                    <p class="referencia">Bandura, A. (2001). Social cognitive theory. <em>Annual Review of Psychology, 52</em>, 1–26.</p>
+                    <p>El HITO 2 es el primer entregable integrador del equipo: combina el código de S9 (Merge Sort), S10 (Quick Sort + decisión del Veredicto) y S11 (búsqueda binaria). La agencia es colectiva — el pipeline falla o funciona como equipo, no como suma de individuos.</p>
+                    <div class="operacional">💡 Operacional: En la defensa, el docente puede pedir a cualquier integrante que explique cualquier componente del pipeline (no solo la parte que "le tocó").</div>
+                </div>
+            </div>
+
+            <div class="constructo-card">
+                <div class="card-header">🌸 Taxonomía de Bloom — Niveles 2–5</div>
+                <div class="card-body">
+                    <p class="referencia">Bloom, B. S. (1956). <em>Taxonomy of Educational Objectives</em>. Longmans.</p>
+                    <p><strong>Comprender</strong> (invariante de búsqueda binaria), <strong>Aplicar</strong> (implementar y medir), <strong>Analizar</strong> (¿cuándo falla binaria? casos de elemento no presente, duplicados), <strong>Evaluar</strong> (decidir qué algoritmo usar en el pipeline del HITO 2).</p>
+                    <div class="operacional">💡 Operacional: El HITO 2 opera en nivel Evaluar — el equipo justifica por qué eligió ese algoritmo de ordenamiento + búsqueda binaria para cada distribución de StreamMX.</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ========================================================
+     FASE 1 — COMPRENDE
+     ======================================================== -->
+<section id="comprende" class="fase-section">
+    <div class="fase-header comprende">
+        <div class="fase-icon">🧠</div>
+        <div class="fase-info">
+            <h2>COMPRENDE — Lineal vs Binaria: el costo de buscar</h2>
+            <div class="bloom-tag">Bloom: Comprender · Analizar | Vygotsky: zona de desarrollo próximo — del O(n) conocido al O(log n) nuevo</div>
+        </div>
+    </div>
+    <div class="fase-content">
+
+        <div class="objetivos-box">
+            <h4>🎯 Al terminar esta fase el equipo podrá:</h4>
+            <ul>
+                <li>Trazar búsqueda lineal y binaria paso a paso sobre un arreglo de ejemplo.</li>
+                <li>Enunciar el invariante de búsqueda binaria y verificarlo en cada iteración.</li>
+                <li>Calcular el número exacto de comparaciones en el peor caso para n dado: ⌊log₂(n)⌋ + 1.</li>
+                <li>Identificar cuándo búsqueda binaria falla o produce resultados incorrectos (arreglo desordenado, duplicados sin manejo especial).</li>
+                <li>Contrastar O(n) vs O(log n) con datos concretos de StreamMX.</li>
+            </ul>
+        </div>
+
+        <!-- 1. Búsqueda lineal -->
+        <h3 style="color:var(--primary); margin-bottom:1rem;">1. Búsqueda lineal — O(n)</h3>
+        <p>La búsqueda lineal no requiere ninguna condición previa sobre el arreglo. Recorre cada elemento de izquierda a derecha hasta encontrar el objetivo o agotar el arreglo. Su invariante es trivial: "los elementos desde el inicio hasta la posición actual no son el objetivo."</p>
+
+        <div class="ascii-diagram">BÚSQUEDA LINEAL sobre A = [ 12  7  3  19  5  8  14  2 ]
+Objetivo: buscar 8
+═══════════════════════════════════════════════════════
+
+i=0: A[0]=12 ≠ 8 → continuar
+i=1: A[1]=7  ≠ 8 → continuar
+i=2: A[2]=3  ≠ 8 → continuar
+i=3: A[3]=19 ≠ 8 → continuar
+i=4: A[4]=5  ≠ 8 → continuar
+i=5: A[5]=8  = 8 → ¡ENCONTRADO en posición 5!
+
+Comparaciones realizadas: 6
+Peor caso (no está en el arreglo): 8 comparaciones = n
+
+Buscar 99 (no existe):
+i=0,1,2,3,4,5,6,7 → 8 comparaciones → retornar -1</div>
+        <div class="diagrama-descripcion">
+            La búsqueda lineal recorre el arreglo [12, 7, 3, 19, 5, 8, 14, 2] elemento por elemento buscando el valor 8. Realiza 6 comparaciones antes de encontrarlo en la posición 5. Si el objetivo no existe (como el 99), hace exactamente n = 8 comparaciones y retorna -1. No requiere que el arreglo esté ordenado.
+        </div>
+
+        <!-- 2. Búsqueda binaria -->
+        <h3 style="color:var(--primary); margin:1.5rem 0 1rem;">2. Búsqueda binaria — O(log n)</h3>
+        <p>La búsqueda binaria <strong>requiere arreglo ordenado</strong> como condición previa. En cada paso, compara el objetivo con el elemento central y descarta la mitad del espacio de búsqueda.</p>
+
+        <div class="context-box danger">
+            <div class="box-title">⛔ Precondición no negociable</div>
+            Si el arreglo <em>no está ordenado</em>, búsqueda binaria puede retornar "no encontrado" aunque el elemento esté presente, o encontrar un elemento en la posición incorrecta. No hay mecanismo interno que detecte este error — el resultado simplemente es incorrecto en silencio. <strong>El HITO 2 depende de que el pipeline ordene primero.</strong>
+        </div>
+
+        <div class="ascii-diagram">BÚSQUEDA BINARIA sobre A = [ 2  3  5  7  8  12  14  19 ]  (ordenado)
+Objetivo: buscar 8   →   n=8, peor caso = ⌊log₂(8)⌋+1 = 4 comparaciones
+═══════════════════════════════════════════════════════════════════════
+
+Iteración 1:  izq=0  der=7  mid=(0+7)//2=3
+              A[3]=7 < 8  → objetivo está a la DERECHA de mid
+              Nuevo izq = mid+1 = 4
+              Espacio restante: A[4..7] = [ 8  12  14  19 ]
+
+Iteración 2:  izq=4  der=7  mid=(4+7)//2=5
+              A[5]=12 > 8 → objetivo está a la IZQUIERDA de mid
+              Nuevo der = mid-1 = 4
+              Espacio restante: A[4..4] = [ 8 ]
+
+Iteración 3:  izq=4  der=4  mid=(4+4)//2=4
+              A[4]=8 = 8  → ¡ENCONTRADO en posición 4!
+
+Comparaciones: 3  (vs 5 con búsqueda lineal sobre el mismo objetivo)
+
+──────────────────────────────────────────────────────────────────────
+Buscar 6 (no existe):
+
+Iter 1: mid=3, A[3]=7 > 6 → der=2,  espacio A[0..2]
+Iter 2: mid=1, A[1]=3 < 6 → izq=2,  espacio A[2..2]
+Iter 3: mid=2, A[2]=5 < 6 → izq=3
+        izq(3) > der(2) → BUCLE TERMINA → retornar -1
+
+Comparaciones: 3  (peor caso con n=8: máximo 4)</div>
+        <div class="diagrama-descripcion">
+            La búsqueda binaria opera sobre el arreglo ordenado [2, 3, 5, 7, 8, 12, 14, 19]. En la primera iteración, calcula el índice central (mid=3, valor 7) y determina que 8 está a la derecha porque 7 &lt; 8. Mueve izq a mid+1=4. En la segunda iteración, mid=5 (valor 12), 12 &gt; 8, mueve der a mid-1=4. En la tercera, mid=4 (valor 8), coincide con el objetivo. Total: 3 comparaciones. Para el valor inexistente 6: 3 comparaciones y el bucle termina cuando izq &gt; der.
+        </div>
+
+        <!-- 3. Pseudocódigo y invariante -->
+        <h3 style="color:var(--primary); margin:1.5rem 0 1rem;">3. Pseudocódigo y invariante de búsqueda binaria</h3>
+
+        <div class="ascii-diagram">PSEUDOCÓDIGO — Búsqueda Binaria (versión iterativa)
+═══════════════════════════════════════════════════════
+
+función busqueda_binaria(A, objetivo):
+    izq ← 0
+    der ← longitud(A) - 1
+
+    mientras izq ≤ der:
+        mid ← (izq + der) // 2          # ¡División entera!
+
+        si A[mid] == objetivo:
+            retornar mid                 # Posición encontrada
+
+        si A[mid] < objetivo:
+            izq ← mid + 1               # Descartar mitad izquierda
+
+        si no:
+            der ← mid - 1               # Descartar mitad derecha
+
+    retornar -1                          # No encontrado
+
+═══════════════════════════════════════════════════════
+ADVERTENCIA — Errores comunes de implementación:
+
+❌ mid = (izq + der) / 2     → en Python retorna float, no int
+✅ mid = (izq + der) // 2    → división entera obligatoria
+
+❌ izq ← mid  (sin +1)       → bucle infinito cuando izq==der
+✅ izq ← mid + 1             → siempre reduce el espacio
+
+❌ der ← mid  (sin -1)       → bucle infinito cuando izq==der
+✅ der ← mid - 1             → siempre reduce el espacio
+
+❌ while izq < der           → pierde el caso de un solo elemento
+✅ while izq <= der          → cubre A[i..i] correctamente
+
+──────────────────────────────────────────────────────────────────────
+🌐 FORMA CANÓNICA EN CIENCIAS DE LA COMPUTACIÓN (todos los lenguajes):
+
+Python 3 tiene enteros de precisión arbitraria → (izq + der) // 2 nunca
+desborda. En C, C++ y Java los int tienen 32 bits (máx ≈ 2 147 483 647).
+
+❌ mid = (izq + der) // 2    → en C/Java: overflow si izq+der > INT_MAX
+✅ mid = izq + (der - izq) // 2  → forma canónica — segura en todo lenguaje
+
+Este bug destruyó Arrays.binarySearch() del JDK durante 20 años (1986–2006).
+La forma canónica se usa como hábito profesional aunque Python no la exija.</div>
+        <div class="diagrama-descripcion">
+            El pseudocódigo muestra la versión iterativa de búsqueda binaria. Los errores más comunes incluyen: usar división flotante en lugar de entera (//), no avanzar izq/der más allá de mid (deben ser mid+1 y mid-1), usar izq &lt; der en lugar de izq &lt;= der, y en C/C++/Java calcular mid como (izq+der)/2 que puede causar integer overflow para arreglos grandes. La forma canónica izq + (der - izq) // 2 es segura en cualquier lenguaje.
+        </div>
+
+        <!-- Advertencia de Ingeniería Real: bug histórico del JDK -->
+        <div class="context-box warning">
+            <div class="box-title">🛠️ Advertencia de Ingeniería Real — El bug de búsqueda binaria más famoso de la historia</div>
+            <p>En junio de 2006, Joshua Bloch (autor de <em>Effective Java</em> y miembro del equipo de Java en Sun Microsystems) publicó un post que sacudió a la comunidad: <strong>la implementación de <code>Arrays.binarySearch()</code> en el JDK tenía un bug desde 1986 — 20 años sin que nadie lo notara.</strong></p>
+            <p style="margin-top:0.8rem;">El problema era exactamente la línea que ustedes acaban de estudiar:</p>
+            <pre style="margin:0.8rem 0; background:#1e1e1e; color:#f8f8f8; padding:1rem; border-radius:6px; font-size:0.85rem;">// Java — JDK hasta 2006 (BUGGY):
+int mid = (low + high) / 2;   // ← overflow si low + high > Integer.MAX_VALUE (2 147 483 647)
+
+// Java — forma corregida (canónica en CS):
+int mid = low + (high - low) / 2;  // ← nunca desborda, funciona siempre</pre>
+            <p style="margin-top:0.8rem;">El bug no se disparaba con arreglos pequeños — solo con arreglos de más de 2³⁰ ≈ 1 000 000 000 elementos. En 1986 esos arreglos no existían; en 2006, con servidores de producción con gigabytes de RAM, empezaron a aparecer.</p>
+            <p style="margin-top:0.8rem;"><strong>Python 3 los protege:</strong> sus enteros no tienen límite de bits (son <em>BigIntegers</em> implícitos), así que <code>(izq + der) // 2</code> nunca desborda en Python. Pero como programadores de LSC trabajarán en C, C++ y Java donde <code>int</code> tiene exactamente 32 bits. <strong>La forma canónica <code>izq + (der - izq) // 2</code> es un hábito profesional, no un capricho académico.</strong></p>
+        </div>
+
+        <!-- Invariante formal -->
+        <div class="invariantes-box">
+            <h4>📐 Invariante de búsqueda binaria</h4>
+            <p><strong>Invariante del bucle:</strong> Si el objetivo existe en el arreglo A, entonces A[izq..der] lo contiene. Más precisamente:</p>
+            <ul style="margin: 0.8rem 0 0 1.5rem;">
+                <li>Al <strong>inicio</strong> de cada iteración: si objetivo ∈ A, entonces objetivo ∈ A[izq..der].</li>
+                <li>Cuando <strong>A[mid] &lt; objetivo</strong>: objetivo no puede estar en A[0..mid], por lo que movemos izq = mid + 1 sin perder el invariante.</li>
+                <li>Cuando <strong>A[mid] &gt; objetivo</strong>: objetivo no puede estar en A[mid..n-1], por lo que movemos der = mid - 1 sin perder el invariante.</li>
+                <li>Cuando <strong>izq &gt; der</strong>: el espacio de búsqueda está vacío — el objetivo no existe. Retornamos -1.</li>
+            </ul>
+            <p style="margin-top:1rem;"><strong>Por qué funciona:</strong> en cada iteración el espacio de búsqueda se reduce estrictamente a la mitad (o menos). El número máximo de iteraciones es ⌊log₂(n)⌋ + 1. Para n = 5 000 000: ⌊log₂(5 000 000)⌋ + 1 = 22 + 1 = <strong>23 comparaciones</strong>.</p>
+        </div>
+
+        <!-- 4. Tabla comparativa -->
+        <h3 style="color:var(--primary); margin:1.5rem 0 1rem;">4. Comparativa completa</h3>
+        <table class="tabla-comparativa">
+            <thead>
+                <tr>
+                    <th>Criterio</th>
+                    <th>Búsqueda lineal</th>
+                    <th>Búsqueda binaria</th>
+                    <th>Impacto en StreamMX</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Complejidad temporal</td>
+                    <td>O(n) — siempre</td>
+                    <td>O(log n) — siempre</td>
+                    <td>Diferencia de ×217 000 con n=5M</td>
+                </tr>
+                <tr>
+                    <td>Precondición</td>
+                    <td>Ninguna — cualquier arreglo</td>
+                    <td>Arreglo ordenado obligatorio</td>
+                    <td>El pipeline del HITO 2 la garantiza</td>
+                </tr>
+                <tr>
+                    <td>Peor caso (n=5 000 000)</td>
+                    <td>5 000 000 comparaciones</td>
+                    <td>23 comparaciones</td>
+                    <td>Diferencia crítica en hora pico</td>
+                </tr>
+                <tr>
+                    <td>Espacio auxiliar</td>
+                    <td>O(1)</td>
+                    <td>O(1) — versión iterativa</td>
+                    <td>Ambas son in-place</td>
+                </tr>
+                <tr>
+                    <td>Duplicados</td>
+                    <td>Retorna primera ocurrencia</td>
+                    <td>Retorna <em>una</em> ocurrencia (cuál, no determinista)</td>
+                    <td>⚠️ Si se necesita primera/última → Reto 6</td>
+                </tr>
+                <tr>
+                    <td>Elemento no presente</td>
+                    <td>Retorna -1 tras n comparaciones</td>
+                    <td>Retorna -1 en ≤ ⌊log₂(n)⌋+1 comparaciones</td>
+                    <td>Binaria es más eficiente incluso en "no encontrado"</td>
+                </tr>
+                <tr style="background:#fff3e0;">
+                    <td><strong>Cuándo usar lineal</strong></td>
+                    <td colspan="3">Arreglos pequeños (n &lt; 50), arreglos no ordenados donde ordenar costaría más que buscar linealmente, búsquedas únicas sobre datos efímeros.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Checkpoint -->
+        <div class="checkpoint">
+            <h4>🔍 Checkpoint COMPRENDE — 4 preguntas metacognitivas</h4>
+            <div class="pregunta">¿Por qué mover <code>izq = mid + 1</code> (y no <code>izq = mid</code>) cuando A[mid] &lt; objetivo? Muestra con la traza qué pasa si usas <code>izq = mid</code> con A = [3, 5] buscando 7.</div>
+            <div class="pregunta">Para n = 1 000 000: ¿cuántas comparaciones hace búsqueda binaria en el peor caso? Calcúlenlo con ⌊log₂(1 000 000)⌋ + 1 sin calculadora — estimen el logaritmo.</div>
+            <div class="pregunta">Si el arreglo tiene duplicados — por ejemplo, [5, 7, 7, 7, 9] — y buscan el valor 7, ¿qué posición retorna la búsqueda binaria? ¿Es siempre la misma? ¿Por qué depende del arreglo concreto?</div>
+            <div class="pregunta">¿Qué pasaría si aplican búsqueda binaria sobre el arreglo del catálogo de StreamMX <em>antes</em> de ordenarlo? Diseñen un contraejemplo concreto con 5 elementos.</div>
+        </div>
+
+        <!-- Reto IA C -->
+        <div class="reto-ia">
+            <div class="reto-ia-header">
+                <div class="reto-numero">C</div>
+                <h4>Reto IA — Comprende: El invariante bajo la lupa</h4>
+                <span class="reto-badge esencial">COMPRENDE</span>
+            </div>
+            <div class="reto-ia-body">
+                <div class="rol-ia">
+                    <strong>🤖 Rol de la IA:</strong> Tutor socrático de invariantes. No explica el concepto directamente. Hace preguntas que obligan al equipo a descubrir qué garantiza el invariante en cada iteración — y qué sucede cuando se rompe.
+                </div>
+                <div class="prompt-box">Responde en español claro y directo, sin tecnicismos innecesarios, para un equipo de primer año de LSC.
+
+Eres un tutor socrático de algoritmos. El equipo está estudiando el invariante de búsqueda binaria.
+
+Plantea este escenario: El equipo afirma que "si el objetivo existe, siempre lo encontramos". Cuestiona esa afirmación en tres dimensiones:
+
+1. ¿Esa afirmación es verdadera si el arreglo está correctamente ordenado? Pide al equipo que construya la prueba usando el invariante, no la intuición.
+2. ¿Qué pasa si el arreglo tiene un error de orden en un solo elemento? ¿El invariante sigue garantizando la corrección?
+3. ¿La versión iterativa y la versión recursiva tienen el mismo invariante? ¿O cambia la formulación?
+
+Regla: por cada respuesta del equipo, responde con una pregunta más profunda. Máximo 3 turnos por dimensión. Nunca des la respuesta directamente.</div>
+                <div class="entregable-box">
+                    <code># IA-REFLEXION-C: [máximo 3 líneas: qué descubrió el equipo sobre el invariante y cuál es la condición que garantiza corrección]</code>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ========================================================
+     FASE 2 — APLICA
+     ======================================================== -->
+<section id="aplica" class="fase-section">
+    <div class="fase-header aplica">
+        <div class="fase-icon">⚙️</div>
+        <div class="fase-info">
+            <h2>APLICA — Implementar, medir y ensamblar el HITO 2</h2>
+            <div class="bloom-tag">Bloom: Aplicar · Analizar | Sweller: starter code reduce carga extrínseca para focalizar en lógica de búsqueda</div>
+        </div>
+    </div>
+    <div class="fase-content">
+
+        <div class="objetivos-box">
+            <h4>🎯 Al terminar esta fase el equipo habrá:</h4>
+            <ul>
+                <li>Implementado búsqueda lineal y búsqueda binaria (iterativa) sobre datos de StreamMX.</li>
+                <li>Medido y comparado el tiempo de ambas búsquedas para n = 1 000 / 10 000 / 100 000 / 1 000 000.</li>
+                <li>Ensamblado el pipeline HITO 2: ordenar con el algoritmo del Veredicto → buscar con binaria.</li>
+                <li>(Avanzado) Implementado variantes de búsqueda binaria: primera y última ocurrencia en arreglos con duplicados.</li>
+            </ul>
+        </div>
+
+        <!-- Starter Code -->
+        <div class="starter-code-box">
+            <h4>🚀 Starter Code — Semana 11 (copiar completo, completar TODOs)</h4>
+            <div class="empathy-msg">El pipeline del HITO 2 reutiliza el código de S9 y S10. Copia aquí las implementaciones que ya pasaron sus casos de prueba — no las reimplementes.</div>
+            <pre><code>"""
+Semana 11 — Búsqueda Lineal, Binaria y HITO 2
+Estructura de Datos Básica · UAN · LSC
+Dr. Eligardo Cruz Sánchez
+Equipo: [nombres del equipo]
+Fecha: [fecha de la sesión]
+"""
+
+import time
+import random
+import copy
+import sys
+
+
+# ──────────────────────────────────────────────────────────────────────
+#  EVIDENCIAS DE COMPRENSIÓN (llenar ANTES de codificar)
+# ──────────────────────────────────────────────────────────────────────
+
+# COMPRENDE-1: Enuncia el invariante de búsqueda binaria con tus palabras.
+#              ¿Qué garantiza en cada iteración del bucle while?
+# [respuesta del equipo]
+
+# COMPRENDE-2: ¿Cuántas comparaciones hace búsqueda binaria en el peor caso
+#              para n = 1 000 000? Muestra el cálculo: ⌊log₂(n)⌋ + 1
+# [respuesta del equipo]
+
+# COMPRENDE-3: ¿Por qué búsqueda binaria requiere arreglo ordenado?
+#              Da un contraejemplo concreto donde falla si no está ordenado.
+# [respuesta del equipo]
+
+# ESTRATEGIA: Describe brevemente el plan del equipo para el HITO 2
+#             (qué algoritmo de ordenamiento eligieron del Veredicto y por qué)
+# [respuesta del equipo]
+
+
+# ──────────────────────────────────────────────────────────────────────
+#  IMPORTAR CÓDIGO DE S9 Y S10
+#  (pegar aquí las implementaciones que ya pasaron sus pruebas)
+# ──────────────────────────────────────────────────────────────────────
+
+def merge_sort(A):
+    """[Pegar aquí la implementación de Merge Sort de S9]"""
+    pass  # TODO: copiar de entrega S9
+
+
+def quick_sort(A, izq=None, der=None):
+    """[Pegar aquí la implementación de Quick Sort de S10]"""
+    pass  # TODO: copiar de entrega S10
+
+
+# ──────────────────────────────────────────────────────────────────────
+#  SECCIÓN 1 — BÚSQUEDA LINEAL
+# ──────────────────────────────────────────────────────────────────────
+
+def busqueda_lineal(A, objetivo):
+    """
+    Recorre A de izquierda a derecha buscando objetivo.
+    Retorna el índice de la primera ocurrencia, o -1 si no existe.
+    No requiere que A esté ordenado.
+    Complejidad: O(n) tiempo, O(1) espacio.
+    """
+    # DECISIÓN: ¿Por qué iterar con enumerate en lugar de range?
+    # [respuesta del equipo]
+
+    # TODO: implementar búsqueda lineal
+    pass
+
+
+# ──────────────────────────────────────────────────────────────────────
+#  SECCIÓN 2 — BÚSQUEDA BINARIA (iterativa)
+# ──────────────────────────────────────────────────────────────────────
+
+def busqueda_binaria(A, objetivo):
+    """
+    Búsqueda binaria iterativa sobre A ordenado ascendentemente.
+    Retorna el índice de una ocurrencia de objetivo, o -1 si no existe.
+    PRECONDICIÓN: A debe estar ordenado.
+    Complejidad: O(log n) tiempo, O(1) espacio.
+    """
+    # DECISIÓN: ¿Por qué usar mid = (izq + der) // 2 y no (izq + der) / 2?
+    # [respuesta del equipo]
+
+    # MID-CANONICO: En C/Java la forma segura es izq + (der - izq) // 2
+    #               porque izq + der puede desbordar un int de 32 bits
+    #               (bug en el JDK de Java durante 20 años, 1986–2006).
+    #               Python nos protege con enteros de precisión arbitraria,
+    #               pero la forma canónica es un hábito profesional correcto.
+
+    izq = 0
+    der = len(A) - 1
+
+    while izq <= der:
+        # TODO: calcular mid (división entera)
+        # TODO: si A[mid] == objetivo → retornar mid
+        # TODO: si A[mid] < objetivo  → mover izq = mid + 1
+        # TODO: si A[mid] > objetivo  → mover der = mid - 1
+        pass
+
+    return -1  # No encontrado
+
+
+# ──────────────────────────────────────────────────────────────────────
+#  SECCIÓN 3 — BENCHMARK COMPARATIVO
+# ──────────────────────────────────────────────────────────────────────
+
+def generar_arreglo_ordenado(n):
+    """Genera un arreglo de n enteros ordenados (simulando catálogo ya ordenado)."""
+    return list(range(n))
+
+
+def medir_busqueda(funcion_busqueda, A, objetivo):
+    """
+    Ejecuta funcion_busqueda(A, objetivo) y retorna (tiempo_segundos, resultado).
+    No copia el arreglo — búsqueda no modifica A.
+    """
+    inicio = time.perf_counter()
+    resultado = funcion_busqueda(A, objetivo)
+    fin = time.perf_counter()
+    return fin - inicio, resultado
+
+
+def ejecutar_benchmark_busqueda():
+    """
+    Benchmark: búsqueda lineal vs binaria sobre arreglos ordenados.
+    Tres escenarios por tamaño: objetivo al inicio, al final, no existe.
+    """
+    tamanos = [1_000, 10_000, 100_000, 1_000_000]
+    escenarios = [
+        ('inicio',     lambda n: 0),           # mejor caso lineal, cualquiera binaria
+        ('final',      lambda n: n - 1),        # peor caso lineal
+        ('no_existe',  lambda n: n + 999),      # peor caso ambas
+    ]
+
+    print("=" * 90)
+    print(f"{'n':>10} | {'Escenario':>10} | {'Lineal (s)':>13} | {'Binaria (s)':>13} | {'Factor':>8}")
+    print("=" * 90)
+
+    for n in tamanos:
+        A = generar_arreglo_ordenado(n)
+        for nombre_esc, get_objetivo in escenarios:
+            objetivo = get_objetivo(n)
+            t_lin, res_lin = medir_busqueda(busqueda_lineal, A, objetivo)
+            t_bin, res_bin = medir_busqueda(busqueda_binaria, A, objetivo)
+
+            # Verificar que ambas retornan el mismo resultado
+            assert res_lin == res_bin, (
+                f"DISCREPANCIA: lineal={res_lin}, binaria={res_bin} "
+                f"para n={n}, objetivo={objetivo}"
+            )
+
+            factor = t_lin / t_bin if t_bin > 0 else float('inf')
+            print(f"{n:>10} | {nombre_esc:>10} | {t_lin:>13.6f} | {t_bin:>13.6f} | {factor:>7.1f}x")
+        print("-" * 90)
+
+    # REFLEXIONA-1: ¿En qué escenario la diferencia de velocidad es mayor?
+    # [respuesta basada en datos reales del equipo]
+
+    # REFLEXIONA-2: ¿El "factor" de velocidad corresponde al ratio O(n)/O(log n)?
+    #               Calculen el valor teórico para n=1_000_000: n / log2(n) ≈ ?
+    # [respuesta del equipo]
+
+    # REFLEXIONA-3: ¿Qué pasa si buscan el objetivo al INICIO con búsqueda lineal
+    #               vs búsqueda binaria? ¿Cuál es más rápida y por qué?
+    # [respuesta del equipo]
+
+
+def ejecutar_benchmark_duplicados():
+    """
+    Benchmark de conflicto cognitivo — Área crítica de StreamMX:
+    Distribución C tiene millones de registros con el mismo puntaje.
+    Mide el tiempo de buscar_por_puntaje con expansión lineal vs el rango
+    que alcanzaría buscar_rango (Reto 6) sobre un arreglo con duplicados masivos.
+    Objetivo: observar empíricamente la degradación a O(n) en el caso crítico.
+    """
+    import math
+
+    print("\n" + "=" * 75)
+    print("BENCHMARK DUPLICADOS MASIVOS — Distribución C de StreamMX")
+    print("buscar_por_puntaje (expansión lineal) sobre distintas proporciones")
+    print("=" * 75)
+    print(f"{'n':>10} | {'% duplicados':>13} | {'buscar_por_puntaje (s)':>22} | {'Observación'}")
+    print("-" * 75)
+
+    casos = [
+        (10_000,   10),    # 1 000 duplicados del mismo valor
+        (10_000,   50),    # 5 000 duplicados — la mitad del arreglo
+        (100_000,  50),    # 50 000 duplicados
+        (100_000,  90),    # 90 000 duplicados — caso casi degenerado
+    ]
+
+    for n, pct in casos:
+        num_dup = int(n * pct / 100)
+        # Arreglo con num_dup copias del valor 500 y el resto distintos
+        A = sorted([500] * num_dup + list(range(501, 501 + (n - num_dup))))
+        t_inicio = __import__('time').perf_counter()
+        resultados = buscar_por_puntaje(A, 500)
+        t_fin = __import__('time').perf_counter()
+        t = t_fin - t_inicio
+        obs = "⚠️ LENTO" if t > 0.005 else "OK"
+        print(f"{n:>10} | {pct:>12}% | {t:>22.6f} | {obs}")
+
+    print("-" * 75)
+    print()
+    # REFLEXIONA-DUPLICADOS: ¿Cómo cambia el tiempo conforme aumenta el % de duplicados?
+    # ¿Qué relación tiene esto con la degradación de O(log n) a O(n)?
+    # ¿Por qué el Reto 6 (buscar_rango) resuelve este problema?
+    # [respuesta del equipo basada en los datos reales]
+
+
+# ──────────────────────────────────────────────────────────────────────
+#  SECCIÓN 4 — PIPELINE HITO 2
+# ──────────────────────────────────────────────────────────────────────
+
+# Datos StreamMX simplificados: (puntaje_compuesto, titulo, id_pelicula)
+catalogo_streamx = [
+    (8.2, "Interestelar",    "MX-001"),
+    (7.5, "El Laberinto",    "MX-002"),
+    (9.1, "Origen",          "MX-003"),
+    (6.8, "Dune Parte 1",    "MX-004"),
+    (8.7, "Oppenheimer",     "MX-005"),
+    (7.5, "La Señal",        "MX-006"),
+    (9.4, "Everything E.E.", "MX-007"),
+    (6.2, "Los Elegidos",    "MX-008"),
+    (8.0, "The Batman",      "MX-009"),
+    (7.5, "Gravedad",        "MX-010"),
+    (9.0, "Parasite",        "MX-011"),
+    (7.1, "Midsommar",       "MX-012"),
+]
+
+
+def ordenar_catalogo(catalogo, algoritmo='veredicto'):
+    """
+    Ordena el catálogo StreamMX por puntaje_compuesto (campo 0).
+    algoritmo: 'merge_sort' | 'quick_sort' | 'veredicto'
+    'veredicto' usa el algoritmo recomendado por el equipo en S10.
+    """
+    copia = copy.deepcopy(catalogo)
+
+    # DECISIÓN: ¿Qué algoritmo eligió el equipo en el Veredicto StreamMX de S10?
+    # Justificar aquí por qué este algoritmo es apropiado para esta distribución.
+    # [respuesta del equipo]
+
+    if algoritmo == 'merge_sort':
+        # TODO: ordenar copia con merge_sort por campo 0 (puntaje)
+        pass
+    elif algoritmo == 'quick_sort':
+        # TODO: ordenar copia con quick_sort por campo 0 (puntaje)
+        pass
+    elif algoritmo == 'veredicto':
+        # TODO: usar el algoritmo recomendado en el Veredicto StreamMX del equipo
+        pass
+
+    return copia
+
+
+def buscar_por_puntaje(catalogo_ordenado, puntaje_objetivo):
+    """
+    Busca películas en el catálogo ordenado con el puntaje exacto.
+    Usa búsqueda binaria para encontrar una ocurrencia, luego expande
+    hacia ambos lados para encontrar todas (manejo de duplicados básico).
+    Retorna lista de tuplas que coinciden, o lista vacía si no existe.
+    """
+    # TODO: usar busqueda_binaria para encontrar índice de una ocurrencia
+    # TODO: si retorna -1, retornar []
+    # TODO: desde ese índice, expandir izquierda y derecha mientras el puntaje coincida
+    # TODO: retornar todas las tuplas encontradas
+    pass
+
+
+def pipeline_hito2(catalogo, puntaje_buscar, algoritmo='veredicto'):
+    """
+    Pipeline completo HITO 2:
+    1. Ordenar catálogo con el algoritmo del Veredicto StreamMX.
+    2. Buscar películas con el puntaje dado usando búsqueda binaria.
+    3. Retornar resultados y métricas de tiempo.
+    """
+    # Paso 1: Ordenar
+    inicio_orden = time.perf_counter()
+    catalogo_ordenado = ordenar_catalogo(catalogo, algoritmo)
+    fin_orden = time.perf_counter()
+    t_orden = fin_orden - inicio_orden
+
+    # Paso 2: Buscar
+    inicio_busqueda = time.perf_counter()
+    resultados = buscar_por_puntaje(catalogo_ordenado, puntaje_buscar)
+    fin_busqueda = time.perf_counter()
+    t_busqueda = fin_busqueda - inicio_busqueda
+
+    return {
+        'catalogo_ordenado': catalogo_ordenado,
+        'resultados': resultados,
+        't_orden_s': t_orden,
+        't_busqueda_s': t_busqueda,
+        't_total_s': t_orden + t_busqueda,
+    }
+
+
+if __name__ == "__main__":
+    print("=" * 60)
+    print("PRUEBAS BÁSICAS — Sección 1 y 2")
+    print("=" * 60)
+
+    # Prueba búsqueda lineal
+    A = [3, 1, 4, 1, 5, 9, 2, 6]
+    assert busqueda_lineal(A, 5) == 4, "Lineal: error en búsqueda exitosa"
+    assert busqueda_lineal(A, 7) == -1, "Lineal: error en búsqueda fallida"
+    print("Búsqueda lineal: OK")
+
+    # Prueba búsqueda binaria
+    B = sorted(A)  # [1, 1, 2, 3, 4, 5, 6, 9]
+    idx = busqueda_binaria(B, 5)
+    assert idx != -1 and B[idx] == 5, "Binaria: error en búsqueda exitosa"
+    assert busqueda_binaria(B, 7) == -1, "Binaria: error en búsqueda fallida"
+    print("Búsqueda binaria: OK")
+
+    print("\n" + "=" * 60)
+    print("BENCHMARK — Sección 3")
+    print("=" * 60)
+    ejecutar_benchmark_busqueda()
+
+    print("\n" + "=" * 60)
+    print("BENCHMARK DUPLICADOS — Sección 3b")
+    print("=" * 60)
+    ejecutar_benchmark_duplicados()
+
+    print("\n" + "=" * 60)
+    print("PIPELINE HITO 2 — Sección 4")
+    print("=" * 60)
+    resultado = pipeline_hito2(catalogo_streamx, puntaje_buscar=7.5)
+    print(f"Catálogo ordenado (primeros 5): {resultado['catalogo_ordenado'][:5]}")
+    print(f"Películas con puntaje 7.5: {resultado['resultados']}")
+    print(f"Tiempo ordenar:  {resultado['t_orden_s']:.6f} s")
+    print(f"Tiempo buscar:   {resultado['t_busqueda_s']:.6f} s")
+    print(f"Tiempo total:    {resultado['t_total_s']:.6f} s")
+
+    # VALIDA: ¿El pipeline retorna correctamente las 3 películas con puntaje 7.5?
+    # [respuesta del equipo]
+</code></pre>
+        </div>
+
+        <!-- Reto 5 -->
+        <div class="reto-ia">
+            <div class="reto-ia-header">
+                <div class="reto-numero">5</div>
+                <h4>Reto 5 — Búsqueda lineal + binaria + benchmark <span class="reto-badge esencial">ESENCIAL</span></h4>
+            </div>
+            <div class="reto-ia-body">
+                <p><strong>Objetivo:</strong> Implementar ambas búsquedas, ejecutar el benchmark comparativo para los 4 tamaños y 3 escenarios, y ensamblar el pipeline HITO 2.</p>
+
+                <h5 style="margin:1rem 0 0.5rem; color:var(--accent);">Parte A — Implementación</h5>
+                <ol style="margin-left:1.5rem;">
+                    <li>Completar <code>busqueda_lineal(A, objetivo)</code>: recorre A y retorna el índice de la primera ocurrencia o -1.</li>
+                    <li>Completar <code>busqueda_binaria(A, objetivo)</code>: implementar el bucle <code>while izq &lt;= der</code> con <code>mid = (izq + der) // 2</code>. Verificar contra los errores comunes listados en COMPRENDE.</li>
+                    <li>Completar <code>buscar_por_puntaje()</code>: usa búsqueda binaria para encontrar una ocurrencia y luego expande en ambas direcciones para retornar todas las películas con ese puntaje.</li>
+                </ol>
+
+                <h5 style="margin:1rem 0 0.5rem; color:var(--accent);">Parte B — Benchmark</h5>
+                <ol start="4" style="margin-left:1.5rem;">
+                    <li>Ejecutar <code>ejecutar_benchmark_busqueda()</code> y registrar los tiempos reales. El assert de consistencia debe pasar para todos los tamaños.</li>
+                    <li>Completar <code># REFLEXIONA-1/2/3</code> con observaciones basadas en datos reales, incluyendo el factor de aceleración observado vs el factor teórico n/log₂(n).</li>
+                </ol>
+
+                <h5 style="margin:1rem 0 0.5rem; color:var(--accent);">Parte C — Pipeline HITO 2</h5>
+                <ol start="6" style="margin-left:1.5rem;">
+                    <li>Completar <code>ordenar_catalogo()</code>: usar el algoritmo del Veredicto StreamMX de S10 y justificar la elección en el comentario <code># DECISIÓN:</code>.</li>
+                    <li>Completar <code>pipeline_hito2()</code> y ejecutarlo con <code>puntaje_buscar=7.5</code>. Verificar que retorna las 3 películas con ese puntaje.</li>
+                    <li>Agregar el comentario <code># VALIDA:</code> al final del bloque <code>if __name__ == "__main__"</code> respondiendo si el pipeline cumple el requerimiento de la Ing. Sofía.</li>
+                </ol>
+
+                <h5 style="margin:1rem 0 0.5rem; color:var(--accent);">Parte D — Conflicto cognitivo: ¿Cuándo O(log n) deja de ser O(log n)?</h5>
+                <ol start="9" style="margin-left:1.5rem;">
+                    <li>Ejecutar <code>ejecutar_benchmark_duplicados()</code> con los 4 casos (10 000 al 10%, 10 000 al 50%, 100 000 al 50%, 100 000 al 90%).</li>
+                    <li>Observar cómo crece el tiempo conforme aumenta el porcentaje de duplicados. Completar <code># REFLEXIONA-DUPLICADOS</code> con una conclusión basada en datos reales.</li>
+                    <li>Responder en el comentario: ¿en qué porcentaje de duplicados el tiempo de <code>buscar_por_puntaje</code> se vuelve inaceptable para una búsqueda que debería ser O(log n)? ¿Qué función del Reto 6 resolvería esto?</li>
+                </ol>
+
+                <div class="context-box danger" style="margin-top:1rem;">
+                    <div class="box-title">⚡ Por qué importa esto en StreamMX — Distribución C</div>
+                    La Distribución C del Veredicto tenía millones de registros con puntaje idéntico. Con <code>buscar_por_puntaje</code> usando expansión lineal, encontrar una ocurrencia con búsqueda binaria toma O(log n) — pero recorrer todos los duplicados toma O(k), donde k es el número de registros con ese puntaje. Si k = 2 000 000, el tiempo vuelve a ser O(n). El Reto 6 (<code>buscar_rango</code>) resuelve esto en dos búsquedas binarias — O(log n) total, sin importar cuántos duplicados haya.
+                </div>
+
+                <div class="rol-ia" style="margin-top:1.5rem;">
+                    <strong>🤖 Rol de la IA en este reto:</strong> Si el equipo usa IA, puede preguntar sobre el invariante de corrección de la expansión de duplicados en <code>buscar_por_puntaje</code>. La IA no puede escribir la función completa. Para el error de <code>mid</code>, la IA puede indicar qué línea específica está mal si el equipo muestra su código — no reescribir el bloque.
+                </div>
+                <div class="prompt-box">Responde en español claro para un equipo de LSC que ya implementó Quick Sort la semana pasada.
+
+Estamos implementando búsqueda binaria y tenemos duda sobre [describe específicamente qué parte no funciona: el cálculo de mid, la condición del while, o la actualización de izq/der].
+
+No escribas la función completa. En cambio:
+1. Describe en una oración qué debe garantizar la línea que tenemos dudas.
+2. Muestra SOLO esa línea correcta, no el bloque completo.
+3. Haz una pregunta para verificar que entendemos por qué esa línea preserva el invariante.</div>
+                <div class="entregable-box">
+                    <code># IA-REFLEXION-A: [máximo 3 líneas sobre qué parte de la búsqueda binaria requirió ayuda y qué implementó el equipo sin asistencia]</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reto 6 -->
+        <div class="reto-ia">
+            <div class="reto-ia-header">
+                <div class="reto-numero">6</div>
+                <h4>Reto 6 — Búsqueda binaria con variantes: primera y última ocurrencia <span class="reto-badge avanzado">AVANZADO</span></h4>
+            </div>
+            <div class="reto-ia-body">
+                <p><strong>Objetivo:</strong> Implementar variantes de búsqueda binaria que retornen la primera y última posición de un valor en un arreglo con duplicados, en O(log n).</p>
+
+                <div class="context-box info">
+                    <div class="box-title">📌 ¿Por qué importa a StreamMX?</div>
+                    Con duplicados masivos (distribución C del Veredicto), múltiples películas comparten el mismo puntaje. La búsqueda binaria estándar retorna una ocurrencia arbitraria. Para obtener todas las películas con puntaje 7.5, el pipeline necesita encontrar la primera y última posición y luego tomar el rango completo — en O(log n), no expandiendo linealmente.
+                </div>
+
+                <h5 style="margin:1rem 0 0.5rem; color:var(--accent);">Tareas</h5>
+                <ol style="margin-left:1.5rem;">
+                    <li>Implementar <code>busqueda_primera_ocurrencia(A, objetivo)</code>: cuando A[mid] == objetivo, en lugar de retornar inmediatamente, actualizar <code>der = mid - 1</code> y guardar la posición candidata. Retornar la posición guardada al terminar.</li>
+                    <li>Implementar <code>busqueda_ultima_ocurrencia(A, objetivo)</code>: cuando A[mid] == objetivo, actualizar <code>izq = mid + 1</code> y guardar la posición candidata.</li>
+                    <li>Implementar <code>buscar_rango(A, objetivo)</code>: combina ambas variantes y retorna la tupla <code>(primera, ultima)</code>. Si no existe, retorna <code>(-1, -1)</code>.</li>
+                    <li>Reemplazar la expansión lineal de <code>buscar_por_puntaje()</code> por <code>buscar_rango()</code> y verificar que el resultado es idéntico.</li>
+                    <li>Agregar al benchmark un arreglo de 100 000 elementos con 50 000 duplicados del mismo valor y comparar el tiempo de la expansión lineal vs <code>buscar_rango()</code>.</li>
+                </ol>
+
+                <div class="rol-ia" style="margin-top:1rem;">
+                    <strong>🤖 Rol de la IA:</strong> Puede explicar conceptualmente la diferencia entre la búsqueda estándar y la variante de primera/última ocurrencia. No puede escribir <code>busqueda_primera_ocurrencia()</code>. Si el equipo pregunta, la IA responde: "¿Qué pasa con la condición de retorno cuando A[mid] == objetivo en esta variante?"
+                </div>
+                <div class="prompt-box">Responde en español técnico para un equipo que ya implementó búsqueda binaria estándar.
+
+Queremos implementar búsqueda de primera ocurrencia en O(log n). Entendemos que la diferencia con la binaria estándar es que cuando encontramos el objetivo no retornamos inmediatamente.
+
+Ayúdanos a entender:
+1. ¿Qué variable necesitamos agregar para "recordar" la última posición donde encontramos el objetivo?
+2. ¿Por qué actualizamos der = mid - 1 (y no der = mid) cuando A[mid] == objetivo? ¿No estamos descartando la posición que encontramos?
+3. ¿Qué garantiza que al terminar el bucle, la variable que guardamos tiene la posición CORRECTA?
+
+No escribas la función. Solo responde las tres preguntas con una oración cada una.</div>
+                <div class="entregable-box">
+                    <code># IA-REFLEXION-B: [máximo 3 líneas: qué entendió el equipo sobre la variante y por qué O(log n) es posible incluso con duplicados]</code>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ========================================================
+     FASE 3 — REFLEXIONA
+     ======================================================== -->
+<section id="reflexiona" class="fase-section">
+    <div class="fase-header reflexiona">
+        <div class="fase-icon">🪞</div>
+        <div class="fase-info">
+            <h2>REFLEXIONA — Defender el invariante y el pipeline</h2>
+            <div class="bloom-tag">Bloom: Analizar · Evaluar | Bandura: agencia compartida — cualquier integrante defiende el HITO 2 completo</div>
+        </div>
+    </div>
+    <div class="fase-content">
+
+        <!-- Andamiaje de rescate -->
+        <div class="andamiaje-box">
+            <h4>🛡️ Andamiaje de defensa oral — Dos niveles de rescate</h4>
+            <p style="margin-bottom:1rem;">El docente selecciona aleatoriamente a un integrante del equipo para explicar cualquiera de los ítems siguientes. El equipo completo comparte la calificación de esa defensa.</p>
+            <div class="nivel-rescate nivel-1">
+                <div class="nivel-titulo">✅ Nivel 1 — 100%: Respuesta técnica completa</div>
+                El integrante explica el concepto con precisión, puede trazar el algoritmo sobre un ejemplo en la pizarra y justifica el pipeline del HITO 2 con referencia a los datos del benchmark.
+            </div>
+            <div class="nivel-rescate nivel-2">
+                <div class="nivel-titulo">⚠️ Nivel 2 — Rescate 60%: Concepto general sin procedimiento</div>
+                El docente reformula: "¿Puedes decir en una sola oración qué es búsqueda binaria?" Si responde el concepto central sin poder trazar o calcular, obtiene 60% del criterio.
+            </div>
+            <div class="nivel-rescate nivel-0">
+                <div class="nivel-titulo">❌ Sin rescate — 0%: No puede articular ni el concepto</div>
+                El criterio REFLEXIONA vale 0 puntos para el equipo completo, independientemente de la calidad del código entregado.
+            </div>
+        </div>
+
+        <!-- Ítems de defensa -->
+        <h3 style="color:var(--primary); margin:1.5rem 0 1rem;">Ítems de defensa oral — Semana 11</h3>
+        <div class="checkpoint">
+            <h4>🎤 Cualquier integrante debe poder responder:</h4>
+            <div class="pregunta">
+                <strong>D1 — Traza de búsqueda binaria:</strong> Traza la búsqueda binaria sobre A = [2, 4, 6, 8, 10, 12, 14] buscando el valor 10. ¿Cuántas iteraciones? ¿Cuáles son los valores de izq, der y mid en cada paso?
+            </div>
+            <div class="pregunta">
+                <strong>D2 — Invariante bajo presión:</strong> Explica por qué <code>izq = mid + 1</code> (y no <code>izq = mid</code>) preserva el invariante. ¿Qué pasaría con la terminación del bucle si usaras <code>izq = mid</code> en A = [5, 7] buscando 9?
+            </div>
+            <div class="pregunta">
+                <strong>D3 — Precondición y consecuencias:</strong> El catálogo de StreamMX no se ordena antes de la búsqueda. Diseña un arreglo de 6 elementos donde búsqueda binaria retorna "no encontrado" aunque el elemento está presente. ¿Por qué ocurre?
+            </div>
+            <div class="pregunta">
+                <strong>D4 — HITO 2 completo:</strong> Explica el pipeline del equipo: ¿qué algoritmo ordenó el catálogo?, ¿por qué lo eligieron según el Veredicto de S10?, ¿qué retorna <code>buscar_por_puntaje(catalogo, 7.5)</code> y cuántas comparaciones hacen en el peor caso?
+            </div>
+            <div class="pregunta">
+                <strong>D5 — Comparativa empírica:</strong> Con los datos del benchmark del equipo: para n = 1 000 000 buscando el último elemento, ¿cuántas veces fue más rápida la búsqueda binaria que la lineal? ¿Ese factor se acerca al teórico n/log₂(n)?
+            </div>
+        </div>
+
+        <!-- Análisis de amortización — movido aquí para que preceda al cálculo de HITO 2 -->
+        <div class="context-box info" style="margin-top:2rem;">
+            <div class="box-title">📐 Marco matemático para el HITO 2 — Análisis de amortización</div>
+            <p>El pipeline del HITO 2 ordena una vez (O(n log n)) y luego ejecuta búsquedas baratas (O(log n) cada una). La pregunta clave que la Ing. Sofía exige responder: <strong>¿a partir de cuántas búsquedas conviene mantener el catálogo ordenado?</strong></p>
+            <p style="margin-top:0.8rem;">La fórmula de amortización iguala el costo total de ambas estrategias:</p>
+            <div class="ascii-diagram" style="margin:1rem 0; font-size:0.85rem;">Costo total con pipeline (ordenar una vez + k búsquedas binarias):
+  T_pipeline(k) = T_ordenar + k × T_binaria
+
+Costo total sin pipeline (k búsquedas lineales):
+  T_lineal(k)  = k × T_lineal_por_busqueda
+
+El pipeline conviene cuando T_pipeline(k) &lt; T_lineal(k):
+  T_ordenar &lt; k × (T_lineal - T_binaria)
+  k > T_ordenar / (T_lineal - T_binaria)
+
+  → k_amortizacion = T_ordenar / (T_lineal - T_binaria)</div>
+            <p>Con sus datos reales del benchmark (n = 1 000 000), sustituyen T_ordenar, T_lineal y T_binaria para obtener el valor concreto de K. <strong>Este cálculo es el argumento central del comentario final del HITO 2</strong> — procesarlo ahora, antes de VALIDA, es lo que hace que el comentario tenga contenido real y no sea un formalismo vacío.</p>
+        </div>
+
+        <!-- Reto IA R -->
+        <div class="reto-ia">
+            <div class="reto-ia-header">
+                <div class="reto-numero">R</div>
+                <h4>Reto IA — Reflexiona: Simulacro de defensa oral con foco en invariantes</h4>
+                <span class="reto-badge esencial">REFLEXIONA</span>
+            </div>
+            <div class="reto-ia-body">
+                <div class="rol-ia">
+                    <strong>🤖 Rol de la IA:</strong> Evaluadora externa con protocolo de andamiaje dos niveles. Formula los ítems de defensa como lo haría el docente, evalúa las respuestas (100%/60%/0%) y aplica el rescate una vez si la respuesta es incompleta.
+                </div>
+                <div class="prompt-box">Responde en español directo y técnico, como un profesor universitario de algoritmos. Sin elogios vacíos.
+
+Vas a simular una defensa oral de búsqueda binaria para el HITO 2. Protocolo exacto:
+
+1. Presenta el ítem D1 (traza sobre [2, 4, 6, 8, 10, 12, 14] buscando 10).
+2. El equipo responde. Evalúa: ¿merece 100%, 60% (rescate) o 0%? Explica brevemente por qué.
+3. Si la respuesta es incompleta, aplica el rescate nivel 2 UNA VEZ: "¿Puedes decir en una sola oración qué hace búsqueda binaria?"
+4. Pasa a D2 (invariante con izq=mid) y repite el protocolo.
+5. Termina con D4 (HITO 2: justificación del pipeline completo).
+
+Regla: nunca das la respuesta correcta directamente. Si el equipo no sabe, aplicas el rescate y evalúas eso. Después del rescate, pasas al siguiente ítem independientemente del resultado.</div>
+                <div class="entregable-box">
+                    <code># IA-REFLEXION-R: [máximo 3 líneas: ¿qué ítem de defensa fue más difícil y qué concepto necesitan repasar antes de la defensa real?]</code>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ========================================================
+     FASE 4 — VALIDA
+     ======================================================== -->
+<section id="valida" class="fase-section">
+    <div class="fase-header valida">
+        <div class="fase-icon">✅</div>
+        <div class="fase-info">
+            <h2>VALIDA — Casos de prueba y verificación del HITO 2</h2>
+            <div class="bloom-tag">Bloom: Evaluar | Zimmerman: monitoreo y corrección — el benchmark es la evidencia objetiva</div>
+        </div>
+    </div>
+    <div class="fase-content">
+
+        <!-- Checklist -->
+        <div class="checklist-box">
+            <h4>☑️ Checklist de autoevaluación (completar antes de los casos de prueba)</h4>
+            <div class="checklist-item">
+                <input type="checkbox" id="s11_c1">
+                <div class="check-text">
+                    <strong>Búsqueda lineal implementada:</strong> Retorna el índice correcto de la primera ocurrencia y -1 si no existe. Funciona en arreglos no ordenados.
+                    <div class="check-diagnostico">Si no: revisar el bucle — ¿retorna inmediatamente al encontrar el elemento o continúa?</div>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="s11_c2">
+                <div class="check-text">
+                    <strong>Búsqueda binaria implementada:</strong> Usa <code>mid = (izq + der) // 2</code>, <code>izq = mid + 1</code>, <code>der = mid - 1</code> y condición <code>while izq &lt;= der</code>. Pasa los 8 casos de prueba mínimos.
+                    <div class="check-diagnostico">Si no: verificar los 4 errores comunes listados en COMPRENDE. El más frecuente es usar <code>mid = mid</code> sin sumar o restar 1.</div>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="s11_c3">
+                <div class="check-text">
+                    <strong>Benchmark ejecutado:</strong> Tabla de 12 celdas (4 tamaños × 3 escenarios) con tiempos reales. El assert de consistencia pasó en todas las celdas.
+                    <div class="check-diagnostico">Si el assert falla: hay un bug en una de las dos búsquedas — rastrear en qué escenario divergen.</div>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="s11_c4">
+                <div class="check-text">
+                    <strong>Pipeline HITO 2 funcional:</strong> <code>pipeline_hito2(catalogo_streamx, 7.5)</code> retorna las 3 películas con ese puntaje y las métricas de tiempo.
+                    <div class="check-diagnostico">Si no: verificar que <code>ordenar_catalogo()</code> retorna el arreglo ordenado (no lo ordena in-place sin retornar) y que <code>buscar_por_puntaje()</code> expande correctamente en ambas direcciones.</div>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="s11_c5">
+                <div class="check-text">
+                    <strong>Evidencias en código:</strong> Comentarios <code># COMPRENDE-1/2/3</code>, <code># ESTRATEGIA:</code>, <code># DECISIÓN:</code>, <code># REFLEXIONA-1/2/3</code> y <code># VALIDA:</code> completos con contenido real.
+                    <div class="check-diagnostico">Si no: los comentarios vacíos equivalen a cero en el criterio de evidencia — es el único criterio que no requiere ejecución para evaluarse.</div>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="s11_c6">
+                <div class="check-text">
+                    <strong>Justificación del algoritmo de ordenamiento (HITO 2):</strong> El comentario <code># DECISIÓN:</code> en <code>ordenar_catalogo()</code> explica por qué se eligió ese algoritmo con referencia al Veredicto StreamMX de S10.
+                    <div class="check-diagnostico">Si no: el HITO 2 es incompleto aunque el código funcione — la justificación es parte del entregable técnico.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Casos de prueba -->
+        <h3 style="color:var(--primary); margin:1.5rem 0 1rem;">Casos de prueba mínimos — 8 casos obligatorios</h3>
+        <table class="tabla-comparativa">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Función</th>
+                    <th>Entrada</th>
+                    <th>Salida esperada</th>
+                    <th>Propósito</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>T1</td>
+                    <td>busqueda_lineal</td>
+                    <td>A=[3,1,4,1,5], obj=4</td>
+                    <td>2</td>
+                    <td>Elemento existente, arreglo no ordenado</td>
+                </tr>
+                <tr>
+                    <td>T2</td>
+                    <td>busqueda_lineal</td>
+                    <td>A=[3,1,4,1,5], obj=9</td>
+                    <td>-1</td>
+                    <td>Elemento no presente</td>
+                </tr>
+                <tr>
+                    <td>T3</td>
+                    <td>busqueda_binaria</td>
+                    <td>A=[1,3,5,7,9], obj=7</td>
+                    <td>3</td>
+                    <td>Elemento existente, arreglo ordenado</td>
+                </tr>
+                <tr>
+                    <td>T4</td>
+                    <td>busqueda_binaria</td>
+                    <td>A=[1,3,5,7,9], obj=4</td>
+                    <td>-1</td>
+                    <td>Elemento no presente</td>
+                </tr>
+                <tr>
+                    <td>T5</td>
+                    <td>busqueda_binaria</td>
+                    <td>A=[42], obj=42</td>
+                    <td>0</td>
+                    <td>Arreglo de un elemento — elemento presente</td>
+                </tr>
+                <tr>
+                    <td>T6</td>
+                    <td>busqueda_binaria</td>
+                    <td>A=[42], obj=99</td>
+                    <td>-1</td>
+                    <td>Arreglo de un elemento — elemento ausente</td>
+                </tr>
+                <tr style="background:#e3f2fd;">
+                    <td><strong>T7</strong></td>
+                    <td>busqueda_binaria</td>
+                    <td>A=[1,3,5,5,5,7,9], obj=5</td>
+                    <td>índice donde A[idx]==5</td>
+                    <td>Duplicados — retorna alguna ocurrencia válida (no determinista)</td>
+                </tr>
+                <tr style="background:#e3f2fd;">
+                    <td><strong>T8</strong></td>
+                    <td>buscar_por_puntaje</td>
+                    <td>catalogo_streamx ordenado, obj=7.5</td>
+                    <td>Lista con 3 tuplas (7.5, ...)</td>
+                    <td>Pipeline HITO 2 — retorna todas las ocurrencias del puntaje</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="context-box warning">
+            <div class="box-title">⚠️ Sobre T7</div>
+            La búsqueda binaria estándar no garantiza retornar la primera ni la última ocurrencia con duplicados — retorna <em>alguna</em> ocurrencia válida. Para T7, el test debe verificar que <code>A[resultado] == 5</code> (correcto) y que <code>resultado != -1</code>, no que el índice sea exactamente 2 o 3 o 4.
+        </div>
+
+        <!-- Reto IA V -->
+        <div class="reto-ia">
+            <div class="reto-ia-header">
+                <div class="reto-numero">V</div>
+                <h4>Reto IA — Valida: Casos adversariales para búsqueda binaria y el pipeline</h4>
+                <span class="reto-badge esencial">VALIDA</span>
+            </div>
+            <div class="reto-ia-body">
+                <div class="rol-ia">
+                    <strong>🤖 Rol de la IA:</strong> QA engineer adversaria. Diseña casos de entrada específicos para revelar errores off-by-one y condiciones de borde en búsqueda binaria. No da los fixes — señala qué invariante se rompe.
+                </div>
+                <div class="prompt-box">Responde en español técnico, como un QA engineer evaluando una implementación de búsqueda binaria.
+
+El equipo de StreamMX dice que su búsqueda binaria es correcta. Tu misión: diseñar 4 casos adversariales adicionales (distintos a T1-T8) que puedan exponer errores comunes de implementación.
+
+Protocolo:
+1. Pide al equipo que declare los 3 invariantes que garantiza su implementación.
+2. Diseña un caso que podría violar cada invariante (enfócate en: arreglos de longitud par, objetivo en el primer elemento, objetivo en el último elemento, arreglos de 2 elementos).
+3. Presenta cada caso y pide al equipo que prediga la salida ANTES de ejecutar.
+4. El equipo ejecuta y compara. Si hay discrepancia, señala: "El invariante X falló en la iteración Y — ¿por qué?"
+
+Nunca des el código corregido. Solo señala la propiedad rota.</div>
+                <div class="entregable-box">
+                    <code># IA-REFLEXION-V: [máximo 3 líneas: ¿encontraron errores con los casos adversariales? ¿El pipeline pasa todos los casos diseñados por la IA?]</code>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ========================================================
+     HITO 2 — ENTREGABLE INTEGRADOR
+     ======================================================== -->
+<section id="hito2">
+    <div class="hito-box">
+        <h3>🏁 HITO 2 — Biblioteca de Ordenamiento y Búsqueda con Benchmarks</h3>
+        <p style="opacity:0.9; margin-bottom:1.5rem;">Entregable integrador de las Semanas 9, 10 y 11. El equipo entrega un único archivo Python autocontenido que demuestra el pipeline completo de StreamMX.</p>
+
+        <h4 style="color:var(--accent); margin-bottom:1rem;">📦 Componentes obligatorios del HITO 2</h4>
+        <div class="pipeline-step">
+            <div class="step-num">1</div>
+            <div>
+                <strong>Merge Sort (S9):</strong> Implementación completa que pasa los 7 casos de prueba de S9. Comentarios <code># COMPRENDE-1/2/3</code> de S9 presentes.
+            </div>
+        </div>
+        <div class="pipeline-step">
+            <div class="step-num">2</div>
+            <div>
+                <strong>Quick Sort con estrategia de pivote (S10):</strong> Implementación completa con la estrategia elegida en el Veredicto. Comentarios <code># COMPRENDE-1/2/3</code> de S10 presentes.
+            </div>
+        </div>
+        <div class="pipeline-step">
+            <div class="step-num">3</div>
+            <div>
+                <strong>Veredicto StreamMX (S10):</strong> Sección <code># VALIDA: VEREDICTO STREAMMX</code> completa con las tres distribuciones, tiempos reales y conclusión técnica.
+            </div>
+        </div>
+        <div class="pipeline-step">
+            <div class="step-num">4</div>
+            <div>
+                <strong>Búsqueda lineal y binaria (S11):</strong> Ambas implementadas, benchmark comparativo ejecutado (tabla de 12 celdas), comentarios de evidencia completos.
+            </div>
+        </div>
+        <div class="pipeline-step">
+            <div class="step-num">5</div>
+            <div>
+                <strong>Pipeline integrado:</strong> <code>pipeline_hito2(catalogo, puntaje)</code> funcional — ordena con el algoritmo del Veredicto y busca con búsqueda binaria. Retorna correctamente las películas con puntaje 7.5 del <code>catalogo_streamx</code>.
+            </div>
+        </div>
+        <div class="pipeline-step">
+            <div class="step-num">6</div>
+            <div>
+                <strong>Benchmark del pipeline:</strong> Tiempo total (ordenar + buscar) vs solo buscar linealmente sin orden previo, para n = 100 000 y n = 1 000 000. ¿A partir de cuántas búsquedas se "amortiza" el costo de ordenar? Usar la fórmula K = T_ordenar / (T_lineal − T_binaria) con sus datos reales.
+            </div>
+        </div>
+        <div class="pipeline-step">
+            <div class="step-num">7</div>
+            <div>
+                <strong>Dilema final — ¿Cuándo el pipeline ya no es suficiente?</strong> La Ing. Sofía informa que el catálogo recibe 100 películas nuevas por hora. El equipo re-ordena todo desde cero cada hora. Con sus datos de K, determinen: si solo hay 500 búsquedas por hora, ¿el costo de ordenar se amortiza? La respuesta a esta pregunta abre la motivación para Semana 12 — consignarla en el comentario <code># DILEMA FINAL</code> del archivo.
+            </div>
+        </div>
+
+        <div style="background:rgba(242,169,0,0.15); border:1px solid var(--accent); padding:1rem; border-radius:8px; margin-top:1.5rem;">
+            <strong style="color:var(--accent);">📌 Comentario final obligatorio en el archivo HITO 2:</strong>
+            <pre style="margin-top:0.8rem; font-size:0.85rem; color:#c9d1d9; background:rgba(0,0,0,0.3); padding:0.8rem; border-radius:4px;">
+# ═══════════════════════════════════════════════════════════════
+# HITO 2 — CONCLUSIÓN TÉCNICA DEL EQUIPO
+# ═══════════════════════════════════════════════════════════════
+#
+# Pipeline elegido: [algoritmo de ordenamiento] + búsqueda binaria
+# Justificación del algoritmo de ordenamiento: [referencia al Veredicto S10]
+#
+# Benchmark pipeline completo (n = 1 000 000):
+#   Ordenar: [X] s
+#   Buscar (binaria): [X] s
+#   Total:  [X] s
+#
+# Búsqueda lineal sin ordenar (n = 1 000 000, peor caso): [X] s
+#
+# ¿Se amortiza el costo de ordenar a partir de [K] búsquedas?
+#   Costo ordenar / (tiempo_lineal - tiempo_binaria) = K = [calcular]
+#
+# Respuesta al requerimiento de la Ing. Sofía Ramírez:
+# [¿El pipeline cumple el requerimiento de ≤ 23 comparaciones por búsqueda?
+#  ¿Qué distribución de StreamMX es la más beneficiada por este pipeline?]
+#
+# ─────────────────────────────────────────────────────────────────
+# DILEMA FINAL — ¿El pipeline sigue siendo suficiente?
+# ─────────────────────────────────────────────────────────────────
+# La Ing. Sofía informa: el catálogo ahora recibe 100 películas nuevas
+# por hora (inserciones dinámicas). El pipeline re-ordena todo desde cero
+# cada hora antes de atender búsquedas.
+#
+# Con sus datos de benchmark, respondan:
+# ¿El costo O(n log n) de re-ordenar se amortiza si solo hay 500
+# búsquedas en esa hora? → Calcular: K_amortizacion vs 500
+#
+# Si K > 500: el pipeline ya NO conviene para un catálogo dinámico
+# con pocas búsquedas por ciclo. ¿Qué estructura de datos permitiría
+# inserción sin re-ordenar Y búsqueda sub-lineal? → Motivación S12.
+#
+# Conclusión del equipo:
+# [¿Conviene o no conviene el pipeline en el escenario dinámico?
+#  ¿Cuál sería la estructura más adecuada para alta mutabilidad?]
+#
+# Equipo: [nombres]  |  Fecha: [fecha]</pre>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================================
+     FASE 5 — PROFUNDIZA
+     ======================================================== -->
+<section id="profundiza" class="fase-section">
+    <div class="fase-header profundiza">
+        <div class="fase-icon">🚀</div>
+        <div class="fase-info">
+            <h2>PROFUNDIZA — Límites de la búsqueda y puente a Tablas Hash</h2>
+            <div class="bloom-tag">Bloom: Evaluar · Crear | Zimmerman: regulación anticipatoria hacia S12</div>
+        </div>
+    </div>
+    <div class="fase-content">
+
+        <div class="objetivos-box">
+            <h4>🎯 Al terminar esta fase el equipo podrá:</h4>
+            <ul>
+                <li>Identificar los límites fundamentales de la búsqueda binaria (requiere orden, datos en RAM, acceso aleatorio).</li>
+                <li>Calcular el punto de amortización: cuántas búsquedas justifican el costo de ordenar.</li>
+                <li>Formular la pregunta que motiva las tablas hash: ¿existe una estructura que sea O(1) en búsqueda sin requerir orden previo?</li>
+            </ul>
+        </div>
+
+        <!-- Análisis de límites -->
+        <h3 style="color:var(--primary); margin-bottom:1rem;">El análisis de amortización — revisión con datos propios</h3>
+        <p>En REFLEXIONA procesaron la fórmula de amortización como marco conceptual. Aquí la aplican a sus datos reales del HITO 2 para construir el argumento completo que la Ing. Sofía requiere:</p>
+        <div class="ascii-diagram">ANÁLISIS DE AMORTIZACIÓN — ¿Cuándo conviene ordenar?
+═══════════════════════════════════════════════════════
+
+Costo total con pipeline (ordenar una vez + k búsquedas binarias):
+  T_pipeline(k) = T_ordenar + k × T_binaria
+               ≈ O(n log n) + k × O(log n)
+
+Costo total sin pipeline (k búsquedas lineales sin ordenar):
+  T_lineal(k)  = k × T_lineal_por_busqueda
+               ≈ k × O(n)
+
+El pipeline conviene cuando T_pipeline(k) < T_lineal(k):
+  T_ordenar + k × T_binaria < k × T_lineal
+  T_ordenar < k × (T_lineal - T_binaria)
+  k > T_ordenar / (T_lineal - T_binaria)
+
+Ejemplo con datos reales del benchmark del equipo (n = 1 000 000):
+  T_ordenar  ≈ [X] s        (del pipeline del HITO 2)
+  T_lineal   ≈ [Y] s        (del benchmark de búsqueda)
+  T_binaria  ≈ [Z] s        (del benchmark de búsqueda)
+
+  k_amortizacion = [X] / ([Y] - [Z])  ≈ [K] búsquedas
+
+A partir de la búsqueda número K, el pipeline siempre gana.</div>
+        <div class="diagrama-descripcion">
+            El diagrama muestra la fórmula de amortización: el número de búsquedas K a partir del cual el pipeline (ordenar una vez + búsquedas binarias) es más barato que k búsquedas lineales sin ordenar. El equipo reemplaza X, Y, Z con sus datos reales del benchmark del HITO 2.
+        </div>
+
+        <div class="context-box info">
+            <div class="box-title">💡 Límites fundamentales de búsqueda binaria</div>
+            <p>La búsqueda binaria es óptima para búsqueda en arreglos ordenados — ningún algoritmo puede garantizar menos de ⌊log₂(n)⌋ comparaciones en el peor caso. Sin embargo tiene tres restricciones que la hacen inadecuada en algunos contextos:</p>
+            <ul style="margin: 0.5rem 0 0 1.5rem;">
+                <li><strong>Requiere orden previo:</strong> si los datos cambian frecuentemente, el re-ordenamiento puede costar más que las búsquedas que ahorra.</li>
+                <li><strong>Requiere acceso aleatorio:</strong> funciona con arreglos pero no con listas enlazadas (sin acceso a A[mid] en O(1)).</li>
+                <li><strong>Peor caso O(log n), no O(1):</strong> en catálogos con millones de búsquedas por segundo, incluso 23 comparaciones por búsqueda pueden ser demasiadas.</li>
+            </ul>
+        </div>
+
+        <!-- Puente a Tablas Hash -->
+        <h3 style="color:var(--primary); margin:1.5rem 0 1rem;">🌉 Puente hacia Semana 12 — Tablas Hash</h3>
+        <div class="context-box success">
+            <div class="box-title">🚀 La pregunta que abre el siguiente tema</div>
+            <p>El equipo ha llegado a O(log n) con búsqueda binaria — una mejora enorme respecto a O(n). Pero la Ing. Sofía tiene una nueva pregunta:</p>
+            <p style="margin-top:0.8rem; font-style:italic;">"¿Existe alguna estructura donde, dado el ID de una película o su título exacto, pueda encontrarla en O(1) — tiempo constante, sin importar cuántas películas tenga el catálogo?"</p>
+            <p style="margin-top:0.8rem;">La respuesta es sí: las <strong>tablas hash</strong>. Pero O(1) viene con sus propias condiciones y trampas (funciones hash, colisiones, degradación en el peor caso). La Semana 12 aborda exactamente esto.</p>
+        </div>
+
+        <!-- Reto IA P -->
+        <div class="reto-ia">
+            <div class="reto-ia-header">
+                <div class="reto-numero">P</div>
+                <h4>Reto IA — Profundiza: Del O(log n) al O(1) — motivación para tablas hash</h4>
+                <span class="reto-badge avanzado">PROFUNDIZA</span>
+            </div>
+            <div class="reto-ia-body">
+                <div class="rol-ia">
+                    <strong>🤖 Rol de la IA:</strong> Explorador de frontera. Conecta la búsqueda binaria con las tablas hash y plantea preguntas que el equipo no puede responder completamente todavía — para motivar S12 sin spoilear la solución.
+                </div>
+                <div class="prompt-box">Responde en español accesible y motivador, como un mentor técnico que conecta conceptos.
+
+El equipo de StreamMX implementó búsqueda binaria (O(log n)) y la integró en el HITO 2. Ahora quieren entender si pueden hacer aún mejor.
+
+Ayúdalos a razonar hacia las tablas hash:
+1. Si el equipo tuviera una función mágica f(titulo) que convierte cualquier título de película directamente a su posición en el arreglo en O(1), ¿qué propiedades debería tener esa función para que la búsqueda siempre funcione?
+2. ¿Qué pasaría si dos películas distintas le dan el mismo índice? ¿Cómo lo manejarías?
+3. ¿Esta "función mágica" requiere que el arreglo esté ordenado? ¿Por qué eso es revolucionario respecto a la búsqueda binaria?
+
+Deja la pregunta 2 parcialmente abierta — no resuelvas el problema de colisiones completo. El objetivo es generar curiosidad, no responder todo antes de S12.</div>
+                <div class="entregable-box">
+                    <code># IA-REFLEXION-P: [máximo 3 líneas: ¿qué pregunta sobre tablas hash le queda pendiente al equipo antes de S12?]</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marcador de corte -->
+        <h3 style="color:var(--primary); margin:2rem 0 1rem;">📍 Marcador de corte S11 → S12</h3>
+        <table class="corte-table">
+            <thead>
+                <tr>
+                    <th>✅ Semana 11 — Cubierto hoy</th>
+                    <th>🔜 Semana 12 — Tablas Hash</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Búsqueda lineal O(n) — sin requisito de orden</td>
+                    <td>Función hash: mapear clave → índice en O(1)</td>
+                </tr>
+                <tr>
+                    <td>Búsqueda binaria O(log n) — requiere arreglo ordenado</td>
+                    <td>Colisiones: ¿qué pasa cuando dos claves mapean al mismo índice?</td>
+                </tr>
+                <tr>
+                    <td>Invariante de búsqueda binaria: objetivo ∈ A[izq..der] si existe</td>
+                    <td>Resolución por encadenamiento y por sondeo lineal</td>
+                </tr>
+                <tr>
+                    <td>Amortización: cuántas búsquedas justifican ordenar</td>
+                    <td>Complejidad promedio O(1) vs peor caso O(n) en tablas hash</td>
+                </tr>
+                <tr>
+                    <td>HITO 2 — Pipeline completo ordenar → buscar</td>
+                    <td>Dict de Python como tabla hash — uso e internals básicos</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</section>
+
+<!-- ========================================================
+     RÚBRICA DE EVALUACIÓN
+     ======================================================== -->
+<section id="rubrica">
+    <div class="evaluacion-section">
+        <div class="evaluacion-header">
+            <h2>📊 Rúbrica de Evaluación — Semana 11 + HITO 2</h2>
+            <p style="opacity:0.9; margin-top:0.3rem;">Base: 100 pts · Crédito extra Reto 6: +10 pts · HITO 2 evaluado por separado (15% del curso)</p>
+        </div>
+
+        <div class="criterio-item">
+            <span class="fase-badge">COMPRENDE</span>
+            <div style="flex:1;">
+                <strong>Comentarios de comprensión en código</strong>
+                <div style="font-size:0.9rem; color:var(--gray); margin-top:0.3rem;">
+                    <strong>Excelente (25):</strong> Los tres comentarios <code># COMPRENDE-1/2/3</code> formulan con palabras propias el invariante de búsqueda binaria (no la definición del libro), el cálculo de ⌊log₂(n)⌋+1 con un ejemplo concreto de StreamMX, y un contraejemplo de falla sin orden.<br>
+                    <strong>Bien (19):</strong> Los tres presentes pero al menos uno es superficial o copia sin adaptar.<br>
+                    <strong>Suficiente (13):</strong> Solo 1–2 comentarios presentes con contenido real.<br>
+                    <strong>Insuficiente (0):</strong> Ausentes o vacíos.
+                </div>
+            </div>
+            <span class="puntos">25 pts</span>
+        </div>
+
+        <div class="criterio-item">
+            <span class="fase-badge">APLICA</span>
+            <div style="flex:1;">
+                <strong>Implementación + Benchmark + Pipeline HITO 2 (Reto 5)</strong>
+                <div style="font-size:0.9rem; color:var(--gray); margin-top:0.3rem;">
+                    <strong>Excelente (25):</strong> Búsqueda lineal y binaria correctas (pasan T1–T8). Benchmark con 12 celdas reales y assert de consistencia sin fallos. Pipeline <code>pipeline_hito2(catalogo_streamx, 7.5)</code> retorna las 3 películas correctas. Comentario <code># DECISIÓN:</code> con justificación del algoritmo de ordenamiento.<br>
+                    <strong>Bien (19):</strong> Ambas búsquedas correctas pero benchmark incompleto (menos de 12 celdas) o pipeline con error menor (retorna 2 de 3 películas).<br>
+                    <strong>Suficiente (13):</strong> Búsqueda binaria implementada con errores menores (falla en T5 o T6). Pipeline no ensamblado.<br>
+                    <strong>Insuficiente (0):</strong> Búsqueda binaria sin implementar o no ejecuta.
+                </div>
+            </div>
+            <span class="puntos">25 pts</span>
+        </div>
+
+        <div class="criterio-item">
+            <span class="fase-badge">REFLEXIONA</span>
+            <div style="flex:1;">
+                <strong>Defensa oral + comentarios REFLEXIONA-1/2/3</strong>
+                <div style="font-size:0.9rem; color:var(--gray); margin-top:0.3rem;">
+                    <strong>Excelente (25):</strong> El integrante seleccionado responde al menos 3 de los 5 ítems con precisión técnica (nivel 1, 100%). Los comentarios <code># REFLEXIONA-1/2/3</code> están basados en datos reales del benchmark e incluyen el cálculo del factor teórico vs observado.<br>
+                    <strong>Bien (19):</strong> Responde al nivel 1 en 2 ítems y al nivel de rescate en el tercero.<br>
+                    <strong>Suficiente (13):</strong> Solo responde al nivel de rescate en todos los ítems.<br>
+                    <strong>Insuficiente (0):</strong> No puede responder ningún ítem, ni al nivel de rescate. <em>Este criterio es cero independientemente del código entregado.</em>
+                </div>
+            </div>
+            <span class="puntos">25 pts</span>
+        </div>
+
+        <div class="criterio-item">
+            <span class="fase-badge">VALIDA</span>
+            <div style="flex:1;">
+                <strong>Casos de prueba T1–T8 + conclusión del HITO 2</strong>
+                <div style="font-size:0.9rem; color:var(--gray); margin-top:0.3rem;">
+                    <strong>Excelente (25):</strong> Los 8 casos pasan. El comentario final del HITO 2 está completo: algoritmo elegido, benchmark del pipeline, cálculo de amortización K, respuesta al requerimiento de la Ing. Sofía y resolución del Dilema Final (¿el pipeline se amortiza con 500 búsquedas/hora en un catálogo dinámico?).<br>
+                    <strong>Bien (19):</strong> 7 de 8 casos pasan. El HITO 2 tiene la conclusión pero le falta el cálculo de amortización.<br>
+                    <strong>Suficiente (13):</strong> Al menos 6 casos pasan. HITO 2 incompleto (sin conclusión técnica).<br>
+                    <strong>Insuficiente (0):</strong> Menos de 6 casos pasan y/o el comentario final del HITO 2 está ausente.
+                </div>
+            </div>
+            <span class="puntos">25 pts</span>
+        </div>
+
+        <div class="criterio-item" style="background:#fffde7;">
+            <span class="fase-badge" style="background:#9c27b0;">CRÉDITO EXTRA</span>
+            <div style="flex:1;">
+                <strong>Reto 6 — Búsqueda de primera y última ocurrencia en O(log n)</strong>
+                <div style="font-size:0.9rem; color:var(--gray); margin-top:0.3rem;">
+                    <strong>Completo (+10):</strong> <code>busqueda_primera_ocurrencia()</code>, <code>busqueda_ultima_ocurrencia()</code> y <code>buscar_rango()</code> correctos. Benchmark adicional comparando expansión lineal vs <code>buscar_rango()</code> sobre 100 000 elementos con duplicados. Conclusión integrada en el pipeline.<br>
+                    <strong>Parcial (+5):</strong> Solo primera ocurrencia implementada y verificada.<br>
+                    <strong>Sin crédito (0):</strong> No implementado o copia de la búsqueda estándar.
+                </div>
+            </div>
+            <span class="puntos" style="background:#9c27b0; color:white;">+10 pts</span>
+        </div>
+
+        <div style="padding:1rem 1.5rem; background:#e8f5e9; border-top:2px solid var(--success);">
+            <strong>Total máximo sin crédito extra: 100 pts</strong> &nbsp;|&nbsp;
+            <strong>Total máximo con crédito extra: 110 pts</strong> &nbsp;|&nbsp;
+            <strong>HITO 2 (15% del curso) evaluado sobre este mismo entregable</strong>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================================
+     GLOSARIO
+     ======================================================== -->
+<section id="glosario">
+    <div class="glosario-section">
+        <div class="glosario-header">
+            <h2>📖 Glosario — Semana 11</h2>
+        </div>
+        <div class="glosario-grid">
+            <dl class="termino-card">
+                <dt>Búsqueda lineal</dt>
+                <dd>Algoritmo que recorre el arreglo de izquierda a derecha comparando cada elemento con el objetivo. O(n) en tiempo, O(1) en espacio. No requiere orden. Apropiada para arreglos pequeños o búsquedas únicas sobre datos no ordenados.</dd>
+            </dl>
+            <dl class="termino-card">
+                <dt>Búsqueda binaria</dt>
+                <dd>Algoritmo que divide el espacio de búsqueda a la mitad en cada iteración, basándose en la comparación del objetivo con el elemento central. O(log n) en tiempo, O(1) en espacio (versión iterativa). Requiere arreglo ordenado como precondición.</dd>
+            </dl>
+            <dl class="termino-card">
+                <dt>Invariante de búsqueda binaria</dt>
+                <dd>Propiedad preservada en cada iteración del bucle: si el objetivo existe en A, entonces está contenido en A[izq..der]. Al terminar el bucle con izq > der, el espacio está vacío — el objetivo no existe.</dd>
+            </dl>
+            <dl class="termino-card">
+                <dt>Precondición</dt>
+                <dd>Condición que debe ser verdadera ANTES de llamar a una función para que su comportamiento sea correcto. La precondición de búsqueda binaria es que el arreglo esté ordenado ascendentemente. Violarla produce resultados incorrectos en silencio.</dd>
+            </dl>
+            <dl class="termino-card">
+                <dt>Amortización</dt>
+                <dd>Análisis del costo promedio de una operación cuando se repite muchas veces. En el HITO 2, el costo de ordenar (O(n log n)) se "amortiza" entre las k búsquedas binarias que lo siguen. A partir de un número K de búsquedas, el pipeline siempre es más barato que k búsquedas lineales.</dd>
+            </dl>
+            <dl class="termino-card">
+                <dt>Pipeline ordenar → buscar</dt>
+                <dd>Diseño arquitectónico del HITO 2: primero se ordena el catálogo una vez (O(n log n)) y luego todas las búsquedas subsecuentes son O(log n). El costo de ordenar se paga una vez; la ganancia en búsqueda se acumula.</dd>
+            </dl>
+            <dl class="termino-card">
+                <dt>Off-by-one error</dt>
+                <dd>Error de implementación donde se usa mid en lugar de mid+1 o mid-1, causando que el espacio de búsqueda nunca se reduzca en ciertos casos (bucle infinito) o que se descarte el elemento objetivo. El error más común en implementaciones de búsqueda binaria.</dd>
+            </dl>
+            <dl class="termino-card aetl">
+                <dt># IA-REFLEXION-X:</dt>
+                <dd>Comentario estructurado de máximo 3 líneas que registra el aprendizaje del equipo en cada diálogo con IA. X = C (Comprende), A (Aplica), B (Reto 6), R (Reflexiona), V (Valida), P (Profundiza). Reemplaza bitácoras y capturas de pantalla.</dd>
+            </dl>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================================
+     REFERENCIAS APA
+     ======================================================== -->
+<section id="referencias">
+    <div class="referencias-section">
+        <h3>📚 Referencias</h3>
+        <div class="referencia-item">
+            Bandura, A. (2001). Social cognitive theory: An agentic perspective. <em>Annual Review of Psychology, 52</em>(1), 1–26. https://doi.org/10.1146/annurev.psych.52.1.1
+        </div>
+        <div class="referencia-item">
+            Bloom, B. S. (Ed.). (1956). <em>Taxonomy of educational objectives: The classification of educational goals. Handbook I: Cognitive domain</em>. Longmans, Green.
+        </div>
+        <div class="referencia-item">
+            Cormen, T. H., Leiserson, C. E., Rivest, R. L., &amp; Stein, C. (2022). <em>Introduction to algorithms</em> (4th ed., cap. 2.1, 2.3). MIT Press.
+        </div>
+        <div class="referencia-item">
+            Knuth, D. E. (1998). <em>The art of computer programming, Vol. 3: Sorting and searching</em> (2nd ed., cap. 6.2). Addison-Wesley.
+        </div>
+        <div class="referencia-item">
+            Sedgewick, R., &amp; Wayne, K. (2011). <em>Algorithms</em> (4th ed., cap. 1.1, 3.1). Addison-Wesley Professional.
+        </div>
+        <div class="referencia-item">
+            Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. <em>Cognitive Science, 12</em>(2), 257–285. https://doi.org/10.1207/s15516709cog1202_4
+        </div>
+        <div class="referencia-item">
+            Vygotsky, L. S. (1978). <em>Mind in society: The development of higher psychological processes</em>. Harvard University Press.
+        </div>
+        <div class="referencia-item">
+            Zimmerman, B. J. (2000). Attaining self-regulation: A social cognitive perspective. En M. Boekaerts, P. R. Pintrich &amp; M. Zeidner (Eds.), <em>Handbook of self-regulation</em> (pp. 13–39). Academic Press. https://doi.org/10.1016/B978-012109890-2/50031-7
+        </div>
+    </div>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="modelo-badge">Modelo AETL — Taller Invertido</div>
+    <p>Estructura de Datos Básica · Licenciatura en Sistemas Computacionales</p>
+    <p style="opacity: 0.8; margin-top: 0.5rem;">Universidad Autónoma de Nayarit · Dr. Eligardo Cruz Sánchez</p>
+    <p style="opacity: 0.6; margin-top: 0.5rem; font-size: 0.9rem;">Semana 11 de 15 · HITO 2 completo · Continúa en Semana 12: Tablas Hash</p>
+</footer>
+
+<script>
+// ─────────────────────────────────────────────────────────
+//  BARRA DE PROGRESO — Actualización por scroll
+// ─────────────────────────────────────────────────────────
+const secciones = ['comprende', 'aplica', 'reflexiona', 'valida', 'profundiza'];
+const pasos = document.querySelectorAll('.progress-step');
+
+function actualizarProgreso() {
+    let seccionActual = 0;
+    secciones.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        if (el) {
+            const rect = el.getBoundingClientRect();
+            if (rect.top <= window.innerHeight * 0.4) {
+                seccionActual = idx;
+            }
+        }
+    });
+    pasos.forEach((paso, idx) => {
+        paso.classList.remove('active', 'completed');
+        if (idx < seccionActual) {
+            paso.classList.add('completed');
+        } else if (idx === seccionActual) {
+            paso.classList.add('active');
+        }
+    });
+}
+
+window.addEventListener('scroll', actualizarProgreso);
+actualizarProgreso();
+
+// ─────────────────────────────────────────────────────────
+//  CHECKLIST — Persistencia en sesión
+// ─────────────────────────────────────────────────────────
+const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+
+checkboxes.forEach(cb => {
+    const saved = sessionStorage.getItem('s11_' + cb.id);
+    if (saved === 'true') cb.checked = true;
+
+    cb.addEventListener('change', () => {
+        sessionStorage.setItem('s11_' + cb.id, cb.checked);
+        const item = cb.closest('.checklist-item');
+        if (cb.checked) {
+            item.style.background = '#e8f5e9';
+            item.style.borderLeft = '4px solid #28a745';
+        } else {
+            item.style.background = 'white';
+            item.style.borderLeft = 'none';
+        }
+    });
+
+    if (cb.checked) {
+        const item = cb.closest('.checklist-item');
+        item.style.background = '#e8f5e9';
+        item.style.borderLeft = '4px solid #28a745';
+    }
+});
+</script>
+
+</body>
+</html>

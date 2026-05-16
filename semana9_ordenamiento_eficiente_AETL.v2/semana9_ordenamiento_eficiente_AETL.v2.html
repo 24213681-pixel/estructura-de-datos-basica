@@ -1,0 +1,2373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 9: Divide y Vencerás y Merge Sort | AETL</title>
+    <style>
+:root {
+    --primary: #003a63;
+    --secondary: #005b96;
+    --accent: #f2a900;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --gray: #6c757d;
+    --border-radius: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.7;
+    color: var(--dark);
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+    min-height: 100vh;
+}
+
+/* =====================================================
+   HEADER INSTITUCIONAL
+   ===================================================== */
+
+.header-institucional {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,58,99,0.3);
+}
+
+.header-institucional .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.header-institucional .escudo {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.header-institucional h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.header-institucional .subtitulo {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.header-institucional .badge-semana {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+
+/* =====================================================
+   BARRA DE PROGRESO
+   ===================================================== */
+
+.progress-container {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e0e0e0;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+    transition: transform 0.3s;
+    text-decoration: none;
+}
+
+.progress-step:hover {
+    transform: scale(1.1);
+}
+
+.progress-step .step-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: white;
+    border: 3px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.progress-step.active .step-icon {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,91,150,0.4);
+}
+
+.progress-step.completed .step-icon {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.progress-step .step-label {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.progress-step.active .step-label {
+    color: var(--secondary);
+}
+
+/* =====================================================
+   NAVEGACIÓN
+   ===================================================== */
+
+.nav-container {
+    background: var(--primary);
+    padding: 0.8rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--accent);
+}
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* =====================================================
+   SECCIONES DE FASE
+   ===================================================== */
+
+.fase-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.fase-header {
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fase-header.comprende { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.fase-header.aplica { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.fase-header.reflexiona { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.fase-header.valida { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.fase-header.profundiza { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+.fase-header .fase-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fase-header .fase-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.fase-header .fase-info .bloom-tag {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.fase-content {
+    padding: 2rem;
+}
+
+/* =====================================================
+   OBJETIVOS
+   ===================================================== */
+
+.objetivos-box {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d1e8fa 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.objetivos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.objetivos-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.objetivos-box li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.objetivos-box li::before {
+    content: '🎯';
+    position: absolute;
+    left: 0;
+}
+
+/* =====================================================
+   CAJAS CONTEXTUALES
+   ===================================================== */
+
+.context-box {
+    padding: 1.2rem 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border-left: 4px solid;
+}
+
+.context-box.tip {
+    background: linear-gradient(135deg, #e3f9e5 0%, #c8f7dc 100%);
+    border-color: var(--success);
+}
+
+.context-box.warning {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border-color: var(--warning);
+}
+
+.context-box.danger {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border-color: var(--danger);
+}
+
+.context-box.success {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: var(--success);
+}
+
+.context-box.info {
+    background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+    border-color: var(--info);
+}
+
+.context-box .box-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* =====================================================
+   RETOS IA
+   ===================================================== */
+
+.reto-ia {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.reto-ia-header {
+    background: linear-gradient(90deg, var(--accent) 0%, #e89900 100%);
+    color: var(--primary);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reto-ia-header .reto-numero {
+    background: var(--primary);
+    color: var(--accent);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.reto-ia-header h4 {
+    flex: 1;
+    font-size: 1.1rem;
+}
+
+.reto-ia-body {
+    padding: 1.5rem;
+}
+
+.reto-ia .rol-ia {
+    background: rgba(242,169,0,0.15);
+    border: 1px solid var(--accent);
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.reto-ia .rol-ia strong {
+    color: var(--accent);
+}
+
+.prompt-box {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: var(--border-radius);
+    padding: 1.2rem;
+    margin: 1rem 0;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    color: #c9d1d9;
+}
+
+.prompt-box::before {
+    content: '📝 PROMPT';
+    display: block;
+    color: var(--accent);
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.entregable-box {
+    background: rgba(40,167,69,0.15);
+    border: 1px dashed var(--success);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+}
+
+.entregable-box::before {
+    content: '📦 ENTREGABLE ESPERADO';
+    display: block;
+    color: var(--success);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKPOINT METACOGNITIVO
+   ===================================================== */
+
+.checkpoint {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checkpoint h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkpoint .pregunta {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 0.8rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    padding-left: 3rem;
+}
+
+.checkpoint .pregunta::before {
+    content: '❓';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+}
+
+/* =====================================================
+   DIAGRAMA ASCII
+   ===================================================== */
+
+.ascii-diagram {
+    background: #1e1e1e;
+    color: #00ff00;
+    font-family: 'Consolas', 'Monaco', monospace;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: pre;
+}
+
+.diagrama-descripcion {
+    background: #f8f9fa;
+    border-left: 4px solid var(--info);
+    padding: 1rem;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+/* =====================================================
+   ESCENARIO INMERSIVO
+   ===================================================== */
+
+.escenario-inmersivo {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.escenario-inmersivo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.1;
+}
+
+.escenario-inmersivo h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.escenario-inmersivo .personaje {
+    background: rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    border-left: 3px solid var(--accent);
+}
+
+.escenario-inmersivo .dialogo {
+    font-style: italic;
+    margin: 1rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(255,255,255,0.3);
+}
+
+/* =====================================================
+   FUNDAMENTOS TEÓRICOS
+   ===================================================== */
+
+.fundamentos-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.fundamentos-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.constructo-card {
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius);
+    margin: 1rem;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.constructo-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.constructo-card .card-header {
+    padding: 1rem 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.constructo-card:nth-child(1) .card-header { background: #e8f4fd; color: var(--primary); }
+.constructo-card:nth-child(2) .card-header { background: #fff3e0; color: #e65100; }
+.constructo-card:nth-child(3) .card-header { background: #e8f5e9; color: #2e7d32; }
+.constructo-card:nth-child(4) .card-header { background: #f3e5f5; color: #7b1fa2; }
+.constructo-card:nth-child(5) .card-header { background: #fce4ec; color: #c2185b; }
+
+.constructo-card .card-body {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.constructo-card .referencia {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 0.8rem;
+}
+
+.constructo-card .operacional {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--accent);
+}
+
+/* =====================================================
+   GLOSARIO
+   ===================================================== */
+
+.glosario-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.glosario-header {
+    background: var(--dark);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.glosario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.termino-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--secondary);
+}
+
+.termino-card.aetl {
+    border-left-color: var(--accent);
+}
+
+.termino-card dt {
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.termino-card dd {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+/* =====================================================
+   EVALUACIÓN
+   ===================================================== */
+
+.evaluacion-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.evaluacion-header {
+    background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.criterio-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.criterio-item:last-child {
+    border-bottom: none;
+}
+
+.criterio-item .fase-badge {
+    background: var(--secondary);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 1rem;
+    min-width: 100px;
+    text-align: center;
+}
+
+.criterio-item .puntos {
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    margin-left: auto;
+}
+
+/* =====================================================
+   REFERENCIAS
+   ===================================================== */
+
+.referencias-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.referencias-section h3 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+}
+
+.referencia-item {
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed #e0e0e0;
+    font-size: 0.95rem;
+}
+
+.referencia-item:last-child {
+    border-bottom: none;
+}
+
+/* =====================================================
+   CÓDIGO
+   ===================================================== */
+
+code {
+    background: #f1f3f4;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.9em;
+    color: #d63384;
+}
+
+pre code {
+    display: block;
+    padding: 1rem;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    overflow-x: auto;
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.footer {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.footer .modelo-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* =====================================================
+   TABLAS
+   ===================================================== */
+
+.tabla-comparativa {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.tabla-comparativa th {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+}
+
+.tabla-comparativa td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tabla-comparativa tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-comparativa tr:hover {
+    background: #f8f9fa;
+}
+
+/* =====================================================
+   ESTILOS ADICIONALES
+   ===================================================== */
+
+.prerrequisitos-box {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border: 2px solid var(--accent);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.prerrequisitos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.prerrequisitos-box ul {
+    margin-left: 1.5rem;
+}
+
+.prerrequisitos-box li {
+    margin-bottom: 0.5rem;
+}
+
+.conexion-semana-anterior {
+    background: linear-gradient(135deg, #e8f4fd 0%, #bbdefb 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.conexion-semana-anterior h4 {
+    color: var(--primary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reto-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+}
+
+.reto-badge.esencial {
+    background: var(--success);
+    color: white;
+}
+
+.reto-badge.avanzado {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+    color: white;
+}
+
+.invariantes-box {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+    border: 2px dashed #c2185b;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.invariantes-box h4 {
+    color: #880e4f;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.orientacion-semanal {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.orientacion-semanal h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+}
+
+.orientacion-semanal ul {
+    margin-left: 1.5rem;
+}
+
+.orientacion-semanal li {
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKLIST DE AUTOEVALUACIÓN
+   ===================================================== */
+
+.checklist-box {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checklist-box h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checklist-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.8rem;
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 0.6rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    align-items: flex-start;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-top: 0.2rem;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checklist-item .check-text {
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+.checklist-item .check-diagnostico {
+    font-size: 0.85rem;
+    color: var(--danger);
+    margin-top: 0.3rem;
+    font-style: italic;
+}
+
+.starter-code-box {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px solid var(--secondary);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.starter-code-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.starter-code-box .empathy-msg {
+    background: rgba(0,91,150,0.1);
+    border-left: 3px solid var(--secondary);
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    font-style: italic;
+    font-size: 0.95rem;
+}
+
+/* =====================================================
+   ANIMACIONES
+   ===================================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .header-institucional h1 {
+        font-size: 1.4rem;
+    }
+    
+    .container {
+        padding: 1rem;
+    }
+    
+    .fase-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .progress-step .step-label {
+        display: none;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .criterio-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .criterio-item .puntos {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+}
+
+/* =====================================================
+   IMPRESIÓN
+   ===================================================== */
+
+@media print {
+    .progress-container,
+    .nav-container {
+        display: none;
+    }
+
+    body {
+        background: white;
+    }
+
+    .reto-ia {
+        break-inside: avoid;
+    }
+}
+
+/* =====================================================
+   UTILIDADES
+   ===================================================== */
+
+.text-center { text-align: center; }
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--gray); }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Header Institucional -->
+    <header class="header-institucional">
+        <div class="logo-container">
+            <div class="escudo">UAN</div>
+            <div>
+                <h1>Estructura de Datos Básica</h1>
+                <p class="subtitulo">Licenciatura en Sistemas Computacionales</p>
+            </div>
+            <div class="escudo">LSC</div>
+        </div>
+        <span class="badge-semana">📅 Semana 9: Divide y Vencerás — Merge Sort</span>
+    </header>
+
+    <!-- Barra de Progreso AETL -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <a href="#comprende" class="progress-step active">
+                <div class="step-icon">📖</div>
+                <span class="step-label">Comprende</span>
+            </a>
+            <a href="#aplica" class="progress-step">
+                <div class="step-icon">⚡</div>
+                <span class="step-label">Aplica</span>
+            </a>
+            <a href="#reflexiona" class="progress-step">
+                <div class="step-icon">🔍</div>
+                <span class="step-label">Reflexiona</span>
+            </a>
+            <a href="#valida" class="progress-step">
+                <div class="step-icon">✔</div>
+                <span class="step-label">Valida</span>
+            </a>
+            <a href="#profundiza" class="progress-step">
+                <div class="step-icon">🚀</div>
+                <span class="step-label">Profundiza</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="nav-container">
+        <div class="nav-links">
+            <a href="#escenario">🎬 Escenario</a>
+            <a href="#fundamentos">📚 Fundamentos</a>
+            <a href="#comprende">📖 Comprende</a>
+            <a href="#aplica">⚡ Aplica</a>
+            <a href="#reflexiona">🔍 Reflexiona</a>
+            <a href="#valida">✔ Valida</a>
+            <a href="#profundiza">🚀 Profundiza</a>
+            <a href="#evaluacion">📊 Evaluación</a>
+            <a href="#glosario">📖 Glosario</a>
+            <a href="#referencias">📚 Referencias</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- Prerrequisitos -->
+        <div class="prerrequisitos-box">
+            <h4>⚠️ Para tener éxito esta semana, asegúrate de dominar...</h4>
+            <ul>
+                <li><strong>Recursión:</strong> Identificar el caso base y el caso recursivo; trazar la pila de llamadas para una función recursiva sencilla</li>
+                <li><strong>Divide y vencerás (noción):</strong> Saber que el paradigma divide el problema, resuelve cada parte y combina los resultados</li>
+                <li><strong>Complejidad O(n²) de los algoritmos cuadráticos:</strong> Entender por qué Bubble Sort, Selection Sort e Insertion Sort son lentos en arreglos grandes</li>
+                <li><strong>Arreglos y sublistas:</strong> Acceder a segmentos de un arreglo por índice; copiar elementos entre arreglos auxiliares</li>
+                <li><strong>Benchmarking básico:</strong> Medir tiempo de ejecución con la librería <code>time</code> de tu lenguaje</li>
+            </ul>
+            <p style="margin-top: 1rem;">
+                <strong>Diagnóstico rápido — responde mentalmente antes de continuar:</strong>
+            </p>
+            <ul style="margin-top: 0.5rem;">
+                <li>¿Cuántas comparaciones hace Bubble Sort en el peor caso sobre 1 000 elementos?</li>
+                <li>¿Qué sucede en la pila de llamadas cuando una función recursiva llega al caso base?</li>
+                <li>¿Qué significa que un arreglo esté "en el peor caso" para un algoritmo de ordenamiento?</li>
+            </ul>
+            <p style="margin-top: 1rem; font-style: italic;">💡 Si alguna de estas preguntas te genera duda, repasa el Starter Code de APLICA — parte desde las definiciones necesarias antes de introducir el nuevo código.</p>
+        </div>
+
+        <!-- Ruta mínima -->
+        <div class="orientacion-semanal">
+            <h4>🗺️ Ruta Mínima Viable (equipos con carga alta esta semana)</h4>
+            <ul>
+                <li><strong>COMPRENDE:</strong> Lee el escenario, el diagrama de Merge Sort y la tabla comparativa (≈ 30 min)</li>
+                <li><strong>APLICA:</strong> Completa el Reto 1 — Implementación de Merge Sort + experimento de estabilidad + benchmark vs S8 (≈ 90 min)</li>
+                <li><strong>REFLEXIONA:</strong> Prepara la defensa verbal del equipo — al menos un integrante debe poder explicar el invariante de merge() y el árbol de recursión sin consultar el código</li>
+                <li><strong>VALIDA:</strong> Ejecuta los 5 casos de prueba mínimos del checklist y documenta los resultados en el código</li>
+                <li><strong>PROFUNDIZA:</strong> Solo si el equipo tiene margen — diagnóstico cuantificado del problema de RAM en StreamMX</li>
+            </ul>
+        </div>
+
+        <!-- Conexión con semana anterior -->
+        <div class="conexion-semana-anterior">
+            <h4>🔗 Conexión con la Semana 8: Ordenamiento Básico</h4>
+            <p>La semana pasada mediste empíricamente que Bubble Sort, Selection Sort e Insertion Sort degradan su rendimiento a O(n²) en arreglos grandes. Esa incomodidad tiene nombre: <em>crecimiento cuadrático</em>. Esta semana responderás la pregunta que quedó abierta en PROFUNDIZA: ¿qué paradigma rompe esa barrera? El paradigma <strong>Divide y Vencerás</strong> reduce el problema a mitades recursivas, logrando O(n log n) — un salto que, para n = 1 000 000, significa pasar de mil millones de operaciones a veinte millones.</p>
+        </div>
+
+        <!-- Escenario Inmersivo -->
+        <section id="escenario" class="escenario-inmersivo">
+            <h3>🎬 ESCENARIO: El Motor de Rankings de StreamMX</h3>
+
+            <div class="personaje">
+                <strong>Contexto:</strong> StreamMX es una plataforma de video bajo demanda con 4 millones de usuarios registrados en México. Cada noche, el sistema debe recalcular el ranking global de contenidos según puntaje compuesto (reproducciones × puntuación × recencia). El equipo de datos detectó que el proceso tarda 47 minutos con el algoritmo actual — demasiado para el corte de medianoche.
+            </div>
+
+            <div class="dialogo">
+                "El problema es claro: nuestro algoritmo de ordenamiento es O(n²). Con cuatro millones de registros eso es inviable. Necesito que el equipo evalúe Merge Sort a fondo: que sea correcto, que sea realmente O(n log n) y que preserve el orden cronológico de contenidos con el mismo puntaje. Quiero datos reales — no solo teoría."
+            </div>
+
+            <div class="personaje">
+                <strong>La Ing. Sofía Ramírez, líder del equipo de infraestructura, añade:</strong>
+            </div>
+
+            <div class="dialogo">
+                "Un detalle operativo importante: nuestros servidores tienen memoria RAM limitada durante el proceso de ranking porque otros servicios corren en paralelo. Eso tiene implicaciones en la elección del algoritmo. Quiero que el análisis incluya la complejidad de espacio, no solo de tiempo."
+            </div>
+
+            <div class="personaje">
+                <strong>Tu misión como equipo:</strong> Implementar Merge Sort desde cero, verificar que el resultado es correcto bajo distintas distribuciones de datos y confirmar empíricamente que O(n log n) supera los algoritmos cuadráticos de Semana 8. Si lo logran, StreamMX resuelve su problema de ranking nocturno.
+            </div>
+
+            <div class="personaje" style="border-left-color: #dc3545; background: rgba(220,53,69,0.15); margin-top: 1.5rem;">
+                <strong>⚠️ Cliffhanger — Lo que descubrirán al final de esta semana:</strong>
+            </div>
+            <div class="dialogo" style="border-left-color: #dc3545;">
+                "Equipo, el ranking ya corre en 3 minutos en lugar de 47. O(n log n) funciona. Pero acabo de revisar el monitor de memoria: durante el proceso, el servidor consumió el doble de RAM habitual. Merge Sort crea arreglos auxiliares para cada fusión — con 4 millones de registros eso es mucha memoria. Los otros servicios se cayeron a las 12:08 AM. Necesitan encontrar un algoritmo igualmente rápido que <strong>no</strong> use memoria auxiliar proporcional a n. Para la próxima semana."
+            </div>
+        </section>
+
+        <!-- FUNDAMENTOS TEÓRICOS AETL -->
+        <section id="fundamentos" class="fundamentos-section">
+            <div class="fundamentos-header">
+                <h2>📚 Fundamentos Teóricos AETL — Aplicados a Ordenamiento Eficiente</h2>
+                <p style="opacity: 0.85; margin-top: 0.5rem;">Cómo los principios del aprendizaje se manifiestan en este salto de complejidad</p>
+            </div>
+            <div style="padding: 1.5rem;">
+
+                <div class="constructo-card">
+                    <div class="card-header">🏗️ Constructivismo — Del Conocimiento Previo al Salto Conceptual</div>
+                    <div class="card-body">
+                        <div class="referencia">(Piaget, 1978; Vygotsky, 1978; Bognár, 2024)</div>
+                        <p>Ya sabes cómo funciona la recursión (Semana 7) y la ineficiencia de O(n²) (Semana 8). Merge Sort es la síntesis de ambos saberes: recursión <em>aplicada</em> para superar la barrera cuadrática. Este módulo activa ese andamiaje previo; no construye desde cero.</p>
+                        <div class="operacional">
+                            <strong>Constructo operacional:</strong> Antes de leer el pseudocódigo, traza en papel cómo dividirías el arreglo [8, 3, 1, 5, 2, 7] en mitades de forma recursiva. Si tu árbol de divisiones coincide con el diagrama de COMPRENDE, el concepto ya estaba en ti.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="constructo-card">
+                    <div class="card-header">🎯 Aprendizaje Autorregulado — Monitorear la Comprensión del Árbol de Recursión</div>
+                    <div class="card-body">
+                        <div class="referencia">(Zimmerman, 2000; Chiu, 2024; Sari et al., 2025)</div>
+                        <p>Merge Sort tiene un punto de quiebre conceptual: la función <code>merge()</code> parece simple hasta que intentas trazar por qué dos subarreglos ya ordenados producen necesariamente un subarreglo mayor ordenado. Un equipo autorregulado pausa ahí, traza el ejemplo en papel y verifica el invariante antes de continuar.</p>
+                        <div class="operacional">
+                            <strong>Constructo operacional:</strong> Si al leer el pseudocódigo de <code>merge()</code> no puedes predecir el estado del arreglo después de tres iteraciones del ciclo, detente. Traza con izquierda=[1,5] y derecha=[3,8] antes de continuar.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="constructo-card">
+                    <div class="card-header">🧠 Teoría de la Carga Cognitiva — Un Paradigma, un Algoritmo</div>
+                    <div class="card-body">
+                        <div class="referencia">(Sweller, 1988/2020; Mahdi et al., 2025)</div>
+                        <p>Esta semana se enfoca en un solo algoritmo para permitir comprensión profunda: el árbol de recursión, el invariante de <code>merge()</code>, la estabilidad y el costo de espacio. Esta concentración no es limitante — es el diseño. La semana siguiente traerá Quick Sort como respuesta a la limitación de RAM que descubrirás al final de esta semana.</p>
+                        <div class="operacional">
+                            <strong>Constructo operacional:</strong> Si sientes que dominas Merge Sort antes de tiempo, enfoca la energía sobrante en el análisis de estabilidad del Reto 2 — es la parte que más sorprende en la defensa oral.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="constructo-card">
+                    <div class="card-header">🤝 Agencia Compartida — La IA como Verificador, no como Autor</div>
+                    <div class="card-body">
+                        <div class="referencia">(Bandura, 2001; Brod et al., 2023)</div>
+                        <p>La IA puede generar una implementación correcta de Merge Sort en segundos. El valor del equipo esta semana no está en producir el código, sino en <em>documentar cada decisión</em>: por qué se usa arreglo auxiliar, por qué <code>&lt;=</code> y no <code>&lt;</code> en la comparación, qué garantiza el invariante de <code>merge()</code>. La evidencia es el razonamiento, no el código.</p>
+                        <div class="operacional">
+                            <strong>Constructo operacional:</strong> Antes de pedirle código a la IA, escribe en papel el pseudocódigo de <code>merge()</code>. Compara con lo que te dé la IA. Si difieren, la pregunta clave es: ¿cuál preserva la estabilidad y por qué? Documenta eso en <code># IA-REFLEXION:</code>.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="constructo-card">
+                    <div class="card-header">📊 Taxonomía de Bloom — Del Análisis al Umbral de Evaluación</div>
+                    <div class="card-body">
+                        <div class="referencia">(Anderson et al., 2001)</div>
+                        <p>Esta semana el techo está en <em>Analizar</em>: entender por qué el árbol tiene altura log n, por qué cada nivel procesa n elementos y por qué la estabilidad importa en datos reales. La <em>Evaluación</em> — elegir entre Merge Sort y Quick Sort — llegará la semana siguiente cuando tengas ambos algoritmos implementados y el escenario completo de StreamMX.</p>
+                        <div class="operacional">
+                            <strong>Constructo operacional:</strong> Una respuesta que dice "Merge Sort es O(n log n)" está en Recordar. Una que explica por qué el árbol tiene altura log n y cada nivel fusiona n elementos en O(n) está en Analizar. Ese es el nivel que se evalúa esta semana.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 1: COMPRENDE                                         -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="comprende" class="fase-section">
+            <div class="fase-header comprende">
+                <div class="fase-icon">📖</div>
+                <div class="fase-info">
+                    <h2>FASE 1: COMPRENDE</h2>
+                    <span class="bloom-tag">Nivel Bloom: Recordar / Comprender / Analizar</span>
+                </div>
+            </div>
+
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Describir</strong> el paradigma Divide y Vencerás en sus tres pasos: dividir, conquistar, combinar (Comprender)</li>
+                        <li><strong>Trazar</strong> la ejecución de Merge Sort sobre un arreglo de ejemplo, identificando el árbol de recursión completo (Comprender)</li>
+                        <li><strong>Explicar</strong> el invariante de la función <code>merge()</code>: por qué dos subarreglos ordenados producen un subarreglo mayor ordenado (Comprender)</li>
+                        <li><strong>Analizar</strong> por qué Merge Sort logra O(n log n) en <em>todos</em> los casos, a diferencia de los algoritmos cuadráticos (Analizar)</li>
+                        <li><strong>Identificar</strong> la implicación de espacio O(n) de Merge Sort y su relevancia en el escenario StreamMX (Analizar)</li>
+                        <li><strong>Distinguir</strong> qué significa que un algoritmo sea estable y por qué Merge Sort lo es (Analizar)</li>
+                    </ul>
+                </div>
+
+                <h3>1. El Paradigma Divide y Vencerás</h3>
+                <p>Divide y Vencerás (D&amp;V) es un paradigma de diseño de algoritmos que opera en tres pasos recursivos:</p>
+
+                <div class="context-box info">
+                    <div class="box-title">⚙️ Los tres pasos de Divide y Vencerás</div>
+                    <p><strong>1. DIVIDIR:</strong> Partir el problema en subproblemas más pequeños del mismo tipo.</p>
+                    <p><strong>2. CONQUISTAR:</strong> Resolver cada subproblema de forma recursiva. Cuando el subproblema es suficientemente pequeño (caso base), resolverlo directamente.</p>
+                    <p><strong>3. COMBINAR:</strong> Fusionar las soluciones de los subproblemas para construir la solución del problema original.</p>
+                </div>
+
+                <p>La clave del salto de complejidad está en el árbol de recursión. Si cada nivel del árbol hace trabajo proporcional a n, y el árbol tiene altura log₂(n) (porque dividimos a la mitad en cada paso), el trabajo total es <strong>O(n · log n)</strong>.</p>
+
+                <h3 style="margin-top: 2rem;">2. Merge Sort — Dividir con precisión, combinar con orden</h3>
+                <p>Merge Sort divide el arreglo en mitades hasta llegar a subarreglos de un elemento (ya ordenados por definición), y luego <em>fusiona</em> los pares ordenados construyendo arreglos ordenados cada vez más grandes.</p>
+
+                <div class="ascii-diagram">┌─────────────────────────────────────────────────────────────────────┐
+│              ÁRBOL DE RECURSIÓN — MERGE SORT                        │
+│                  Arreglo: [8, 3, 1, 5, 2, 7, 4, 6]                 │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  DIVIDIR ↓              [8, 3, 1, 5, 2, 7, 4, 6]    n=8            │
+│                         /                    \                      │
+│                  [8, 3, 1, 5]          [2, 7, 4, 6]  n=4            │
+│                  /        \            /        \                   │
+│              [8, 3]    [1, 5]      [2, 7]    [4, 6]  n=2            │
+│              /   \     /   \      /   \     /   \                   │
+│            [8]  [3]  [1]  [5]  [2]  [7]  [4]  [6]  n=1 (BASE)      │
+│                                                                     │
+│  COMBINAR ↑                                                         │
+│            [3,8]  [1,5]       [2,7]   [4,6]          n=2            │
+│                \  /               \   /                             │
+│            [1, 3, 5, 8]       [2, 4, 6, 7]           n=4            │
+│                      \         /                                    │
+│                  [1, 2, 3, 4, 5, 6, 7, 8]            n=8            │
+│                                                                     │
+│  Altura del árbol = log₂(8) = 3 niveles                             │
+│  Trabajo por nivel = O(n) — cada elemento se toca una vez en merge  │
+│  Total = O(n · log n)                                               │
+└─────────────────────────────────────────────────────────────────────┘</div>
+                <div class="diagrama-descripcion">
+                    <strong>Explicación:</strong> El árbol muestra las dos fases de Merge Sort. Hacia abajo (DIVIDIR): el arreglo se parte en mitades recursivamente hasta llegar a subarreglos de un solo elemento — el caso base. Hacia arriba (COMBINAR): la función <code>merge()</code> fusiona pares de subarreglos ya ordenados, comparando elemento a elemento y colocando el menor primero. Cada nivel del árbol procesa en total n elementos, y hay log₂(n) niveles, de ahí O(n log n). Nota crítica: Merge Sort requiere un arreglo auxiliar del mismo tamaño que el original para la fusión — complejidad de espacio O(n).
+                </div>
+
+                <div class="context-box tip">
+                    <div class="box-title">✅ Invariante de Merge Sort</div>
+                    <p>Al terminar cada llamada a <code>merge(izq, der)</code>, el segmento resultante siempre está correctamente ordenado. Esto es verdad sin importar qué contenían los subarreglos de entrada — siempre y cuando ellos mismos estuvieran ordenados. La fusión preserva el orden.</p>
+                </div>
+
+                <h4>Pseudocódigo: Merge Sort</h4>
+<div class="ascii-diagram" style="color: #c9d1d9;">función merge_sort(arr, inicio, fin):
+    si inicio >= fin:                      // Caso base: 0 o 1 elemento
+        retornar
+
+    medio ← (inicio + fin) // 2            // Punto de división
+
+    merge_sort(arr, inicio, medio)         // Conquistar: mitad izquierda
+    merge_sort(arr, medio + 1, fin)        // Conquistar: mitad derecha
+    merge(arr, inicio, medio, fin)         // Combinar: fusionar ordenado
+
+función merge(arr, inicio, medio, fin):
+    // Crear copias temporales de ambas mitades
+    izquierda ← arr[inicio .. medio]
+    derecha   ← arr[medio+1 .. fin]
+
+    i ← 0;  j ← 0;  k ← inicio
+
+    mientras i < longitud(izquierda) y j < longitud(derecha):
+        si izquierda[i] <= derecha[j]:     // Estabilidad: <= preserva orden relativo
+            arr[k] ← izquierda[i];  i ← i + 1
+        sino:
+            arr[k] ← derecha[j];   j ← j + 1
+        k ← k + 1
+
+    // Copiar elementos restantes (ya están en orden)
+    mientras i < longitud(izquierda):
+        arr[k] ← izquierda[i];  i ← i + 1;  k ← k + 1
+    mientras j < longitud(derecha):
+        arr[k] ← derecha[j];   j ← j + 1;  k ← k + 1
+
+// Complejidad tiempo: O(n log n) — todos los casos (mejor, promedio, peor)
+// Complejidad espacio: O(n) — arreglos auxiliares izquierda y derecha
+// Estabilidad: SÍ — elementos iguales mantienen su orden relativo original</div>
+
+                <h3 style="margin-top: 2rem;">3. Tabla Comparativa — Merge Sort vs Algoritmos de Semana 8</h3>
+                <table class="tabla-comparativa">
+                    <thead>
+                        <tr>
+                            <th>Algoritmo</th>
+                            <th>Tiempo Mejor</th>
+                            <th>Tiempo Promedio</th>
+                            <th>Tiempo Peor</th>
+                            <th>Espacio Aux.</th>
+                            <th>Estable</th>
+                            <th>In Situ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #e8f5e9;">
+                            <td><strong>Merge Sort ← esta semana</strong></td>
+                            <td>O(n log n)</td>
+                            <td>O(n log n)</td>
+                            <td>O(n log n)</td>
+                            <td><strong>O(n)</strong></td>
+                            <td>✅ Sí</td>
+                            <td>❌ No</td>
+                        </tr>
+                        <tr style="background: #f8f9fa; color: var(--gray);">
+                            <td>Bubble Sort (S8)</td>
+                            <td>O(n)</td>
+                            <td>O(n²)</td>
+                            <td>O(n²)</td>
+                            <td>O(1)</td>
+                            <td>✅ Sí</td>
+                            <td>✅ Sí</td>
+                        </tr>
+                        <tr style="background: #f8f9fa; color: var(--gray);">
+                            <td>Insertion Sort (S8)</td>
+                            <td>O(n)</td>
+                            <td>O(n²)</td>
+                            <td>O(n²)</td>
+                            <td>O(1)</td>
+                            <td>✅ Sí</td>
+                            <td>✅ Sí</td>
+                        </tr>
+                        <tr style="background: #f8f9fa; color: var(--gray);">
+                            <td>Selection Sort (S8)</td>
+                            <td>O(n²)</td>
+                            <td>O(n²)</td>
+                            <td>O(n²)</td>
+                            <td>O(1)</td>
+                            <td>❌ No</td>
+                            <td>✅ Sí</td>
+                        </tr>
+                        <tr style="background: #fff8e1;">
+                            <td><em>Quick Sort (Semana 10)</em></td>
+                            <td><em>O(n log n)</em></td>
+                            <td><em>O(n log n)</em></td>
+                            <td><em>O(n²)</em></td>
+                            <td><em>O(log n)</em></td>
+                            <td><em>❌ No</em></td>
+                            <td><em>✅ Sí</em></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="font-size: 0.9rem; color: var(--gray); margin-top: -0.5rem;">La fila de Quick Sort se incluye como anticipación — se estudia e implementa la semana siguiente. Observa la columna de Espacio Auxiliar: ese será el argumento central del cliffhanger del escenario.</p>
+
+                <div class="checkpoint">
+                    <h4>🧩 Checkpoint de Comprensión — Responde antes de continuar</h4>
+                    <div class="pregunta">¿Por qué Merge Sort garantiza O(n log n) incluso en el peor caso? ¿Qué propiedad del árbol de recursión lo hace posible?</div>
+                    <div class="pregunta">Si el árbol de Merge Sort tiene 20 niveles, ¿cuántos elementos contiene el arreglo? (Pista: 2²⁰ = 1 048 576)</div>
+                    <div class="pregunta">¿Qué ocurriría con la estabilidad de Merge Sort si cambiáramos <code>&lt;=</code> por <code>&lt;</code> en el ciclo de fusión? Construye un ejemplo concreto donde el resultado cambia.</div>
+                    <div class="pregunta">En el escenario StreamMX, los registros se ordenaron primero por <em>fecha</em> y luego se quieren ordenar por <em>puntaje</em>. ¿Por qué la estabilidad de Merge Sort garantiza que películas con el mismo puntaje mantengan su orden cronológico?</div>
+                </div>
+
+                <!-- COMPRENDE: Reto IA -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">C</div>
+                        <h4>Reto IA — Comprende: Trazado Socrático de Merge Sort</h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Tutor de trazado que guía sin revelar — el equipo traza, la IA valida paso a paso.
+                        </div>
+                        <div class="prompt-box">Usa un lenguaje claro y accesible. No uses jerga sin explicarla primero.
+
+Actúa como tutor de algoritmos. Vamos a trazar Merge Sort completo paso a paso.
+
+Arreglo de trabajo: [7, 2, 9, 4, 1, 8, 3, 5]
+
+Proceso:
+1. Muéstrame SOLO el primer paso — la primera división — con el estado inicial y el estado después de ese único paso.
+2. Espera mi respuesta describiendo qué creo que ocurrirá en el paso 2.
+3. Valida mi razonamiento:
+   - Si es correcto: confirma y pide el paso 3.
+   - Si hay un error parcial: señala exactamente qué parte está mal con una pregunta guía, sin dar la respuesta.
+   - Si está completamente incorrecto: regresa al invariante con una pregunta socrática.
+4. Cuando lleguemos a la primera llamada a merge(), antes de continuar pregúntame: "¿Qué propiedad garantiza que el resultado de merge() siempre esté ordenado?" Espera mi respuesta antes de continuar.
+5. Continúa hasta completar el ejemplo.
+
+Empecemos. Muéstrame solo el primer paso.</div>
+                        <div class="entregable-box">
+                            <strong># IA-REFLEXION: (3 líneas máximo en el código)</strong><br>
+                            Al terminar el trazado, documenta en el archivo Python un comentario <code># IA-REFLEXION-C:</code> con: la metáfora o pista exacta que la IA usó que te hizo entender por qué merge() garantiza un subarreglo ordenado. Tres líneas máximo — si necesitas más, no lo has sintetizado todavía.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 2: APLICA                                            -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="aplica" class="fase-section">
+            <div class="fase-header aplica">
+                <div class="fase-icon">⚡</div>
+                <div class="fase-info">
+                    <h2>FASE 2: APLICA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Aplicar / Analizar</span>
+                </div>
+            </div>
+
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Implementar</strong> Merge Sort desde cero con comentarios de evidencia <code># DECISIÓN:</code> en cada elección de diseño (Aplicar)</li>
+                        <li><strong>Verificar empíricamente</strong> la estabilidad de Merge Sort con datos de puntaje compartido similares a los de StreamMX (Aplicar)</li>
+                        <li><strong>Construir</strong> un benchmark que compare Merge Sort contra al menos un algoritmo de Semana 8, con arreglos de tamaño n = 1 000, 10 000 y 100 000 en tres distribuciones (Aplicar)</li>
+                        <li><strong>Analizar</strong> si los tiempos empíricos son consistentes con la complejidad teórica O(n log n) (Analizar)</li>
+                    </ul>
+                </div>
+
+                <!-- Starter Code -->
+                <div class="starter-code-box">
+                    <h4>🚀 Código de Inicio — Base para el Reto 1</h4>
+                    <div class="empathy-msg">Este esqueleto define la estructura del archivo de entrega. No modifiques los nombres de funciones ni los prefijos de comentarios — son tu evidencia evaluable. Completa los bloques marcados con TODO.</div>
+<pre><code>#!/usr/bin/env python3
+"""
+Semana 9 — Divide y Vencerás: Merge Sort
+Curso:  Estructura de Datos Básica
+Equipo: [Nombre del equipo]
+Integrantes: [Lista de nombres]
+Fecha:  [Fecha de entrega]
+"""
+
+import time
+import random
+import copy
+
+# ─────────────────────────────────────────────────────────────
+#  SECCIÓN 1: MERGE SORT
+# ─────────────────────────────────────────────────────────────
+
+# COMPRENDE-1: ¿Qué propiedad garantiza que merge() siempre
+#              produce un subarreglo ordenado?
+# [Escribe aquí la respuesta del equipo en una o dos oraciones]
+
+# COMPRENDE-2: ¿Por qué el árbol de recursión tiene altura log₂(n)
+#              y qué implica eso para la complejidad total?
+# [Escribe aquí la respuesta del equipo en una o dos oraciones]
+
+def merge_sort(arr: list, inicio: int, fin: int) -> None:
+    """
+    Ordena arr[inicio..fin] usando Merge Sort.
+    DECISIÓN: [¿Por qué usamos índices inicio/fin en lugar de
+               slicing y retornar un nuevo arreglo?]
+    """
+    if inicio >= fin:
+        return  # Caso base: 0 o 1 elemento ya está ordenado
+
+    # TODO: calcular el punto medio (división entera)
+    medio = ...
+
+    merge_sort(arr, ..., ...)   # TODO: llamada recursiva mitad izquierda
+    merge_sort(arr, ..., ...)   # TODO: llamada recursiva mitad derecha
+    merge(arr, inicio, medio, fin)
+
+
+def merge(arr: list, inicio: int, medio: int, fin: int) -> None:
+    """
+    Fusiona dos subarreglos ordenados: arr[inicio..medio] y arr[medio+1..fin].
+    DECISIÓN: [¿Por qué copiamos en arreglos auxiliares antes de fusionar?]
+    """
+    # COMPRENDE-3: Invariante del ciclo de fusión:
+    # Al finalizar cada iteración, arr[inicio..k-1] contiene los k-inicio
+    # elementos más pequeños de izquierda ∪ derecha, en orden.
+    # [Confirma o corrige esta afirmación con tus palabras]
+
+    izquierda = arr[inicio:medio + 1]
+    derecha   = arr[medio + 1:fin + 1]
+
+    i = 0; j = 0; k = inicio
+
+    while i < len(izquierda) and j < len(derecha):
+        # DECISIÓN: [¿Por qué usamos <= y no < ?
+        #            ¿Qué efecto tiene sobre la estabilidad?]
+        if izquierda[i] <= derecha[j]:
+            arr[k] = izquierda[i]
+            i += 1
+        else:
+            arr[k] = ...   # TODO
+            j += 1
+        k += 1
+
+    # TODO: copiar elementos restantes de izquierda
+    while i < len(izquierda):
+        arr[k] = ...
+        i += 1; k += 1
+
+    # TODO: copiar elementos restantes de derecha
+    while j < len(derecha):
+        ...
+
+
+# ─────────────────────────────────────────────────────────────
+#  SECCIÓN 2: VERIFICACIÓN DE ESTABILIDAD
+# ─────────────────────────────────────────────────────────────
+
+def merge_sort_estable_demo():
+    """
+    Demuestra que Merge Sort es estable:
+    elementos con la misma clave mantienen su orden relativo original.
+    
+    Contexto StreamMX: registros ordenados primero por fecha, luego por puntaje.
+    Si el algoritmo es estable, películas con el mismo puntaje mantienen
+    el orden cronológico de la ordenación anterior.
+    
+    REFLEXIONA-2: [Escribe aquí qué observó el equipo — ¿se mantuvo el orden?
+                  ¿Qué hubiera pasado con un algoritmo inestable?]
+    """
+    # Simulación: (titulo, puntaje, posicion_original_cronologica)
+    registros = [
+        ("Pelicula_C", 90, 1),   # más antigua con puntaje 90
+        ("Pelicula_A", 85, 2),
+        ("Pelicula_E", 90, 3),   # más reciente con puntaje 90
+        ("Pelicula_B", 75, 4),
+        ("Pelicula_D", 85, 5),
+    ]
+
+    # Ordenar por puntaje (clave secundaria) usando merge_sort
+    # Para usar merge_sort con tuplas, necesitas una versión con comparador
+    # DECISIÓN: [¿Cómo adaptas merge_sort para comparar por el primer elemento
+    #            de la tupla pero preservar el orden de los iguales?]
+
+    # TODO: implementar o adaptar merge_sort para ordenar por puntaje
+    # Resultado esperado: registros con el mismo puntaje (90, 85)
+    # deben mantener su orden relativo original (cronológico)
+    pass
+
+
+# ─────────────────────────────────────────────────────────────
+#  SECCIÓN 3: BENCHMARKING vs SEMANA 8
+# ─────────────────────────────────────────────────────────────
+
+def bubble_sort_s8(arr: list) -> None:
+    """Referencia de Semana 8 para comparación empírica."""
+    n = len(arr)
+    for i in range(n):
+        for j in range(n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+
+
+def medir_tiempo(func, arr: list, *args) -> float:
+    """Mide tiempo sobre una copia — el arreglo original no se modifica."""
+    copia = copy.deepcopy(arr)
+    inicio = time.perf_counter()
+    func(copia, *args)
+    fin = time.perf_counter()
+    return round(fin - inicio, 6)
+
+
+def generar_arreglo(n: int, distribucion: str) -> list:
+    if distribucion == 'aleatorio':
+        return [random.randint(0, n * 10) for _ in range(n)]
+    elif distribucion == 'ordenado':
+        return list(range(n))
+    elif distribucion == 'inverso':
+        return list(range(n, 0, -1))
+    raise ValueError(f"Distribución desconocida: {distribucion}")
+
+
+def benchmark_completo():
+    """
+    ESTRATEGIA: [Antes de ejecutar, escribe aquí la predicción del equipo:
+                 ¿Cuánto esperan que mejore Merge Sort sobre Bubble Sort para n=100 000?
+                 ¿En qué distribución esperan la mayor diferencia?]
+    """
+    tamanios     = [1_000, 10_000, 100_000]
+    distribuciones = ['aleatorio', 'ordenado', 'inverso']
+
+    print(f"{'Algoritmo':<18} {'n':>8} {'Distribución':<12} {'Tiempo (s)':>12}")
+    print("-" * 58)
+
+    for n in tamanios:
+        for dist in distribuciones:
+            arr = generar_arreglo(n, dist)
+
+            t_merge  = medir_tiempo(merge_sort, arr, 0, len(arr) - 1)
+
+            # Solo incluir Bubble Sort para n <= 10_000 (O(n²) es muy lento para 100k)
+            if n <= 10_000:
+                t_bubble = medir_tiempo(bubble_sort_s8, arr)
+                print(f"{'Bubble Sort (S8)':<18} {n:>8} {dist:<12} {t_bubble:>12.6f}")
+
+            print(f"{'Merge Sort':<18} {n:>8} {dist:<12} {t_merge:>12.6f}")
+        print()
+
+    # VALIDA: [Documenta aquí si los tiempos son consistentes con O(n log n):
+    #          al pasar de n=1000 a n=10000 (×10), ¿el tiempo creció ×33 o ×100?]
+
+
+# ─────────────────────────────────────────────────────────────
+#  EJECUCIÓN
+# ─────────────────────────────────────────────────────────────
+if __name__ == '__main__':
+    prueba = [64, 34, 25, 12, 22, 11, 90]
+    copia  = prueba[:]
+    merge_sort(copia, 0, len(copia) - 1)
+    print("Merge Sort:", copia)   # Esperado: [11, 12, 22, 25, 34, 64, 90]
+
+    print("\n--- DEMO ESTABILIDAD ---")
+    merge_sort_estable_demo()
+
+    print("\n--- BENCHMARK vs SEMANA 8 ---\n")
+    benchmark_completo()
+
+    # IA-REFLEXION-A: [En 3 líneas: qué pista exacta de la IA durante
+    #                  APLICA te hizo entender el rol de los arreglos
+    #                  auxiliares en merge() — y por qué no se puede
+    #                  fusionar sin ellos directamente sobre arr]
+</code></pre>
+                </div>
+
+                <!-- RETO 1 -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">1</div>
+                        <h4>Reto 1 — Implementación, Estabilidad y Benchmark vs S8 <span class="reto-badge esencial">Esencial</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Asistente de depuración que responde preguntas puntuales y valida lógica — nunca completa el código por el equipo.
+                        </div>
+                        <div class="prompt-box">Usa un lenguaje claro y directo. Si usas términos técnicos, explícalos brevemente.
+
+Estamos implementando Merge Sort en Python como equipo. Tenemos el starter code de la Semana 9.
+
+Tu rol en esta sesión:
+- Responder preguntas puntuales sobre lógica o comportamiento
+- Si describimos un bug, preguntarnos: "¿Qué esperaban que hiciera esa línea vs qué hace?" — no corrijas directamente
+- Si pedimos que completes una función, declina y pregunta: "¿Qué debería ocurrir en ese punto del algoritmo?"
+- Cuando terminemos merge(), antes de continuar pídenos que expliquemos el invariante con nuestras propias palabras
+
+Pregunta inicial: Implementamos el ciclo de fusión de merge() usando <= en la comparación. Alguien del equipo dice que debería ser <. ¿Cuál tiene razón y qué implica esa diferencia para la estabilidad del algoritmo?</div>
+                        <div class="entregable-box">
+                            Archivo Python con todas las funciones completadas, comentarios <code># COMPRENDE-1/2/3</code>, <code># DECISIÓN:</code>, <code># ESTRATEGIA:</code> y <code># VALIDA:</code> rellenados. Salida del benchmark documentada.<br><br>
+                            <strong># IA-REFLEXION-A:</strong> Al final del archivo, en 3 líneas: qué pregunta o pista de la IA fue el punto de inflexión que hizo que el equipo entendiera por qué los arreglos auxiliares son necesarios en merge() y no se puede fusionar directamente sobre arr.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RETO 2 -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">2</div>
+                        <h4>Reto 2 — Estabilidad en Datos Reales: el Caso StreamMX <span class="reto-badge avanzado">Avanzado</span></h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Analista de datos que ayuda a diseñar el experimento de estabilidad — no lo ejecuta por el equipo.
+                        </div>
+                        <div class="prompt-box">Usa lenguaje técnico apropiado para estudiantes de tercer semestre de Sistemas Computacionales.
+
+En StreamMX los registros se ordenan en dos pasos: primero por fecha de estreno (más antiguo al más nuevo) y luego por puntaje compuesto (mayor a menor). El resultado esperado es que dos películas con el mismo puntaje aparezcan en el ranking en orden cronológico.
+
+Queremos diseñar un experimento que demuestre que Merge Sort preserva este comportamiento (es estable) y que un algoritmo inestable lo rompería.
+
+Ayúdanos a diseñar el experimento respondiendo:
+1. ¿Qué estructura de datos mínima (qué campos) necesitamos para modelar un "registro StreamMX" en Python?
+2. ¿Cómo generamos un conjunto de prueba donde algunos registros tengan el mismo puntaje pero diferente fecha?
+3. ¿Qué comparamos antes y después de ejecutar merge_sort para verificar que la estabilidad se preservó?
+4. Describe en pseudocódigo de 5 líneas cómo verificaríamos automáticamente (con una aserción) que la estabilidad se mantuvo.
+
+No escribas el código — describe el experimento para que el equipo lo implemente.</div>
+                        <div class="entregable-box">
+                            Función <code>experimento_estabilidad_streamMX()</code> implementada en el archivo Python, con una aserción que pasa si Merge Sort es estable y falla si se usa un algoritmo inestable. Incluye <code># REFLEXIONA-2:</code> con la conclusión del equipo sobre qué implicaría un algoritmo inestable para los usuarios finales de StreamMX.<br><br>
+                            <strong># IA-REFLEXION-B:</strong> En 3 líneas: qué pregunta del diseñador IA te hizo entender la diferencia entre <em>ordenar</em> estable e <em>inestable</em> desde la perspectiva del usuario (no solo del algoritmo).
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 3: REFLEXIONA                                        -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="reflexiona" class="fase-section">
+            <div class="fase-header reflexiona">
+                <div class="fase-info">
+                    <div class="fase-icon">🔍</div>
+                    <h2>FASE 3: REFLEXIONA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Analizar / Evaluar — Defensa verbal obligatoria</span>
+                </div>
+            </div>
+
+            <div class="fase-content">
+                <div class="context-box danger">
+                    <div class="box-title">🔴 Criterio No Negociable — Defensa Verbal con Andamiaje de Rescate</div>
+                    <p>El criterio REFLEXIONA requiere defensa verbal obligatoria. El protocolo tiene dos niveles:</p>
+                    <p style="margin-top: 0.8rem;"><strong>Nivel 1 — Defensa completa (100%):</strong> El integrante traza la fusión de dos subarreglos correctamente de memoria, explica por qué el árbol tiene log n niveles y justifica por qué <code>&lt;=</code> preserva la estabilidad.</p>
+                    <p style="margin-top: 0.8rem;"><strong>Nivel 2 — Rescate (60%):</strong> Si el integrante se bloquea en el trazado completo, el docente interviene: <em>"Pausa. No traces todo. Solo dime: ¿qué garantiza merge() al terminar, en una oración?"</em> Si el estudiante responde el concepto general aunque no recuerde el procedimiento paso a paso, obtiene el 60%.</p>
+                    <p style="margin-top: 0.8rem;"><strong>Cero (0%):</strong> Si el integrante no puede responder ni el concepto general del invariante de merge(). Esto aplica independientemente de la calidad del trabajo escrito.</p>
+                </div>
+
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Justificar</strong> por qué O(n log n) representa una mejora asintótica concreta sobre O(n²) para n = 4 000 000 (el caso StreamMX) (Analizar)</li>
+                        <li><strong>Contrastar</strong> la predicción inicial del equipo (ESTRATEGIA) con los resultados empíricos del benchmark e identificar discrepancias (Analizar)</li>
+                        <li><strong>Evaluar</strong> si Merge Sort resuelve el problema de StreamMX considerando tanto tiempo como espacio (Evaluar)</li>
+                        <li><strong>Anticipar</strong> la limitación de RAM que motiva Quick Sort la semana siguiente (Evaluar)</li>
+                    </ul>
+                </div>
+
+                <h3>Ítems de Defensa Verbal — Prepara al menos dos</h3>
+                <div class="invariantes-box">
+                    <h4>🎤 Preguntas que puede hacer el profesor durante la defensa</h4>
+                    <p><strong>Sobre el árbol de recursión:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>¿Por qué el árbol de Merge Sort tiene exactamente log₂(n) niveles? ¿Qué propiedad de la división lo garantiza?</li>
+                        <li>Si n = 4 000 000, ¿cuántos niveles tiene el árbol aproximadamente? ¿Cuántas llamadas a merge() se hacen en total?</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Sobre merge() y la estabilidad:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>¿Qué garantiza merge() al terminar — en una sola oración? ¿Por qué esa garantía es verdadera para cualquier par de subarreglos ordenados, sin importar su contenido?</li>
+                        <li>¿Por qué cambiar <code>&lt;=</code> por <code>&lt;</code> en el ciclo de fusión rompe la estabilidad? Construye un ejemplo concreto con dos películas de puntaje 90.</li>
+                        <li>Tu experimento de estabilidad mostró X — ¿ese resultado era el esperado? ¿Qué hubiera sucedido si usas Bubble Sort (también estable) en lugar de Merge Sort?</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Sobre la decisión de espacio y el cliffhanger:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Tu benchmark mostró que Merge Sort tardó X segundos para n=100 000. ¿Cuánto tardaría Bubble Sort para el mismo n? ¿Por qué ese cálculo es posible sin ejecutarlo?</li>
+                        <li>La Ing. Sofía rechazó Merge Sort por el consumo de RAM. Si los registros pesan 200 bytes cada uno y n = 4 000 000, ¿cuánta RAM extra consume Merge Sort en el peor momento de la fusión?</li>
+                    </ul>
+                </div>
+
+                <!-- REFLEXIONA: Reto IA -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">R</div>
+                        <h4>Reto IA — Reflexiona: Simulacro de Defensa Oral (Merge Sort)</h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Evaluador técnico que simula la defensa oral con andamiaje de rescate — presiona con seguimiento, pero da una segunda oportunidad de concepto si el trazado falla.
+                        </div>
+                        <div class="prompt-box">Habla de forma directa y técnicamente precisa. No uses metáforas innecesarias.
+
+Actúa como evaluador técnico en una defensa oral universitaria. Vamos a defender nuestra implementación de Merge Sort y los resultados del benchmark.
+
+Tu protocolo:
+1. El integrante que presenta dice "Listo" y expone brevemente: qué garantiza merge(), por qué es O(n log n) y qué mostró el benchmark vs Bubble Sort.
+2. Haz UNA pregunta técnica de seguimiento. Espera la respuesta completa.
+3. Si la respuesta es correcta: confirma y profundiza con otra pregunta.
+4. Si la respuesta es parcial o el integrante se bloquea en un trazado específico: activa el andamiaje de rescate. Pregunta solo el concepto general: "Bien, pausa. Sin trazar paso a paso — ¿qué garantiza merge() al terminar, en una sola oración?"
+   - Si responde el concepto: anota "Rescate aplicado, concepto correcto" y continúa.
+   - Si no puede responder el concepto: anota "Sin concepto — Insuficiente".
+5. Al final, emite veredicto: Aprobado / Aprobado con rescate / Insuficiente — con una oración de justificación.
+
+El integrante que presenta comienza.</div>
+                        <div class="entregable-box">
+                            Agrega al archivo Python los comentarios <code># REFLEXIONA-1:</code>, <code># REFLEXIONA-2:</code>, <code># REFLEXIONA-3:</code> con: (1) predicción del equipo vs resultados reales del benchmark, (2) conclusión sobre estabilidad para StreamMX, (3) descripción del problema de RAM que Merge Sort deja abierto para la semana siguiente.<br><br>
+                            <strong># IA-REFLEXION-R:</strong> En 3 líneas: qué pregunta del simulacro el equipo no pudo responder inicialmente y cómo llegó a la respuesta correcta.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 4: VALIDA                                            -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="valida" class="fase-section">
+            <div class="fase-header valida">
+                <div class="fase-icon">✔</div>
+                <div class="fase-info">
+                    <h2>FASE 4: VALIDA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Evaluar</span>
+                </div>
+            </div>
+
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Verificar</strong> la corrección funcional de ambas implementaciones sobre casos de prueba sistemáticos (Evaluar)</li>
+                        <li><strong>Confirmar</strong> que los tiempos empíricos del benchmark son consistentes con las complejidades teóricas (Evaluar)</li>
+                        <li><strong>Confirmar</strong> la estabilidad de Merge Sort mediante una aserción ejecutable sobre datos con claves duplicadas (Evaluar)</li>
+                    </ul>
+                </div>
+
+                <h3>Checklist de Validación — Completa antes de los casos de prueba</h3>
+
+                <div class="checklist-box">
+                    <h4>✅ Checklist de Autoevaluación del Equipo</h4>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c1">
+                        <label for="c1" class="check-text">
+                            <strong>Corrección básica:</strong> Merge Sort ordena correctamente el arreglo [64, 34, 25, 12, 22, 11, 90] produciendo [11, 12, 22, 25, 34, 64, 90].
+                        </label>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c2">
+                        <label for="c2" class="check-text">
+                            <strong>Casos frontera documentados:</strong> Los cinco casos frontera (arreglo vacío, un elemento, ya ordenado, inversamente ordenado, con duplicados) tienen sus resultados registrados como <code># VALIDA:</code> en el código.
+                        </label>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c3">
+                        <label for="c3" class="check-text">
+                            <strong>Consistencia empírica O(n log n):</strong> Al pasar de n=1 000 a n=10 000 (×10), el tiempo de Merge Sort creció aproximadamente ×33 (10 · log 10) y no ×100 (lo que indicaría O(n²)).
+                            <div class="check-diagnostico">Si el tiempo creció ×100, hay un bug que lo hace O(n²) — probablemente un ciclo innecesario dentro de merge().</div>
+                        </label>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c4">
+                        <label for="c4" class="check-text">
+                            <strong>Estabilidad verificada:</strong> El experimento <code>experimento_estabilidad_streamMX()</code> pasa su aserción — películas con el mismo puntaje mantienen su orden cronológico original después de ordenar por puntaje.
+                        </label>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c5">
+                        <label for="c5" class="check-text">
+                            <strong>Evidencia completa en el código:</strong> Todos los prefijos <code># COMPRENDE-1/2/3</code>, <code># DECISIÓN:</code>, <code># REFLEXIONA-1/2/3</code>, <code># VALIDA:</code>, <code># ESTRATEGIA:</code> y <code># IA-REFLEXION-A/B/R</code> contienen texto sustantivo del equipo, no están vacíos ni dicen "pendiente".
+                        </label>
+                    </div>
+
+                    <div class="checklist-item">
+                        <input type="checkbox" id="c6">
+                        <label for="c6" class="check-text">
+                            <strong>Benchmark vs Semana 8 incluido:</strong> La salida del benchmark incluye tiempos de Bubble Sort para n ≤ 10 000 y los contrasta con Merge Sort — el factor de mejora está calculado y documentado.
+                        </label>
+                    </div>
+                </div>
+
+                <h3>Casos de Prueba Mínimos</h3>
+                <p>Ejecuta cada caso y documenta el resultado como <code># VALIDA: caso N → esperado [X] obtenido [Y]</code>.</p>
+
+                <table class="tabla-comparativa">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Entrada</th>
+                            <th>Salida Esperada</th>
+                            <th>Propósito</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><code>[]</code></td>
+                            <td><code>[]</code></td>
+                            <td>Arreglo vacío — caso frontera</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><code>[42]</code></td>
+                            <td><code>[42]</code></td>
+                            <td>Un solo elemento — caso base recursivo</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><code>[1, 2, 3, 4, 5]</code></td>
+                            <td><code>[1, 2, 3, 4, 5]</code></td>
+                            <td>Ya ordenado — merge() no debe desordenar</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><code>[5, 4, 3, 2, 1]</code></td>
+                            <td><code>[1, 2, 3, 4, 5]</code></td>
+                            <td>Inversamente ordenado — máximo trabajo de merge()</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><code>[3, 3, 3, 3, 3]</code></td>
+                            <td><code>[3, 3, 3, 3, 3]</code></td>
+                            <td>Todos iguales — estabilidad trivial, sin cambios</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td><code>[2, 1, 2, 1, 2, 1]</code></td>
+                            <td><code>[1, 1, 1, 2, 2, 2]</code></td>
+                            <td>Duplicados intercalados — estabilidad no trivial</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td><code>[9, -3, 0, 7, -1, 4]</code></td>
+                            <td><code>[-3, -1, 0, 4, 7, 9]</code></td>
+                            <td>Negativos — integridad del operador comparación</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- VALIDA: Reto IA -->
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">V</div>
+                        <h4>Reto IA — Valida: Diseño de Casos Adversariales para Merge Sort</h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Ingeniero de pruebas adversariales — describe casos que revelan bugs comunes en Merge Sort, el equipo los implementa.
+                        </div>
+                        <div class="prompt-box">Usa lenguaje técnico preciso. Los casos deben ser concretos y ejecutables.
+
+Actúa como ingeniero de pruebas adversariales especializado en Merge Sort. Diseña 4 casos que vayan más allá de los casos básicos:
+
+1. Un caso que exponga si merge() maneja incorrectamente los índices cuando el subarreglo izquierdo tiene un solo elemento
+2. Un caso que detecte si merge_sort() tiene un bug en el cálculo del punto medio (división entera vs flotante en Python 3) que cause pérdida de elementos
+3. Un caso que verifique la estabilidad con elementos de tipo tupla (puntaje, titulo) donde dos tuplas tienen el mismo puntaje — el orden de los títulos debe preservarse
+4. Un caso que revele si los arreglos auxiliares en merge() se crean correctamente cuando inicio != 0 (llamadas recursivas internas, no solo la llamada raíz)
+
+Para cada caso: arreglo de entrada, resultado esperado, y por qué ese caso es adversarial para una implementación descuidada. NO escribas el código de la prueba — el equipo lo implementa.</div>
+                        <div class="entregable-box">
+                            Los 4 casos adversariales implementados como aserciones en el archivo Python, con resultados como <code># VALIDA: caso adversarial N → [resultado]</code>.<br><br>
+                            <strong># IA-REFLEXION-V:</strong> En 3 líneas: cuál de los 4 casos adversariales reveló un bug real en la implementación del equipo y cómo lo corrigieron.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FASE 5: PROFUNDIZA                                        -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="profundiza" class="fase-section">
+            <div class="fase-header profundiza">
+                <div class="fase-icon">🚀</div>
+                <div class="fase-info">
+                    <h2>FASE 5: PROFUNDIZA</h2>
+                    <span class="bloom-tag">Nivel Bloom: Analizar / Evaluar</span>
+                </div>
+            </div>
+
+            <div class="fase-content">
+                <div class="objetivos-box">
+                    <h4>🎯 Objetivos de Aprendizaje</h4>
+                    <ul>
+                        <li><strong>Cuantificar</strong> el costo de espacio de Merge Sort en el caso concreto de StreamMX (n = 4 000 000 registros) (Analizar)</li>
+                        <li><strong>Evaluar</strong> en qué condiciones el costo de espacio O(n) convierte a Merge Sort en una solución inviable (Evaluar)</li>
+                        <li><strong>Anticipar</strong> qué propiedad debe tener el algoritmo de la semana siguiente para resolver la restricción de RAM (Analizar)</li>
+                    </ul>
+                </div>
+
+                <h3>El Problema que Merge Sort No Resuelve</h3>
+                <p>Merge Sort garantiza O(n log n) en tiempo para <em>todos</em> los casos. Sin embargo, la función <code>merge()</code> requiere crear copias auxiliares de cada subarreglo antes de fusionarlos. En cada nivel del árbol de recursión se usan colectivamente O(n) bytes de memoria adicional.</p>
+
+                <div class="context-box danger">
+                    <div class="box-title">⚠️ El cálculo de RAM que rechazó Sofía</div>
+                    <p>StreamMX tiene 4 000 000 de registros. Cada registro contiene: ID (8 bytes), título (50 bytes promedio), puntaje (8 bytes), fecha (8 bytes) y metadatos (50 bytes) ≈ <strong>124 bytes por registro</strong>.</p>
+                    <p style="margin-top: 0.8rem;"><strong>RAM del dataset original:</strong> 4 000 000 × 124 = ~496 MB</p>
+                    <p style="margin-top: 0.5rem;"><strong>RAM adicional por Merge Sort (O(n)):</strong> otros ~496 MB durante la fase de fusión más costosa</p>
+                    <p style="margin-top: 0.5rem;"><strong>Total en el peor momento:</strong> ~992 MB — casi 1 GB extra solo para ordenar</p>
+                    <p style="margin-top: 0.8rem;">Con un servidor que tiene 1.5 GB de RAM total compartida con otros servicios, esto colapsa el sistema. El tiempo mejoró de 47 min a 3 min, pero la disponibilidad del servidor se rompió.</p>
+                </div>
+
+                <div class="reto-ia">
+                    <div class="reto-ia-header">
+                        <div class="reto-numero">P</div>
+                        <h4>Reto IA — Profundiza: Diagnóstico de la Restricción de Memoria</h4>
+                    </div>
+                    <div class="reto-ia-body">
+                        <div class="rol-ia">
+                            <strong>Rol de la IA:</strong> Arquitecto de sistemas que guía el análisis de trade-offs — no propone soluciones todavía, solo profundiza la comprensión del problema.
+                        </div>
+                        <div class="prompt-box">Usa lenguaje técnico adecuado para estudiantes de tercer semestre. Sé conciso.
+
+Actuamos como el equipo técnico de StreamMX. Implementamos Merge Sort y logramos ordenar 4 millones de registros en 3 minutos, pero el servidor colapsó por uso de RAM durante la fusión.
+
+Ayúdanos a entender el problema en profundidad respondiendo:
+
+1. ¿En qué momento exacto del árbol de recursión de Merge Sort el consumo de RAM auxiliar es máximo? ¿Es al inicio, en el medio o al final del proceso? Explica por qué.
+2. ¿Podríamos reducir el espacio auxiliar a O(1) sin cambiar el paradigma de fusión? Si no, ¿por qué no?
+3. ¿Qué propiedad fundamental debería tener un algoritmo que resuelva el problema de RAM sin sacrificar O(n log n) en tiempo promedio?
+4. Sin nombrar ningún algoritmo todavía, describe en 2 oraciones cómo sería ese algoritmo ideal para StreamMX según los tres criterios: tiempo, espacio y comportamiento con arreglos casi ordenados.
+
+No nombres Quick Sort ni ningún algoritmo específico en tus respuestas — solo describe las propiedades.</div>
+                        <div class="entregable-box">
+                            Bloque <code># PROFUNDIZA:</code> en el archivo Python con la descripción del equipo del algoritmo ideal para StreamMX (sin nombrarlo) y cuantificación del ahorro de RAM esperado si el espacio auxiliar fuera O(log n) en lugar de O(n).<br><br>
+                            <strong># IA-REFLEXION-P:</strong> En 3 líneas: qué pregunta de la IA hizo que el equipo entendiera en qué momento del árbol el consumo de RAM es máximo.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════ -->
+                <!-- MARCADOR DE CORTE — INICIO SEMANA 10              -->
+                <!-- ═══════════════════════════════════════════════════ -->
+                <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; border-radius: 8px; padding: 2rem; margin-top: 2rem; border: 3px dashed var(--accent);">
+                    <h3 style="color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        ✂️ CORTE — AQUÍ COMIENZA LA SEMANA 10
+                    </h3>
+                    <p style="opacity: 0.9; margin-bottom: 1rem;">El contenido a partir de este punto corresponde al módulo de <strong>Semana 10: Quick Sort, Benchmark Comparativo y Veredicto StreamMX</strong>. Su narrativa continúa directamente desde el cliffhanger de RAM de esta semana.</p>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                            <td style="padding: 0.6rem 1rem; color: var(--accent); font-weight: bold;">Semana 9 (este archivo)</td>
+                            <td style="padding: 0.6rem 1rem;">Paradigma D&amp;V · Merge Sort · Estabilidad · RAM como limitación abierta</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.6rem 1rem; color: var(--accent); font-weight: bold;">Semana 10 (siguiente HTML)</td>
+                            <td style="padding: 0.6rem 1rem;">Quick Sort (Lomuto) · Caso degenerado con duplicados · Benchmark MS vs QS · Estrategias de pivote · Recomendación final StreamMX · HITO 2</td>
+                        </tr>
+                    </table>
+                    <p style="margin-top: 1rem; font-style: italic; opacity: 0.8; font-size: 0.9rem;">Nota curricular: Lo que el plan de estudios original llamaba "Semana 10: Búsqueda Lineal y Binaria" se recorre a <strong>Semana 11</strong>, manteniendo la conexión ordenamiento → búsqueda antes del HITO 2.</p>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section id="evaluacion" class="evaluacion-section">
+            <div class="evaluacion-header">
+                <h2>📊 Rúbrica de Evaluación — Semana 9</h2>
+                <p style="opacity: 0.9; margin-top: 0.5rem;">Ponderación total: 100 puntos</p>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">COMPRENDE</span>
+                <div>
+                    <strong>Comprensión conceptual del árbol de recursión y la fusión</strong><br>
+                    <small>Comentarios <code># COMPRENDE-1/2/3</code> presentes y sustantivos. <strong>Excelente (25 pts):</strong> los tres comentarios formulan con palabras propias el invariante de merge(), la lógica del árbol de altura log n y por qué &lt;= preserva estabilidad. <strong>Bien (18 pts):</strong> dos correctos y uno superficial. <strong>Suficiente (10 pts):</strong> al menos uno correcto con razonamiento propio. <strong>Insuficiente (0 pts):</strong> ausentes, en blanco o copiados sin paráfrasis.</small>
+                </div>
+                <span class="puntos">25 pts</span>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">APLICA</span>
+                <div>
+                    <strong>Implementación funcional + estabilidad + benchmark vs S8</strong><br>
+                    <small>Merge Sort pasa los 7 casos de prueba mínimos; experimento de estabilidad con aserción ejecutable; benchmark incluye al menos Bubble Sort para n ≤ 10 000; todos los <code># DECISIÓN:</code> y <code># IA-REFLEXION:</code> con contenido sustantivo. <strong>Excelente (25 pts):</strong> todo lo anterior + factor de mejora calculado y comentado. <strong>Bien (18 pts):</strong> implementación funcional + benchmark, sin experimento de estabilidad o sin <code># IA-REFLEXION:</code>. <strong>Suficiente (10 pts):</strong> implementación que pasa al menos 5/7 casos, sin benchmark ni estabilidad. <strong>Insuficiente (0 pts):</strong> la implementación no produce resultados correctos.</small>
+                </div>
+                <span class="puntos">25 pts</span>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">REFLEXIONA</span>
+                <div>
+                    <strong>Defensa verbal (con andamiaje de rescate) + análisis empírico</strong><br>
+                    <small>Defensa oral según protocolo de dos niveles. <strong>Excelente (25 pts):</strong> defensa completa (Nivel 1) + <code># REFLEXIONA-1/2/3</code> con predicción vs resultados reales + identificación del problema de RAM de Merge Sort. <strong>Bien (18 pts):</strong> defensa con rescate (Nivel 2, concepto correcto) + análisis empírico completo. <strong>Suficiente (10 pts):</strong> defensa con rescate + análisis parcial. <strong>Insuficiente (0 pts):</strong> el integrante no puede responder ni el concepto general del invariante de merge(), independientemente del trabajo escrito.</small>
+                </div>
+                <span class="puntos">25 pts</span>
+            </div>
+
+            <div class="criterio-item">
+                <span class="fase-badge">VALIDA</span>
+                <div>
+                    <strong>Verificación sistemática + casos adversariales</strong><br>
+                    <small>Los 7 casos mínimos ejecutados y documentados con <code># VALIDA:</code>; checklist completo; al menos 3 de los 4 casos adversariales implementados. <strong>Excelente (25 pts):</strong> 7 casos + 4 adversariales + aserción de estabilidad pasando + consistencia empírica O(n log n) verificada. <strong>Bien (18 pts):</strong> 7 casos + al menos 3 adversariales documentados. <strong>Suficiente (10 pts):</strong> al menos 5 de los 7 casos mínimos con documentación. <strong>Insuficiente (0 pts):</strong> menos de 5 casos o sin documentación.</small>
+                </div>
+                <span class="puntos">25 pts</span>
+            </div>
+
+            <div class="criterio-item" style="background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);">
+                <span class="fase-badge" style="background: var(--accent); color: var(--primary);">PROFUNDIZA</span>
+                <div>
+                    <strong>Crédito Extra — Diagnóstico cuantificado de la restricción de RAM</strong><br>
+                    <small>Bloque <code># PROFUNDIZA:</code> con cálculo correcto de RAM (en MB) que Merge Sort consumiría sobre los 4 M de registros de StreamMX, descripción de las propiedades del algoritmo ideal, y <code># IA-REFLEXION-P:</code> con síntesis de 3 líneas.</small>
+                </div>
+                <span class="puntos" style="background: var(--success); color: white;">+10 pts</span>
+            </div>
+
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- GLOSARIO                                                   -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="glosario" class="glosario-section">
+            <div class="glosario-header">
+                <h2>📖 Glosario — Semana 9</h2>
+            </div>
+            <div class="glosario-grid">
+                <dl class="termino-card">
+                    <dt>Divide y Vencerás (D&amp;V)</dt>
+                    <dd>Paradigma de diseño que parte un problema en subproblemas del mismo tipo, los resuelve recursivamente y combina las soluciones. Base de Merge Sort (Semana 9) y Quick Sort (Semana 10).</dd>
+                </dl>
+                <dl class="termino-card">
+                    <dt>Merge Sort</dt>
+                    <dd>Algoritmo de ordenamiento estable O(n log n) en todos los casos. Divide el arreglo en mitades recursivamente y fusiona subarreglos ordenados. Requiere O(n) espacio auxiliar.</dd>
+                </dl>
+                <dl class="termino-card">
+                    <dt>Árbol de Recursión</dt>
+                    <dd>Representación visual de las llamadas recursivas. Para Merge Sort, tiene altura log₂(n) y cada nivel procesa colectivamente O(n) elementos → O(n log n) en total.</dd>
+                </dl>
+                <dl class="termino-card">
+                    <dt>Invariante de merge()</dt>
+                    <dd>Al terminar cada iteración del ciclo de fusión, el segmento arr[inicio..k-1] contiene los k−inicio elementos más pequeños de las dos mitades, correctamente ordenados.</dd>
+                </dl>
+                <dl class="termino-card">
+                    <dt>Estabilidad</dt>
+                    <dd>Propiedad que garantiza que elementos con claves iguales mantienen su orden relativo original. Merge Sort es estable por el uso de &lt;= en la comparación de fusión.</dd>
+                </dl>
+                <dl class="termino-card">
+                    <dt>Espacio Auxiliar O(n)</dt>
+                    <dd>Memoria adicional proporcional al tamaño del arreglo que Merge Sort requiere para sus arreglos temporales durante la fusión. Es la limitación que motiva Quick Sort (Semana 10).</dd>
+                </dl>
+                <dl class="termino-card">
+                    <dt>In Situ (In-Place)</dt>
+                    <dd>Propiedad de un algoritmo que opera usando O(1) o O(log n) espacio adicional. Merge Sort <em>no</em> es in-place. El algoritmo in-place con O(n log n) promedio se estudia en Semana 10.</dd>
+                </dl>
+                <dl class="termino-card" style="border-left-color: var(--warning);">
+                    <dt>Quick Sort / Pivote / Partición ← Semana 10</dt>
+                    <dd>Estos conceptos se estudian e implementan la semana siguiente como respuesta a la restricción de RAM que Merge Sort deja abierta. Anticipación: requiere O(log n) espacio y ordena in-place.</dd>
+                </dl>
+                <dl class="termino-card aetl">
+                    <dt># DECISIÓN: (AETL)</dt>
+                    <dd>Comentario que documenta una elección de diseño y su justificación técnica. Evidencia evaluable — no es decorativo.</dd>
+                </dl>
+                <dl class="termino-card aetl">
+                    <dt># ESTRATEGIA: (AETL)</dt>
+                    <dd>Predicción del equipo antes de ejecutar el benchmark. Contrasta con los resultados reales en REFLEXIONA para evidenciar aprendizaje empírico.</dd>
+                </dl>
+                <dl class="termino-card aetl">
+                    <dt># IA-REFLEXION: (nuevo S9)</dt>
+                    <dd>Comentario de 3 líneas máximo que captura la pista o pregunta exacta de la IA que produjo el momento de comprensión. Reemplaza las capturas de pantalla como evidencia cognitiva.</dd>
+                </dl>
+            </div>
+        </section>
+
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- REFERENCIAS                                                -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <section id="referencias" class="referencias-section">
+            <h3>📚 Referencias</h3>
+
+            <div class="referencia-item">
+                Anderson, L. W., Krathwohl, D. R., Airasian, P. W., Cruikshank, K. A., Mayer, R. E., Pintrich, P. R., Raths, J., &amp; Wittrock, M. C. (Eds.). (2001). <em>A taxonomy for learning, teaching, and assessing: A revision of Bloom's taxonomy of educational objectives</em>. Longman.
+            </div>
+            <div class="referencia-item">
+                Bandura, A. (2001). Social cognitive theory: An agentic perspective. <em>Annual Review of Psychology, 52</em>(1), 1–26. https://doi.org/10.1146/annurev.psych.52.1.1
+            </div>
+            <div class="referencia-item">
+                Bognár, L. (2024). Constructivist approaches in computer science education: Implications for algorithm learning. <em>Computers &amp; Education, 195</em>, 104731.
+            </div>
+            <div class="referencia-item">
+                Brod, G., Scheidig, F., &amp; Kucian, K. (2023). Agency in learning: How autonomous decision-making shapes long-term retention. <em>npj Science of Learning, 8</em>(1), 14. https://doi.org/10.1038/s41539-023-00165-4
+            </div>
+            <div class="referencia-item">
+                Chiu, T. K. F. (2024). Rethinking self-regulated learning in the age of generative AI. <em>Computers &amp; Education: Artificial Intelligence, 6</em>, 100200.
+            </div>
+            <div class="referencia-item">
+                Cormen, T. H., Leiserson, C. E., Rivest, R. L., &amp; Stein, C. (2022). <em>Introduction to algorithms</em> (4.ª ed.). MIT Press.
+            </div>
+            <div class="referencia-item">
+                Knuth, D. E. (1998). <em>The art of computer programming: Vol. 3. Sorting and searching</em> (2.ª ed.). Addison-Wesley.
+            </div>
+            <div class="referencia-item">
+                Mahdi, A. O., Ezzeddine, H., &amp; Hasan, M. (2025). Cognitive load in CS education: A systematic review of measurement and mitigation strategies. <em>ACM Transactions on Computing Education, 25</em>(1), 1–28.
+            </div>
+            <div class="referencia-item">
+                Piaget, J. (1978). <em>Success and understanding</em>. Harvard University Press.
+            </div>
+            <div class="referencia-item">
+                Sari, D. P., Budiyono, &amp; Slamet, I. (2025). Self-regulated learning strategies and academic performance in algorithm design courses: A longitudinal study. <em>Journal of Educational Computing Research, 63</em>(1), 45–72.
+            </div>
+            <div class="referencia-item">
+                Sedgewick, R., &amp; Wayne, K. (2011). <em>Algorithms</em> (4.ª ed.). Addison-Wesley. [Capítulo 2.2 Merge Sort — Capítulo 2.3 Quick Sort se usa en Semana 10]
+            </div>
+            <div class="referencia-item">
+                Sweller, J. (2020). Cognitive load theory and educational technology. <em>Educational Technology Research and Development, 68</em>(1), 1–16. https://doi.org/10.1007/s11423-019-09701-3
+            </div>
+            <div class="referencia-item">
+                Vygotsky, L. S. (1978). <em>Mind in society: The development of higher psychological processes</em>. Harvard University Press.
+            </div>
+            <div class="referencia-item">
+                Zimmerman, B. J. (2000). Attaining self-regulation: A social cognitive perspective. En M. Boekaerts, P. R. Pintrich, &amp; M. Zeidner (Eds.), <em>Handbook of self-regulation</em> (pp. 13–39). Academic Press.
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="modelo-badge">Modelo AETL — Taller Invertido</div>
+        <p>Estructura de Datos Básica · Licenciatura en Sistemas Computacionales</p>
+        <p style="opacity: 0.8; margin-top: 0.5rem;">Universidad Autónoma de Nayarit · Dr. Eligardo Cruz Sánchez</p>
+        <p style="opacity: 0.6; margin-top: 0.5rem; font-size: 0.9rem;">Semana 9 de 15 · Fase 2: Algoritmos Fundamentales · Continúa en Semana 10: Quick Sort y Veredicto StreamMX</p>
+    </footer>
+
+    <script>
+    // ─────────────────────────────────────────────────────────
+    //  BARRA DE PROGRESO — Actualización por scroll
+    // ─────────────────────────────────────────────────────────
+    const secciones = ['comprende', 'aplica', 'reflexiona', 'valida', 'profundiza'];
+    const pasos = document.querySelectorAll('.progress-step');
+
+    function actualizarProgreso() {
+        let seccionActual = 0;
+        secciones.forEach((id, idx) => {
+            const el = document.getElementById(id);
+            if (el) {
+                const rect = el.getBoundingClientRect();
+                if (rect.top <= window.innerHeight * 0.4) {
+                    seccionActual = idx;
+                }
+            }
+        });
+
+        pasos.forEach((paso, idx) => {
+            paso.classList.remove('active', 'completed');
+            if (idx < seccionActual) {
+                paso.classList.add('completed');
+            } else if (idx === seccionActual) {
+                paso.classList.add('active');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', actualizarProgreso);
+    actualizarProgreso();
+
+    // ─────────────────────────────────────────────────────────
+    //  CHECKLIST — Persistencia en sesión
+    // ─────────────────────────────────────────────────────────
+    const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+
+    checkboxes.forEach(cb => {
+        const saved = sessionStorage.getItem('s9_' + cb.id);
+        if (saved === 'true') cb.checked = true;
+
+        cb.addEventListener('change', () => {
+            sessionStorage.setItem('s9_' + cb.id, cb.checked);
+            const item = cb.closest('.checklist-item');
+            if (cb.checked) {
+                item.style.background = '#e8f5e9';
+                item.style.borderLeft = '4px solid #28a745';
+            } else {
+                item.style.background = 'white';
+                item.style.borderLeft = 'none';
+            }
+        });
+
+        // Aplicar estado guardado al cargar
+        if (cb.checked) {
+            const item = cb.closest('.checklist-item');
+            item.style.background = '#e8f5e9';
+            item.style.borderLeft = '4px solid #28a745';
+        }
+    });
+    </script>
+
+</body>
+</html>
