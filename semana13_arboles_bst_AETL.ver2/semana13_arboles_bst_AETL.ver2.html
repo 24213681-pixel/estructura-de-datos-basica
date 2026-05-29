@@ -1,0 +1,2691 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semana 13: Arboles Binarios de Busqueda | AETL</title>
+<style>
+:root {
+    --primary: #003a63;
+    --secondary: #005b96;
+    --accent: #f2a900;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --gray: #6c757d;
+    --border-radius: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.7;
+    color: var(--dark);
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+    min-height: 100vh;
+}
+
+/* =====================================================
+   HEADER INSTITUCIONAL
+   ===================================================== */
+
+.header-institucional {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,58,99,0.3);
+}
+
+.header-institucional .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.header-institucional .escudo {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.header-institucional h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.header-institucional .subtitulo {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.header-institucional .badge-semana {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+
+/* =====================================================
+   BARRA DE PROGRESO
+   ===================================================== */
+
+.progress-container {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e0e0e0;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+    transition: transform 0.3s;
+    text-decoration: none;
+}
+
+.progress-step:hover {
+    transform: scale(1.1);
+}
+
+.progress-step .step-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: white;
+    border: 3px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.progress-step.active .step-icon {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,91,150,0.4);
+}
+
+.progress-step.completed .step-icon {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.progress-step .step-label {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.progress-step.active .step-label {
+    color: var(--secondary);
+}
+
+/* =====================================================
+   NAVEGACIÓN
+   ===================================================== */
+
+.nav-container {
+    background: var(--primary);
+    padding: 0.8rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--accent);
+}
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+   ===================================================== */
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* =====================================================
+   SECCIONES DE FASE
+   ===================================================== */
+
+.fase-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.fase-header {
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fase-header.comprende { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.fase-header.aplica { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.fase-header.reflexiona { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.fase-header.valida { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.fase-header.profundiza { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+.fase-header .fase-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fase-header .fase-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.fase-header .fase-info .bloom-tag {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.fase-content {
+    padding: 2rem;
+}
+
+/* =====================================================
+   OBJETIVOS
+   ===================================================== */
+
+.objetivos-box {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d1e8fa 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.objetivos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.objetivos-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.objetivos-box li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.objetivos-box li::before {
+    content: '🎯';
+    position: absolute;
+    left: 0;
+}
+
+/* =====================================================
+   CAJAS CONTEXTUALES
+   ===================================================== */
+
+.context-box {
+    padding: 1.2rem 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border-left: 4px solid;
+}
+
+.context-box.tip {
+    background: linear-gradient(135deg, #e3f9e5 0%, #c8f7dc 100%);
+    border-color: var(--success);
+}
+
+.context-box.warning {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border-color: var(--warning);
+}
+
+.context-box.danger {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border-color: var(--danger);
+}
+
+.context-box.success {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: var(--success);
+}
+
+.context-box.info {
+    background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+    border-color: var(--info);
+}
+
+.context-box .box-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* =====================================================
+   RETOS IA
+   ===================================================== */
+
+.reto-ia {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.reto-ia-header {
+    background: linear-gradient(90deg, var(--accent) 0%, #e89900 100%);
+    color: var(--primary);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reto-ia-header .reto-numero {
+    background: var(--primary);
+    color: var(--accent);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.reto-ia-header h4 {
+    flex: 1;
+    font-size: 1.1rem;
+}
+
+.reto-ia-body {
+    padding: 1.5rem;
+}
+
+/* context-box dentro de reto-ia hereda color:white — forzar texto oscuro */
+.reto-ia-body .context-box {
+    color: var(--dark);
+}
+
+.reto-ia-body .context-box .box-title {
+    color: var(--dark);
+}
+
+.reto-ia .rol-ia {
+    background: rgba(242,169,0,0.15);
+    border: 1px solid var(--accent);
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.reto-ia .rol-ia strong {
+    color: var(--accent);
+}
+
+.prompt-box {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: var(--border-radius);
+    padding: 1.2rem;
+    margin: 1rem 0;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    color: #c9d1d9;
+}
+
+.prompt-box::before {
+    content: '📝 PROMPT';
+    display: block;
+    color: var(--accent);
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.entregable-box {
+    background: rgba(40,167,69,0.15);
+    border: 1px dashed var(--success);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+}
+
+.entregable-box::before {
+    content: '📦 ENTREGABLE ESPERADO';
+    display: block;
+    color: var(--success);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKPOINT METACOGNITIVO
+   ===================================================== */
+
+.checkpoint {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checkpoint h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkpoint .pregunta {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 0.8rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    padding-left: 3rem;
+}
+
+.checkpoint .pregunta::before {
+    content: '❓';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+}
+
+/* =====================================================
+   DIAGRAMA ASCII
+   ===================================================== */
+
+.ascii-diagram {
+    background: #1e1e1e;
+    color: #00ff00;
+    font-family: 'Consolas', 'Monaco', monospace;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: pre;
+}
+
+.diagrama-descripcion {
+    background: #f8f9fa;
+    border-left: 4px solid var(--info);
+    padding: 1rem;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+/* =====================================================
+   ESCENARIO INMERSIVO
+   ===================================================== */
+
+.escenario-inmersivo {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.escenario-inmersivo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.1;
+}
+
+.escenario-inmersivo h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.escenario-inmersivo .personaje {
+    background: rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    border-left: 3px solid var(--accent);
+}
+
+.escenario-inmersivo .dialogo {
+    font-style: italic;
+    margin: 1rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(255,255,255,0.3);
+}
+
+/* =====================================================
+   FUNDAMENTOS TEÓRICOS
+   ===================================================== */
+
+.fundamentos-section {
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.fundamentos-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.constructo-card {
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius);
+    margin: 1rem;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.constructo-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.constructo-card .card-header {
+    padding: 1rem 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.constructo-card:nth-child(1) .card-header { background: #e8f4fd; color: var(--primary); }
+.constructo-card:nth-child(2) .card-header { background: #fff3e0; color: #e65100; }
+.constructo-card:nth-child(3) .card-header { background: #e8f5e9; color: #2e7d32; }
+.constructo-card:nth-child(4) .card-header { background: #f3e5f5; color: #7b1fa2; }
+.constructo-card:nth-child(5) .card-header { background: #fce4ec; color: #c2185b; }
+
+.constructo-card .card-body {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.constructo-card .referencia {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 0.8rem;
+}
+
+.constructo-card .operacional {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--accent);
+}
+
+/* =====================================================
+   GLOSARIO
+   ===================================================== */
+
+.glosario-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.glosario-header {
+    background: var(--dark);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.glosario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.termino-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--secondary);
+}
+
+.termino-card.aetl {
+    border-left-color: var(--accent);
+}
+
+.termino-card dt {
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.termino-card dd {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+/* =====================================================
+   EVALUACIÓN
+   ===================================================== */
+
+.evaluacion-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.evaluacion-header {
+    background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.criterio-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.criterio-item:last-child {
+    border-bottom: none;
+}
+
+.criterio-item .fase-badge {
+    background: var(--secondary);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 1rem;
+    min-width: 100px;
+    text-align: center;
+}
+
+.criterio-item .puntos {
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    margin-left: auto;
+}
+
+/* =====================================================
+   REFERENCIAS
+   ===================================================== */
+
+.referencias-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.referencias-section h3 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+}
+
+.referencia-item {
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed #e0e0e0;
+    font-size: 0.95rem;
+}
+
+.referencia-item:last-child {
+    border-bottom: none;
+}
+
+/* =====================================================
+   CÓDIGO
+   ===================================================== */
+
+code {
+    background: #f1f3f4;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.9em;
+    color: #d63384;
+}
+
+pre code {
+    display: block;
+    padding: 1rem;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    overflow-x: auto;
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.footer {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.footer .modelo-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* =====================================================
+   TABLAS
+   ===================================================== */
+
+.tabla-comparativa {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.tabla-comparativa th {
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+}
+
+.tabla-comparativa td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tabla-comparativa tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-comparativa tr:hover {
+    background: #f8f9fa;
+}
+
+/* =====================================================
+   ESTILOS ADICIONALES
+   ===================================================== */
+
+.prerrequisitos-box {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border: 2px solid var(--accent);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.prerrequisitos-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.prerrequisitos-box ul {
+    margin-left: 1.5rem;
+}
+
+.prerrequisitos-box li {
+    margin-bottom: 0.5rem;
+}
+
+.conexion-semana-anterior {
+    background: linear-gradient(135deg, #e8f4fd 0%, #bbdefb 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: 1.5rem;
+}
+
+.conexion-semana-anterior h4 {
+    color: var(--primary);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reto-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+}
+
+.reto-badge.esencial {
+    background: var(--success);
+    color: white;
+}
+
+.reto-badge.avanzado {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+    color: white;
+}
+
+.reto-badge.opcional {
+    background: linear-gradient(135deg, #ff6f00 0%, #ff8f00 100%);
+    color: white;
+}
+
+.invariantes-box {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+    border: 2px dashed #c2185b;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.invariantes-box h4 {
+    color: #880e4f;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.orientacion-semanal {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.orientacion-semanal h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+}
+
+.orientacion-semanal ul {
+    margin-left: 1.5rem;
+}
+
+.orientacion-semanal li {
+    margin-bottom: 0.5rem;
+}
+
+/* =====================================================
+   CHECKLIST DE AUTOEVALUACIÓN
+   ===================================================== */
+
+.checklist-box {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+    border: 2px solid var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.checklist-box h4 {
+    color: #1b5e20;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checklist-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.8rem;
+    background: white;
+    border-radius: var(--border-radius);
+    margin-bottom: 0.6rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    align-items: flex-start;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-top: 0.2rem;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checklist-item .check-text {
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+.checklist-item .check-diagnostico {
+    font-size: 0.85rem;
+    color: var(--danger);
+    margin-top: 0.3rem;
+    font-style: italic;
+}
+
+.starter-code-box {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px solid var(--secondary);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.starter-code-box h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.starter-code-box .empathy-msg {
+    background: rgba(0,91,150,0.1);
+    border-left: 3px solid var(--secondary);
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    font-style: italic;
+    font-size: 0.95rem;
+}
+
+/* =====================================================
+   ANIMACIONES
+   ===================================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .header-institucional h1 {
+        font-size: 1.4rem;
+    }
+    
+    .container {
+        padding: 1rem;
+    }
+    
+    .fase-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .progress-step .step-label {
+        display: none;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .criterio-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .criterio-item .puntos {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+}
+
+/* =====================================================
+   IMPRESIÓN
+   ===================================================== */
+
+@media print {
+    .progress-container,
+    .nav-container {
+        display: none;
+    }
+
+    body {
+        background: white;
+    }
+
+    .reto-ia {
+        break-inside: avoid;
+    }
+}
+
+/* =====================================================
+   UTILIDADES
+   ===================================================== */
+
+.text-center { text-align: center; }
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--gray); }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+
+/* Veredicto box específico S10 */
+.veredicto-box {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+    border: 2px solid var(--accent);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    color: white;
+}
+
+.veredicto-box h4 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.andamiaje-box {
+    background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+    border: 2px solid #3f51b5;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.andamiaje-box h4 {
+    color: #1a237e;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nivel-rescate {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin: 0.8rem 0;
+    border-left: 4px solid;
+}
+
+.nivel-rescate.nivel-1 { border-color: var(--success); }
+.nivel-rescate.nivel-2 { border-color: var(--warning); }
+.nivel-rescate.nivel-0 { border-color: var(--danger); }
+
+.nivel-rescate .nivel-titulo {
+    font-weight: bold;
+    margin-bottom: 0.4rem;
+}
+
+.nivel-rescate.nivel-1 .nivel-titulo { color: #1b5e20; }
+.nivel-rescate.nivel-2 .nivel-titulo { color: #e65100; }
+.nivel-rescate.nivel-0 .nivel-titulo { color: #b71c1c; }
+
+.ruta-minima {
+    background: linear-gradient(135deg, #e8f5e9 0%, #dcedc8 100%);
+    border: 2px dashed var(--success);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ruta-minima h4 {
+    color: #2e7d32;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.corte-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.corte-table th {
+    padding: 1rem;
+    text-align: left;
+    color: white;
+}
+
+.corte-table th:first-child { background: var(--secondary); }
+.corte-table th:last-child { background: #9c27b0; }
+
+.corte-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: top;
+}
+
+.corte-table tr:last-child td { border-bottom: none; }
+
+/* S11 específico */
+.hito-box {
+    background: linear-gradient(135deg, #0d1117 0%, #1a1a2e 100%);
+    border: 3px solid var(--accent);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin: 2rem 0;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+.hito-box::before {
+    content: 'HITO 2';
+    position: absolute;
+    top: -15px;
+    right: 20px;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 0.3rem 1rem;
+    border-radius: 0 0 8px 8px;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+.hito-box h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.pipeline-step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255,255,255,0.07);
+    border-radius: var(--border-radius);
+    margin: 0.6rem 0;
+    border-left: 4px solid var(--accent);
+}
+.pipeline-step .step-num {
+    background: var(--accent);
+    color: var(--primary);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+/* S12 específico */
+.dilema-box {
+    background: linear-gradient(135deg, #3e1f47 0%, #1a1a2e 100%);
+    border: 3px solid #ce93d8;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin: 2rem 0;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+.dilema-box h3 {
+    color: #ce93d8;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.dilema-box .dilema-respuesta {
+    background: rgba(255,255,255,0.08);
+    border-left: 4px solid var(--accent);
+    padding: 1rem 1.2rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-top: 1rem;
+}
+
+.patron-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.patron-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+.patron-card .patron-header {
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+    font-weight: bold;
+}
+.patron-card:nth-child(1) .patron-header { background: linear-gradient(90deg, #1565c0, #1976d2); }
+.patron-card:nth-child(2) .patron-header { background: linear-gradient(90deg, #2e7d32, #388e3c); }
+.patron-card:nth-child(3) .patron-header { background: linear-gradient(90deg, #e65100, #f57c00); }
+.patron-card:nth-child(4) .patron-header { background: linear-gradient(90deg, #6a1b9a, #8e24aa); }
+.patron-card .patron-header .patron-num {
+    background: rgba(255,255,255,0.25);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+.patron-card .patron-body {
+    padding: 1.2rem 1.5rem;
+}
+
+.limite-card {
+    background: white;
+    border-radius: var(--border-radius);
+    border: 2px solid #ef9a9a;
+    padding: 1.2rem;
+    margin: 0.8rem 0;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+.limite-card .limite-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+}
+.limite-card .limite-titulo {
+    font-weight: bold;
+    color: #b71c1c;
+    margin-bottom: 0.4rem;
+}
+
+.corte-s12-s13 {
+    background: linear-gradient(135deg, #0d1117 0%, #1a1a2e 100%);
+    border: 3px solid #7c4dff;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin: 2rem 0;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.corte-s12-s13::before {
+    content: 'MARCADOR S12 → S13';
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #7c4dff;
+    color: white;
+    padding: 0.3rem 1rem;
+    border-radius: 0 0 8px 8px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+.corte-s12-s13 h3 {
+    color: #ce93d8;
+    margin-bottom: 1rem;
+}
+.corte-s12-s13 .arrow-big {
+    font-size: 3rem;
+    display: block;
+    margin: 1rem 0;
+    color: #7c4dff;
+}
+
+.reto-opcional-wrapper {
+    border: 3px dashed #ff8f00;
+    border-radius: var(--border-radius);
+    padding: 0;
+    margin: 2rem 0;
+    overflow: hidden;
+}
+.reto-opcional-header {
+    background: linear-gradient(90deg, #ff6f00, #ff8f00);
+    color: white;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.reto-opcional-header .badge-opcional {
+    background: white;
+    color: #ff6f00;
+    padding: 0.2rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+.reto-opcional-advertencia {
+    background: #fff8e1;
+    border-bottom: 2px dashed #ff8f00;
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+    color: #e65100;
+}
+.reto-opcional-advertencia strong {
+    color: #bf360c;
+}
+.reto-opcional-body {
+    padding: 1.5rem;
+    background: white;
+}
+
+.defensa-item {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1rem 1.2rem;
+    margin: 0.8rem 0;
+    border-left: 4px solid var(--secondary);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.defensa-item .defensa-label {
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.caso-prueba {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: var(--border-radius);
+    padding: 1rem 1.2rem;
+    margin: 0.8rem 0;
+    font-family: 'Consolas', monospace;
+    font-size: 0.9rem;
+}
+.caso-prueba .ct-label {
+    color: var(--secondary);
+    font-weight: bold;
+    font-family: 'Segoe UI', sans-serif;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+.caso-prueba .ct-input {
+    color: #d63384;
+    margin: 0.2rem 0;
+}
+.caso-prueba .ct-expected {
+    color: var(--success);
+    margin: 0.2rem 0;
+}
+.caso-prueba .ct-nota {
+    color: var(--gray);
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+    font-style: italic;
+}
+    
+.dil{background:linear-gradient(135deg,#1b2e1f 0%,#1a1a2e 100%);border:3px solid #43e97b;border-radius:var(--border-radius);padding:2rem;margin:2rem 0;color:#fff;overflow:hidden}
+.dil h3{color:#43e97b;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.dil .dr{background:rgba(255,255,255,.08);border-left:4px solid var(--accent);padding:1rem 1.2rem;border-radius:0 var(--border-radius) var(--border-radius) 0;margin-top:1rem}
+.hito-box{background:linear-gradient(135deg,#0d1117 0%,#1a1a2e 100%);border:3px solid var(--accent);border-radius:var(--border-radius);padding:2rem;margin:2rem 0;color:#fff;position:relative;overflow:hidden}
+.hito-box::before{content:'HITO 3';position:absolute;top:-15px;right:20px;background:var(--accent);color:var(--primary);padding:.3rem 1rem;border-radius:0 0 8px 8px;font-weight:700;font-size:.85rem}
+.hito-box h3{color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.pipeline-step{display:flex;align-items:center;gap:1rem;padding:1rem;background:rgba(255,255,255,.07);border-radius:var(--border-radius);margin:.6rem 0;border-left:4px solid var(--accent)}
+.pipeline-step .step-num{background:var(--accent);color:var(--primary);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.corte-s13{background:linear-gradient(135deg,#0d1117 0%,#1a1a2e 100%);border:3px solid #43e97b;border-radius:var(--border-radius);padding:2rem;margin:2rem 0;color:#fff;text-align:center;position:relative;overflow:hidden}
+.corte-s13::before{content:'MARCADOR S13 → S14';position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:#43e97b;color:#0d1117;padding:.3rem 1rem;border-radius:0 0 8px 8px;font-weight:700;font-size:.8rem;white-space:nowrap}
+.corte-s13 h3{color:#43e97b;margin-bottom:1rem}
+.corte-s13 .arrow-big{font-size:3rem;display:block;margin:1rem 0;color:#43e97b}
+.nodo-card{background:#fff;border:1px solid #e0e0e0;border-radius:var(--border-radius);margin:1rem 0;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07);transition:transform .2s,box-shadow .2s}
+.nodo-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.nodo-card .nh{padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;color:#fff;font-weight:700}
+.nodo-card:nth-child(1) .nh{background:linear-gradient(90deg,#1565c0,#1976d2)}
+.nodo-card:nth-child(2) .nh{background:linear-gradient(90deg,#2e7d32,#388e3c)}
+.nodo-card:nth-child(3) .nh{background:linear-gradient(90deg,#e65100,#f57c00)}
+.nodo-card .nn{background:rgba(255,255,255,.25);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.nodo-card .nb{padding:1.2rem 1.5rem}
+.inv-box{background:linear-gradient(135deg,#fce4ec 0%,#f8bbd9 100%);border:2px dashed #c2185b;border-radius:var(--border-radius);padding:1.5rem;margin-top:2rem}
+.inv-box h4{color:#880e4f;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.verd{background:linear-gradient(135deg,#0d1117 0%,#161b22 100%);border:2px solid var(--accent);border-radius:var(--border-radius);padding:1.5rem;margin:1.5rem 0;color:#fff}
+.verd h4{color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;font-size:1.1rem}
+</style>
+</head>
+<body>
+
+<header class="header-institucional">
+  <div class="logo-container">
+    <div class="escudo">UAN</div>
+    <div>
+      <h1>Estructura de Datos B&#225;sica</h1>
+      <p class="subtitulo">Licenciatura en Sistemas Computacionales &#183; Dr. Eligardo Cruz S&#225;nchez</p>
+    </div>
+    <div class="escudo">LSC</div>
+  </div>
+  <div class="badge-semana">&#127795; Semana 13 &#8212; Introducci&#243;n a &#193;rboles Binarios de B&#250;squeda</div>
+</header>
+
+<div class="progress-container">
+  <div class="progress-bar">
+    <a href="#comprende"  class="progress-step" id="step-comprende"> <div class="step-icon">&#129504;</div><span class="step-label">Comprende</span></a>
+    <a href="#aplica"     class="progress-step" id="step-aplica">    <div class="step-icon">&#9881;&#65039;</div><span class="step-label">Aplica</span></a>
+    <a href="#reflexiona" class="progress-step" id="step-reflexiona"><div class="step-icon">&#129710;</div><span class="step-label">Reflexiona</span></a>
+    <a href="#valida"     class="progress-step" id="step-valida">    <div class="step-icon">&#9989;</div><span class="step-label">Valida</span></a>
+    <a href="#profundiza" class="progress-step" id="step-profundiza"><div class="step-icon">&#128640;</div><span class="step-label">Profundiza</span></a>
+  </div>
+</div>
+
+<nav class="nav-container">
+  <div class="nav-links">
+    <a href="#prerrequisitos">&#128203; Prerrequisitos</a>
+    <a href="#ruta">&#9889; Ruta M&#237;nima</a>
+    <a href="#escenario">&#127916; Escenario</a>
+    <a href="#fundamentos">&#128218; Fundamentos</a>
+    <a href="#comprende">&#129504; Comprende</a>
+    <a href="#aplica">&#9881;&#65039; Aplica</a>
+    <a href="#reflexiona">&#129710; Reflexiona</a>
+    <a href="#valida">&#9989; Valida</a>
+    <a href="#profundiza">&#128640; Profundiza</a>
+    <a href="#rubrica">&#128202; R&#250;brica</a>
+    <a href="#glosario">&#128214; Glosario</a>
+  </div>
+</nav>
+
+<main class="container">
+
+<!-- PRERREQUISITOS -->
+<section id="prerrequisitos">
+<div class="prerrequisitos-box">
+  <h4>&#128203; Prerrequisitos &#8212; Diagn&#243;stico r&#225;pido (Semana 12)</h4>
+  <p style="margin-bottom:1rem;">Respondan en voz alta como equipo. Si alguna genera duda, revisen el m&#243;dulo correspondiente antes de continuar.</p>
+  <div class="context-box danger" style="margin-bottom:1.2rem;">
+    <div class="box-title">&#128268; P0 &#183; Recursividad &#8212; Prerrequisito cr&#237;tico para esta semana</div>
+    <p style="margin-bottom:.8rem;"><strong>Todo el BST que implementar&#225;n hoy es recursivo.</strong> Si el equipo no puede responder estas tres preguntas, los TODOs de Reto 9 se volver&#225;n una pared. Resuelvan esto primero:</p>
+    <ol style="margin-left:1.5rem;margin-bottom:.8rem;">
+      <li style="margin-bottom:.5rem;"><strong>Caso base:</strong> &#191;Qu&#233; pasa si escribo una funci&#243;n recursiva <em>sin</em> caso base? Describan en una oraci&#243;n qu&#233; ocurre en la pila de llamadas (call stack).</li>
+      <li style="margin-bottom:.5rem;"><strong>Retorno en cada rama:</strong> La funci&#243;n <code>_insert_rec(nodo, clave, valor)</code> debe retornar el nodo al final de <em>cada</em> rama del if-elif-else. &#191;Qu&#233; valor retornar&#237;a si la rama es <code>clave &lt; nodo.clave</code>? &#191;Y si es el caso base (<code>nodo is None</code>)?</li>
+      <li style="margin-bottom:.5rem;"><strong>Pila en acci&#243;n:</strong> Tracen a mano las llamadas recursivas de <code>_buscar_rec</code> buscando la clave 40 en el &#225;rbol {50, 30, 70, 20, 40}. &#191;Cu&#225;ntos marcos (frames) hay en la pila en el momento de mayor profundidad?</li>
+    </ol>
+    <div class="context-box warning" style="margin:0;">
+      <div class="box-title">&#127992; Si alguna pregunta genera duda</div>
+      Antes de abrir el starter code: escriban en papel una funci&#243;n recursiva simple (factorial o suma de lista). Identifiquen el caso base, el caso recursivo y qu&#233; se retorna en cada rama. Esa estructura es exactamente la de todos los m&#233;todos del BST de hoy.
+    </div>
+  </div>
+  <ul>
+    <li style="margin-bottom:.6rem;"><strong>P1.</strong> En S12 el <code>dict</code> cubri&#243; los requerimientos R1&#8211;R5 de la Ing. Sof&#237;a. &#191;Cu&#225;l es la complejidad promedio de inserci&#243;n y b&#250;squeda por clave exacta? &#191;Qu&#233; garantiza esa complejidad?</li>
+    <li style="margin-bottom:.6rem;"><strong>P2.</strong> Al cerrar S12 identificaron el L&#237;mite 1 del <code>dict</code>: b&#250;squeda por rango. &#191;Por qu&#233; <code>d.get()</code> no puede resolver eficientemente "dame todas las pel&#237;culas con puntaje entre 8.0 y 9.0"? &#191;Cu&#225;ntas operaciones requiere la alternativa ingenua?</li>
+    <li style="margin-bottom:.6rem;"><strong>P3.</strong> El <code>dict</code> de Python 3.7+ preserva el orden de <em>inserci&#243;n</em>, no el orden l&#243;gico. Si el cat&#225;logo se insert&#243; en orden aleatorio, &#191;es posible obtener las pel&#237;culas por puntaje simplemente iterando el <code>dict</code>? Justifiquen con un contraejemplo.</li>
+  </ul>
+  <div class="context-box info" style="margin-top:1rem;margin-bottom:0;">
+    <div class="box-title">&#128161; Por qu&#233; estos prerrequisitos importan hoy</div>
+    P2 y P3 son exactamente los dos problemas que el BST resuelve. Si el equipo puede articular el l&#237;mite del <code>dict</code>, ya tiene el <em>por qu&#233;</em> del BST antes de aprender el <em>c&#243;mo</em>.
+  </div>
+</div>
+</section>
+
+<!-- RUTA MINIMA -->
+<section id="ruta">
+<div class="ruta-minima">
+  <h4>&#9889; Ruta M&#237;nima Viable &#8212; Para equipos con tiempo limitado</h4>
+  <p style="margin-bottom:.8rem;">Si el equipo tiene menos de 90 minutos, prioricen en este orden:</p>
+  <ol style="margin-left:1.5rem;">
+    <li style="margin-bottom:.4rem;"><strong>COMPRENDE completo</strong> &#8212; Terminolog&#237;a, invariante BST y recorridos (25 pts)</li>
+    <li style="margin-bottom:.4rem;"><strong>Reto 9 &#8212; insert, buscar, inorder</strong> &#8212; Las tres operaciones nucleares</li>
+    <li style="margin-bottom:.4rem;"><strong>Casos T1, T2 y T3 de VALIDA</strong> &#8212; Inserci&#243;n + b&#250;squeda + &#225;rbol vac&#237;o</li>
+    <li style="margin-bottom:.4rem;"><strong>&#205;tems D1&#8211;D3 de REFLEXIONA</strong> &#8212; Defensa oral m&#237;nima</li>
+  </ol>
+  <div class="context-box warning" style="margin-top:.8rem;margin-bottom:0;">
+    <div class="box-title">&#9888;&#65039; Lo que no se puede omitir</div>
+    Reto 9 completo y defensa oral (D1&#8211;D5) son requeridos para Excelente. Reto 10 (benchmark) y avance HITO 3 son necesarios para puntaje completo en PROFUNDIZA.
+  </div>
+</div>
+</section>
+
+<!-- CONEXION S12-S13 -->
+<section id="conexion">
+<div class="dil">
+  <h3>&#128279; El L&#237;mite del dict &#8212; La promesa que S13 cumple</h3>
+  <p>Al cerrar S12 identificaron tres l&#237;mites del <code>dict</code>. Los dos primeros son lo que S13 resuelve: <strong>no hay b&#250;squeda eficiente por rango</strong> y <strong>no hay orden l&#243;gico garantizado</strong>. La pregunta que S12 dej&#243; abierta: "&#191;qu&#233; estructura permite buscar por rango, mantener orden din&#225;mico y garantizar O(log n) en el caso promedio?"</p>
+  <div class="dr">
+    <strong>&#127795; La respuesta que S13 trae:</strong> el <strong>&#193;rbol Binario de B&#250;squeda (BST)</strong>. Una estructura jer&#225;rquica donde la propiedad de orden hace posible la b&#250;squeda por rango en <em>O(log n + k)</em>, inserci&#243;n en <em>O(log n)</em> promedio, y recorrido ordenado en <em>O(n)</em> sin costo adicional de ordenamiento.
+  </div>
+  <p style="margin-top:1rem;opacity:.85;">Esta semana implementar&#225;n el BST desde cero &#8212; el primer &#225;rbol real del curso. A diferencia del <code>dict</code> (caja negra en S12), aqu&#237; construir&#225;n la estructura nodo por nodo y entender&#225;n exactamente por qu&#233; cada operaci&#243;n funciona.</p>
+</div>
+</section>
+
+<!-- ESCENARIO -->
+<section id="escenario">
+<div class="escenario-inmersivo">
+  <h3>&#127916; StreamMX &#8212; El cat&#225;logo que el dict no puede ordenar</h3>
+  <div class="personaje"><strong>Ing. Sof&#237;a Ram&#237;rez</strong> &#183; Directora de Arquitectura de Datos, StreamMX</div>
+  <div class="dialogo">"Equipo, la expansi&#243;n a 15 pa&#237;ses va muy bien. Pero el equipo editorial me envi&#243; tres requerimientos nuevos que el <code>dict</code> de S12 no puede cubrir eficientemente. Necesito que hoy construyan una estructura diferente."</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1rem;">
+    <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:1rem;border-left:3px solid var(--accent);">
+      <strong style="color:var(--accent);">R1 &#183; Consulta por rango</strong>
+      <p style="font-size:.9rem;margin-top:.5rem;">"Todas las pel&#237;culas con puntaje entre 8.0 y 9.0, ordenadas de mayor a menor, actualizable en tiempo real."</p>
+    </div>
+    <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:1rem;border-left:3px solid #81c784;">
+      <strong style="color:#81c784;">R2 &#183; Cat&#225;logo ordenado din&#225;mico</strong>
+      <p style="font-size:.9rem;margin-top:.5rem;">"Recorrer el cat&#225;logo en orden ascendente de puntaje en cualquier momento, sin re-ordenar cada vez."</p>
+    </div>
+    <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:1rem;border-left:3px solid #ff8a65;">
+      <strong style="color:#ff8a65;">R3 &#183; B&#250;squeda eficiente por puntaje</strong>
+      <p style="font-size:.9rem;margin-top:.5rem;">"&#191;Existe alguna pel&#237;cula con puntaje exactamente 8.7? Con el dict hay que iterar todo &#8212; inaceptable a escala."</p>
+    </div>
+  </div>
+  <div class="dialogo" style="margin-top:1.5rem;">"Al final necesito los tres requerimientos con c&#243;digo funcionando, la explicaci&#243;n de por qu&#233; esta estructura los resuelve, y el avance de HITO 3."</div>
+</div>
+</section>
+
+<!-- FUNDAMENTOS -->
+<section id="fundamentos">
+<div class="fundamentos-section">
+  <div class="fundamentos-header">
+    <h2>&#128218; Fundamentos Te&#243;rico-Pedag&#243;gicos del M&#243;dulo</h2>
+    <p style="opacity:.9;margin-top:.5rem;">Cinco constructos que gu&#237;an el dise&#241;o de esta sesi&#243;n</p>
+  </div>
+  <div style="padding:1rem;">
+    <div class="constructo-card">
+      <div class="card-header">&#128309; Vygotsky &#8212; Zona de Desarrollo Pr&#243;ximo (ZDP)</div>
+      <div class="card-body">
+        <p class="referencia">Vygotsky, L. S. (1978). <em>Mind in society</em>. Harvard University Press.</p>
+        <p>El equipo que domin&#243; el <code>dict</code> en S12 ya comprende qu&#233; significa O(1) promedio y por qu&#233; el rango falla. El BST es el andamio que convierte ese l&#237;mite conocido en una nueva competencia alcanzable.</p>
+        <div class="operacional">En S13 esto se manifiesta en la secuencia insert &#8594; inorder &#8594; buscar_rango: cada operaci&#243;n nueva se construye sobre la anterior sin reaprender conceptos previos.</div>
+      </div>
+    </div>
+    <div class="constructo-card">
+      <div class="card-header">&#128992; Zimmerman &#8212; Autorregulaci&#243;n del aprendizaje</div>
+      <div class="card-body">
+        <p class="referencia">Zimmerman, B. J. (2000). Attaining self-regulation. En <em>Handbook of self-regulation</em> (pp. 13&#8211;39). Academic Press.</p>
+        <p>El ciclo de autorregulaci&#243;n &#8212; implementar, ejecutar el caso de prueba, diagnosticar el error, corregir &#8212; es en s&#237; mismo el aprendizaje de esta semana.</p>
+        <div class="operacional">Los comentarios <code># COMPRENDE-1/2/3</code>, <code># REFLEXIONA-1/2/3</code> y <code># VALIDA:</code> son el instrumento de autorregulaci&#243;n: el equipo articula el razonamiento <em>antes</em> de que el caso de prueba confirme o refute.</div>
+      </div>
+    </div>
+    <div class="constructo-card">
+      <div class="card-header">&#128994; Sweller &#8212; Teor&#237;a de la Carga Cognitiva</div>
+      <div class="card-body">
+        <p class="referencia">Sweller, J. (1988). Cognitive load during problem solving. <em>Cognitive Science, 12</em>(2), 257&#8211;285.</p>
+        <p>Para evitar sobrecarga, el starter code preimplementa la clase <code>Nodo</code> y el esqueleto de <code>BST</code>. El equipo completa los m&#233;todos en secuencia progresiva.</p>
+        <div class="operacional">Los diagramas ASCII con trazas de ejecuci&#243;n reducen la carga extr&#237;nseca: el equipo puede verificar visualmente si su &#225;rbol tiene la forma correcta antes de ejecutar c&#243;digo.</div>
+      </div>
+    </div>
+    <div class="constructo-card">
+      <div class="card-header">&#128995; Bandura &#8212; Autoeficacia y modelado</div>
+      <div class="card-body">
+        <p class="referencia">Bandura, A. (1997). <em>Self-efficacy: The exercise of control</em>. W. H. Freeman.</p>
+        <p>La secuencia de retos est&#225; ordenada para que el equipo tenga un &#225;rbol funcional (insert + inorder) antes de agregar operaciones m&#225;s complejas. El Reto 10 cierra la sesi&#243;n con evidencia emp&#237;rica del rendimiento obtenido.</p>
+        <div class="operacional">El dato concreto de cu&#225;ntas veces m&#225;s r&#225;pido es buscar_rango en BST vs dict para <em>n</em> grande refuerza la autoeficacia de forma verificable.</div>
+      </div>
+    </div>
+    <div class="constructo-card">
+      <div class="card-header">&#128308; Bloom &#8212; Taxonom&#237;a revisada (Anderson &amp; Krathwohl)</div>
+      <div class="card-body">
+        <p class="referencia">Bloom, B. S. (Ed.). (1956). <em>Taxonomy of educational objectives</em>. Longmans, Green.</p>
+        <p>S13 escala los tres niveles superiores: <strong>Analizar</strong> (invariante, trazas de recorrido), <strong>Evaluar</strong> (BST vs dict vs lista, &#225;rbol degenerado), <strong>Crear</strong> (buscar_rango como extensi&#243;n de las operaciones base).</p>
+        <div class="operacional">La r&#250;brica refleja esta progresi&#243;n: COMPRENDE 25 pts (Recordar/Comprender), APLICA 35 pts (Aplicar/Analizar), REFLEXIONA+VALIDA+PROFUNDIZA 40 pts (Evaluar/Crear).</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ====== COMPRENDE ====== -->
+<section id="comprende">
+<div class="fase-section">
+  <div class="fase-header comprende">
+    <div class="fase-icon">&#129504;</div>
+    <div class="fase-info">
+      <h2>COMPRENDE &#8212; Terminolog&#237;a, Invariante BST y Recorridos</h2>
+      <div class="bloom-tag">Bloom: Recordar &#183; Comprender &#183; 25 puntos base</div>
+    </div>
+  </div>
+  <div class="fase-content">
+    <div class="objetivos-box">
+      <h4>&#127919; Al terminar esta fase el equipo ser&#225; capaz de:</h4>
+      <ul>
+        <li>Definir con precisi&#243;n: nodo, ra&#237;z, hoja, padre, hijo, sub&#225;rbol, altura, profundidad y nivel</li>
+        <li>Enunciar la invariante del BST y verificar si un &#225;rbol dado la satisface</li>
+        <li>Trazar manualmente los recorridos in-order, pre-order y post-order sobre un &#225;rbol de ejemplo</li>
+        <li>Explicar por qu&#233; el recorrido in-order de un BST produce siempre una secuencia ordenada</li>
+      </ul>
+    </div>
+
+    <h3 style="color:var(--primary);margin:1.5rem 0 1rem;">1 &#183; Anatom&#237;a de un &#225;rbol &#8212; Terminolog&#237;a esencial</h3>
+    <p>Un <strong>&#225;rbol</strong> es una estructura jer&#225;rquica compuesta por <strong>nodos</strong> conectados por <strong>aristas</strong>. A diferencia de las estructuras lineales, cada nodo puede tener m&#250;ltiples sucesores. En un &#225;rbol <em>binario</em>, cada nodo tiene a lo sumo dos hijos: izquierdo y derecho.</p>
+
+    <div class="ascii-diagram">  Arbol binario -- terminologia visual
+  --------------------------------------------------------
+          [50]         &lt;- Raiz (root): unico nodo sin padre
+         /    \
+       [30]   [70]    &lt;- Nivel 1  /  Profundidad 1
+      /   \      \
+   [20]  [40]   [80]  &lt;- Nivel 2  /  Profundidad 2
+                   \
+                  [90] &lt;- Hoja (leaf): sin hijos. Nivel 3.
+
+  VOCABULARIO:
+  * Raiz (root)      -&gt; [50] -- unico nodo sin padre
+  * Hoja (leaf)      -&gt; [20], [40], [90] -- sin hijos
+  * Padre (parent)   -&gt; [30] es padre de [20] y [40]
+  * Hijo  (child)    -&gt; [20] y [40] son hijos de [30]
+  * Subarbol         -&gt; {30, 20, 40} es el subarbol izq de [50]
+  * Altura del arbol -&gt; 3 (nivel maximo desde raiz hasta hoja)
+  * Profundidad [90] -&gt; 3 (aristas desde la raiz hasta [90])
+  * Nivel de [30]    -&gt; 1</div>
+    <div class="diagrama-descripcion">
+      <strong>Descripci&#243;n accesible:</strong> El &#225;rbol tiene ra&#237;z en el nodo 50. Del nodo 50 descienden dos ramas: la izquierda lleva al nodo 30 (con hijos 20 y 40) y la derecha lleva al nodo 70 (con &#250;nico hijo derecho 80, que a su vez tiene como hijo al nodo 90). Los nodos 20, 40 y 90 son hojas. La altura del &#225;rbol es 3 porque el camino m&#225;s largo (50&#8594;70&#8594;80&#8594;90) tiene 3 aristas.
+    </div>
+
+    <h3 style="color:var(--primary);margin:1.5rem 0 1rem;">2 &#183; &#193;rbol Binario vs BST &#8212; La invariante que lo cambia todo</h3>
+    <p>Un <strong>&#225;rbol binario</strong> solo impone que cada nodo tenga m&#225;ximo dos hijos. Un <strong>BST</strong> agrega una invariante cr&#237;tica:</p>
+
+    <div class="inv-box">
+      <h4>&#128274; Invariante del BST &#8212; La regla que nunca se rompe</h4>
+      <p style="font-size:1.05rem;margin-bottom:1rem;">Para <strong>todo nodo <em>n</em></strong> del &#225;rbol:</p>
+      <ul style="margin-left:1.5rem;font-size:1.05rem;">
+        <li style="margin-bottom:.5rem;">Todos los nodos en el <strong>sub&#225;rbol izquierdo</strong> de <em>n</em> tienen clave <strong>estrictamente menor</strong> que la clave de <em>n</em></li>
+        <li style="margin-bottom:.5rem;">Todos los nodos en el <strong>sub&#225;rbol derecho</strong> de <em>n</em> tienen clave <strong>estrictamente mayor</strong> que la clave de <em>n</em></li>
+      </ul>
+      <p style="margin-top:1rem;color:#880e4f;font-weight:700;">Esta propiedad debe sostenerse para TODOS los nodos del &#225;rbol &#8212; no solo para el padre inmediato de cada nodo.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;">
+      <div>
+        <div class="ascii-diagram" style="color:#4caf50;font-size:.8rem;">  BST VALIDO
+  ------------------
+       [50]
+      /    \
+   [30]   [70]
+   /  \      \
+[20] [40]   [80]
+
+  20&lt;30&lt;40&lt;50&lt;70&lt;80 OK
+  Izquierda &lt; raiz,
+  Derecha &gt; raiz.
+  Invariante correcta.</div>
+      </div>
+      <div>
+        <div class="ascii-diagram" style="color:#f44336;font-size:.8rem;">  BST INVALIDO
+  ------------------
+       [50]
+      /    \
+   [30]   [70]
+   /  \
+[20] [60] &lt;-- ERROR!
+
+  60 &gt; 50 -&gt; debe estar
+  en el subarbol DERECHO
+  de 50, no en izquierdo.
+  Viola la invariante.</div>
+      </div>
+    </div>
+    <div class="diagrama-descripcion">
+      <strong>Descripci&#243;n del par:</strong> Izquierda: BST v&#225;lido donde todos los nodos a la izquierda de 50 (20, 30, 40) son menores y todos a la derecha (70, 80) son mayores. Derecha: &#225;rbol inv&#225;lido donde el nodo 60 est&#225; en el sub&#225;rbol izquierdo de 50 pero 60 &gt; 50, violando la invariante global del BST.
+    </div>
+
+    <h3 style="color:var(--primary);margin:1.5rem 0 1rem;">3 &#183; Recorridos &#8212; Tres formas de visitar todos los nodos</h3>
+    <p>Los tres recorridos cl&#225;sicos son recursivos y se diferencian solo por el momento en que se procesa la ra&#237;z:</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin:1.5rem 0;">
+      <div class="nodo-card">
+        <div class="nh"><div class="nn">&#9312;</div>In-order (LNR)</div>
+        <div class="nb">
+          <p style="margin-bottom:.8rem;"><strong>Orden:</strong> Izquierdo &#8594; Nodo &#8594; Derecho</p>
+          <p style="margin-bottom:.8rem;">&#193;rbol {50,30,70,20,40,80}: <strong>20&#8594;30&#8594;40&#8594;50&#8594;70&#8594;80</strong></p>
+          <div class="context-box tip" style="margin:0;"><div class="box-title">&#11088; Propiedad clave</div>El in-order de un BST siempre produce los elementos en orden ascendente &#8212; base de la operaci&#243;n <code>inorder()</code>.</div>
+        </div>
+      </div>
+      <div class="nodo-card">
+        <div class="nh"><div class="nn">&#9313;</div>Pre-order (NLR)</div>
+        <div class="nb">
+          <p style="margin-bottom:.8rem;"><strong>Orden:</strong> Nodo &#8594; Izquierdo &#8594; Derecho</p>
+          <p style="margin-bottom:.8rem;">Mismo &#225;rbol: <strong>50&#8594;30&#8594;20&#8594;40&#8594;70&#8594;80</strong></p>
+          <div class="context-box info" style="margin:0;"><div class="box-title">&#128161; Uso t&#237;pico</div>Serializar o copiar un &#225;rbol: el primer elemento siempre es la ra&#237;z.</div>
+        </div>
+      </div>
+      <div class="nodo-card">
+        <div class="nh"><div class="nn">&#9314;</div>Post-order (LRN)</div>
+        <div class="nb">
+          <p style="margin-bottom:.8rem;"><strong>Orden:</strong> Izquierdo &#8594; Derecho &#8594; Nodo</p>
+          <p style="margin-bottom:.8rem;">Mismo &#225;rbol: <strong>20&#8594;40&#8594;30&#8594;80&#8594;70&#8594;50</strong></p>
+          <div class="context-box info" style="margin:0;"><div class="box-title">&#128161; Uso t&#237;pico</div>Liberar memoria: el nodo se procesa despu&#233;s de que sus hijos ya fueron procesados.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="color:var(--primary);margin:1.5rem 0 1rem;">4 &#183; Complejidad del BST &#8212; Promedio vs peor caso</h3>
+    <table class="tabla-comparativa">
+      <thead><tr><th>Operaci&#243;n</th><th>Promedio (balanceado)</th><th>Peor caso (degenerado)</th><th>vs dict</th></tr></thead>
+      <tbody>
+        <tr><td><strong>insert</strong></td><td>O(log n)</td><td>O(n)</td><td>dict: O(1) promedio</td></tr>
+        <tr><td><strong>buscar</strong> (exacto)</td><td>O(log n)</td><td>O(n)</td><td>dict: O(1) &#10003;</td></tr>
+        <tr><td><strong>buscar_rango</strong></td><td>O(log n + k)</td><td>O(n)</td><td>dict: O(n) siempre &#10003;&#10003; BST</td></tr>
+        <tr><td><strong>inorder</strong></td><td>O(n)</td><td>O(n)</td><td>dict: O(n log n) para ordenar</td></tr>
+        <tr><td><strong>altura</strong></td><td>O(n)</td><td>O(n)</td><td>&#8212;</td></tr>
+      </tbody>
+    </table>
+    <div class="context-box warning">
+      <div class="box-title">&#9888;&#65039; El tal&#243;n de Aquiles del BST b&#225;sico</div>
+      Si los elementos se insertan en orden ya ordenado, el &#225;rbol se degenera en una lista enlazada con altura n. Para evitarlo existen los &#225;rboles AVL &#8212; tema de Estructura de Datos Avanzada.
+    </div>
+
+    <div class="checkpoint">
+      <h4>&#129513; Checkpoint de Comprensi&#243;n &#8212; Responder como equipo antes de APLICA</h4>
+      <div class="pregunta">C1. Inserten en un BST vac&#237;o los valores 50, 30, 70, 20, 40 en ese orden. Dibujen el &#225;rbol resultante. &#191;Cu&#225;nto mide su altura? &#191;Est&#225; balanceado?</div>
+      <div class="pregunta">C2. Sobre el &#225;rbol de C1, tracen manualmente el recorrido in-order. &#191;Coincide con los valores en orden ascendente? Expliquen por qu&#233; el in-order de un BST <em>siempre</em> produce orden ascendente (usando la invariante).</div>
+      <div class="pregunta">C3. Inserten los valores 10, 20, 30, 40, 50 en un BST vac&#237;o, en ese orden. &#191;C&#243;mo queda el &#225;rbol? &#191;Cu&#225;l es la complejidad de buscar el valor 50? &#191;C&#243;mo se llama este caso degenerado?</div>
+      <div class="pregunta">C4. &#191;Por qu&#233; la b&#250;squeda por rango en un BST es O(log n + k) y no O(n)? Expliquen qu&#233; ramas del &#225;rbol puede descartar el algoritmo al bajar desde la ra&#237;z.</div>
+    </div>
+
+    <div class="reto-ia">
+      <div class="reto-ia-header">
+        <div class="reto-numero">C</div>
+        <h4>Reto IA &#8212; COMPRENDE &#183; Exploraci&#243;n conceptual guiada</h4>
+        <span class="reto-badge esencial">IA</span>
+      </div>
+      <div class="reto-ia-body">
+        <div class="rol-ia"><strong>Rol de la IA en esta fase:</strong> Tutor socr&#225;tico. Ante los checkpoints la IA hace preguntas que llevan al equipo a construir el concepto &#8212; no da la respuesta completa.</div>
+        <div class="prompt-box">Lenguaje accesible: responde en espa&#241;ol universitario claro.
+
+Somos un equipo de Estructura de Datos B&#225;sica. Acabamos de estudiar la terminolog&#237;a de &#225;rboles binarios y la invariante del BST. Respondimos estas preguntas del checkpoint:
+- C1: [RESPUESTA DEL EQUIPO]
+- C2: [RESPUESTA DEL EQUIPO]
+- C3: [RESPUESTA DEL EQUIPO]
+- C4: [RESPUESTA DEL EQUIPO]
+
+Por favor:
+1. Sin darme la respuesta correcta todav&#237;a: dime cu&#225;les est&#225;n en la direcci&#243;n correcta. Usa solo preguntas gu&#237;a.
+2. Para C2: ay&#250;dame a ver la conexi&#243;n entre la invariante BST y por qu&#233; el in-order produce orden ascendente. Hazme tres preguntas en secuencia.
+3. Para C3: &#191;qu&#233; nombre t&#233;cnico recibe un BST donde todos los nodos tienen solo hijo derecho? &#191;Qu&#233; estructura lineal se asemeja a esa forma?
+
+# IA-REFLEXION-C: [Qu&#233; aprendi&#243; el equipo que no sab&#237;a antes de usar la IA]</div>
+        <div class="entregable-box">El comentario <code># IA-REFLEXION-C</code> completado en el archivo Python del Reto 9.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ====== APLICA ====== -->
+<section id="aplica">
+<div class="fase-section">
+  <div class="fase-header aplica">
+    <div class="fase-icon">&#9881;&#65039;</div>
+    <div class="fase-info">
+      <h2>APLICA &#8212; Retos 9 y 10: Implementaci&#243;n y Benchmark BST</h2>
+      <div class="bloom-tag">Bloom: Aplicar &#183; Analizar &#183; 35 puntos</div>
+    </div>
+  </div>
+  <div class="fase-content">
+
+    <div class="starter-code-box">
+      <h4>&#128640; Reto 9 &#8212; Starter Code: <code>streamMX_bst_s13.py</code></h4>
+      <div class="empathy-msg">Este archivo incluye la clase Nodo completa y el esqueleto de BST. El equipo implementa los m&#233;todos marcados con TODO. Leer todos los comentarios antes de escribir una l&#237;nea de c&#243;digo.</div>
+<pre><code>"""
+streamMX_bst_s13.py
+Semana 13 - Introduccion a Arboles Binarios de Busqueda
+Equipo: [NOMBRE DEL EQUIPO]
+Integrantes: [LISTA]
+Fecha: [FECHA]
+
+# COMPRENDE-1: Cual es la invariante del BST? (1-2 oraciones)
+# COMPRENDE-2: Por que el in-order de un BST produce orden ascendente?
+# COMPRENDE-3: Cuando el BST supera al dict y cuando el dict supera al BST?
+# IA-REFLEXION-C: [Que aprendio el equipo que no sabia antes de la IA]
+"""
+import time, random
+
+# ---- CLASE NODO -- Pre-implementada. No modificar. ----
+class Nodo:
+    """
+    clave : valor de ordenamiento (puntaje float en StreamMX)
+    valor : datos asociados (titulo, genero)
+    izq   : hijo izquierdo (Nodo o None)
+    der   : hijo derecho   (Nodo o None)
+    """
+    def __init__(self, clave, valor):
+        self.clave = clave
+        self.valor = valor
+        self.izq   = None
+        self.der   = None
+
+# ---- CLASE BST -- El equipo implementa los metodos TODO ----
+class BST:
+    def __init__(self):
+        self.raiz = None
+
+    def insert(self, clave, valor):
+        """Inserta un nodo. O(h)."""
+        self.raiz = self._insert_rec(self.raiz, clave, valor)
+
+    def _insert_rec(self, nodo, clave, valor):
+        """
+        TODO: Insercion recursiva.
+        Casos:
+          1. nodo es None -&gt; crear y retornar Nodo(clave, valor)
+          2. clave &lt; nodo.clave -&gt; insertar en subarbol izquierdo
+          3. clave &gt; nodo.clave -&gt; insertar en subarbol derecho
+          4. clave == nodo.clave -&gt; actualizar valor (no duplicar nodo)
+        Siempre retornar el nodo al final.
+        """
+        pass  # TODO
+
+    def buscar(self, clave):
+        """Busca por clave exacta. Retorna valor o None. O(h)."""
+        return self._buscar_rec(self.raiz, clave)
+
+    def _buscar_rec(self, nodo, clave):
+        """
+        TODO: Busqueda recursiva.
+        Casos:
+          1. nodo es None -&gt; retornar None
+          2. clave == nodo.clave -&gt; retornar nodo.valor
+          3. clave &lt; nodo.clave -&gt; buscar en izquierdo
+          4. clave &gt; nodo.clave -&gt; buscar en derecho
+        """
+        pass  # TODO
+
+    def inorder(self):
+        """Retorna lista de (clave, valor) en orden ascendente. O(n)."""
+        resultado = []
+        self._inorder_rec(self.raiz, resultado)
+        return resultado
+
+    def _inorder_rec(self, nodo, resultado):
+        """TODO: Orden LNR -&gt; izquierdo, nodo, derecho."""
+        pass  # TODO
+
+    def preorder(self):
+        resultado = []
+        self._preorder_rec(self.raiz, resultado)
+        return resultado
+
+    def _preorder_rec(self, nodo, resultado):
+        """TODO: Orden NLR -&gt; nodo, izquierdo, derecho."""
+        pass  # TODO
+
+    def postorder(self):
+        resultado = []
+        self._postorder_rec(self.raiz, resultado)
+        return resultado
+
+    def _postorder_rec(self, nodo, resultado):
+        """TODO: Orden LRN -&gt; izquierdo, derecho, nodo."""
+        pass  # TODO
+
+    def buscar_rango(self, min_clave, max_clave):
+        """Retorna lista (clave, valor) con min &lt;= clave &lt;= max. O(log n + k)."""
+        resultado = []
+        self._rango_rec(self.raiz, min_clave, max_clave, resultado)
+        return resultado
+
+    def _rango_rec(self, nodo, minv, maxv, resultado):
+        """
+        TODO: Busqueda por rango recursiva.
+        Pistas:
+          - Si nodo es None: retornar (caso base)
+          - Si nodo.clave &gt; minv: explorar subarbol izquierdo
+          - Si minv &lt;= nodo.clave &lt;= maxv: agregar a resultado
+          - Si nodo.clave &lt; maxv: explorar subarbol derecho
+        La eficiencia viene de descartar ramas completas.
+        """
+        pass  # TODO
+
+    def altura(self):
+        """Retorna la altura del arbol. O(n)."""
+        return self._altura_rec(self.raiz)
+
+    def _altura_rec(self, nodo):
+        """
+        TODO: Altura recursiva.
+        Arbol vacio = 0, solo raiz = 1
+        General = 1 + max(altura_izq, altura_der)
+        """
+        pass  # TODO
+
+
+# ---- CATALOGO STREAMMX ----
+CATALOGO_S13 = [
+    (8.2, "Interestelar",            "Sci-Fi"),
+    (7.5, "El Laberinto del Fauno",  "Fantasia"),
+    (9.1, "Origen",                  "Sci-Fi"),
+    (6.8, "Dune Parte 1",            "Sci-Fi"),
+    (8.7, "Oppenheimer",             "Drama"),
+    (7.5, "La Senal",                "Thriller"),
+    (8.0, "Parasite",                "Drama"),
+    (7.1, "Arrival",                 "Sci-Fi"),
+    (9.0, "Schindler's List",        "Drama"),
+    (8.4, "The Dark Knight",         "Accion"),
+    (6.5, "Avatar",                  "Accion"),
+    (7.8, "Tar",                     "Drama"),
+    (8.9, "Spirited Away",           "Animacion"),
+    (7.3, "Blade Runner 2049",       "Sci-Fi"),
+    (9.3, "El Senor de los Anillos", "Fantasia"),
+]
+
+def imprimir_arbol_2D(nodo, nivel=0, prefijo="Raiz: "):
+    """
+    Herramienta de debug -- Pre-implementada. No modificar.
+    Imprime el arbol en consola con indentacion que refleja
+    la estructura real del arbol (derecho arriba, izquierdo abajo).
+    Util para verificar que insert construyo el arbol correctamente
+    antes de confiar en inorder().
+
+    Ejemplo de salida para {50, 30, 70, 20, 40}:
+          Der: 70.0
+    Raiz: 50.0
+          Izq: 30.0
+               Der: 40.0
+               Izq: 20.0
+    """
+    if nodo is not None:
+        imprimir_arbol_2D(nodo.der, nivel + 1, "Der: ")
+        print(" " * (nivel * 6) + prefijo + str(nodo.clave))
+        imprimir_arbol_2D(nodo.izq, nivel + 1, "Izq: ")
+
+def construir_bst(catalogo):
+    arbol = BST()
+    for puntaje, titulo, genero in catalogo:
+        arbol.insert(puntaje, (titulo, genero))
+    return arbol
+
+if __name__ == "__main__":
+    print("=" * 60)
+    print("STREAMMX BST -- Semana 13")
+    print("=" * 60)
+    arbol = construir_bst(CATALOGO_S13)
+    print(f"
+[INFO] Arbol construido con {len(CATALOGO_S13)} nodos")
+    print(f"[INFO] Altura del arbol: {arbol.altura()}")
+
+    print("\n-- Estructura del arbol (debug visual) --")
+    print("(Derecho arriba, Izquierdo abajo -- usa esto si inorder falla)")
+    imprimir_arbol_2D(arbol.raiz)
+
+    print("
+-- Recorrido In-Order (ascendente) --")
+    for clave, valor in arbol.inorder():
+        print(f"  {clave:.1f} -&gt; {valor[0]}")
+
+    print("
+-- Busqueda exacta --")
+    print(f"  buscar(8.7) -&gt; {arbol.buscar(8.7)}")
+    print(f"  buscar(5.0) -&gt; {arbol.buscar(5.0)}")
+
+    print("
+-- Busqueda por rango [8.0, 9.0] --")
+    for clave, valor in arbol.buscar_rango(8.0, 9.0):
+        print(f"  {clave:.1f} -&gt; {valor[0]}")
+
+# IA-REFLEXION-A: [El equipo escribe que metodo le resulto mas dificil y por que]</code></pre>
+    </div>
+
+    <div class="starter-code-box" style="margin-top:2rem;">
+      <h4>&#128202; Reto 10 &#8212; Benchmark: BST vs dict vs lista para b&#250;squeda por rango</h4>
+      <div class="empathy-msg">Agregar este bloque al final del bloque <code>if __name__ == "__main__"</code> del mismo archivo.</div>
+<pre><code># ---- RETO 10 -- BENCHMARK ----
+def benchmark_rango(n, minv=7.0, maxv=8.5, reps=500):
+    datos = [(round(random.uniform(6.0, 10.0), 2), f"P_{i}", "G")
+             for i in range(n)]
+
+    bst = BST()
+    for p, t, g in datos:
+        bst.insert(p, (t, g))
+
+    cat_dict = {p: (t, g) for p, t, g in datos}
+    lista_ord = sorted(datos, key=lambda x: x[0])
+
+    def rango_dict(d, minv, maxv):
+        """TODO: iterar d.items() y filtrar clave en [minv, maxv]."""
+        pass
+
+    def rango_lista(lst, minv, maxv):
+        """TODO: iterar lista_ord y filtrar. O(n)."""
+        pass
+
+    t0 = time.perf_counter()
+    for _ in range(reps): bst.buscar_rango(minv, maxv)
+    t_bst = (time.perf_counter()-t0)/reps*1000
+
+    t0 = time.perf_counter()
+    for _ in range(reps): rango_dict(cat_dict, minv, maxv)
+    t_dict = (time.perf_counter()-t0)/reps*1000
+
+    t0 = time.perf_counter()
+    for _ in range(reps): rango_lista(lista_ord, minv, maxv)
+    t_lista = (time.perf_counter()-t0)/reps*1000
+
+    print(f"n={n:&gt;7}  BST={t_bst:.4f}ms  dict={t_dict:.4f}ms  lista={t_lista:.4f}ms")
+    if t_bst &gt; 0:
+        print(f"         dict/BST={t_dict/t_bst:.1f}x  lista/BST={t_lista/t_bst:.1f}x")
+
+print("
+" + "="*60)
+print("BENCHMARK -- Busqueda por rango [7.0, 8.5]")
+print("="*60)
+for n in [100, 1_000, 5_000, 10_000]:
+    benchmark_rango(n)
+
+# MID-CANONICO: [registrar tiempos obtenidos en su maquina]
+# n=100:   BST=___ms  dict=___ms  lista=___ms
+# n=1000:  BST=___ms  dict=___ms  lista=___ms
+# n=5000:  BST=___ms  dict=___ms  lista=___ms
+# n=10000: BST=___ms  dict=___ms  lista=___ms
+# DECISION: [A partir de que n el BST es claramente mejor que el dict?]
+#            [Existe algun n donde el dict supera al BST? Por que?]
+
+# ---- BENCHMARK SECUNDARIO: arbol degenerado ----
+# Compara BST con datos ALEATORIOS vs BST con datos ORDENADOS
+# para ver en vivo como la degeneracion colapsa el rendimiento.
+def benchmark_degeneracion(n):
+    # BST con datos aleatorios (caso promedio -- balanceado)
+    datos_aleatorios = [(float(i + random.uniform(0, 0.001)), f"P_{i}", "G")
+                        for i in random.sample(range(n), n)]
+    bst_ok = BST()
+    for p, t, g in datos_aleatorios:
+        bst_ok.insert(p, (t, g))
+
+    # BST con datos ORDENADOS (peor caso -- degenerado)
+    datos_ordenados = [(float(i), f"P_{i}", "G") for i in range(n)]
+    bst_deg = BST()
+    for p, t, g in datos_ordenados:
+        bst_deg.insert(p, (t, g))
+
+    reps = 200
+    minv, maxv = n * 0.3, n * 0.7  # buscar el 40% central
+
+    t0 = time.perf_counter()
+    for _ in range(reps): bst_ok.buscar_rango(minv, maxv)
+    t_ok = (time.perf_counter() - t0) / reps * 1000
+
+    t0 = time.perf_counter()
+    for _ in range(reps): bst_deg.buscar_rango(minv, maxv)
+    t_deg = (time.perf_counter() - t0) / reps * 1000
+
+    h_ok  = bst_ok.altura()
+    h_deg = bst_deg.altura()
+
+    print(f"n={n:&gt;6}  aleatorio: {t_ok:.4f}ms (h={h_ok:&gt;4})  "
+          f"ordenado: {t_deg:.4f}ms (h={h_deg:&gt;5})  "
+          f"ratio={t_deg/t_ok:.1f}x" if t_ok &gt; 0 else "t_ok=0")
+
+print("\n" + "="*60)
+print("BENCHMARK DEGENERACION: BST aleatorio vs BST ordenado")
+print("(mismo buscar_rango -- diferente altura del arbol)")
+print("="*60)
+for n in [100, 500, 1000, 2000]:
+    benchmark_degeneracion(n)
+
+# MID-CANONICO-DEG: [registrar tiempos y alturas del benchmark secundario]
+# n=100:  aleatorio h=___ t=___ms  ordenado h=___ t=___ms  ratio=___x
+# n=500:  aleatorio h=___ t=___ms  ordenado h=___ t=___ms  ratio=___x
+# n=1000: aleatorio h=___ t=___ms  ordenado h=___ t=___ms  ratio=___x
+# n=2000: aleatorio h=___ t=___ms  ordenado h=___ t=___ms  ratio=___x
+# DECISION-DEG: [Confirma el dato: con n=1000, el arbol degenerado es ___x
+#                mas lento. Este ratio corresponde a la diferencia entre
+#                O(log n) y O(n): log2(1000) ~ 10, vs 1000 pasos.]</code></pre>
+    </div>
+
+    <div class="reto-ia">
+      <div class="reto-ia-header">
+        <div class="reto-numero">A</div>
+        <h4>Reto IA &#8212; APLICA &#183; Depuraci&#243;n guiada</h4>
+        <span class="reto-badge esencial">IA</span>
+      </div>
+      <div class="reto-ia-body">
+        <div class="rol-ia"><strong>Rol de la IA en esta fase:</strong> Asistente de depuraci&#243;n con restricci&#243;n. Puede se&#241;alar el tipo de error l&#243;gico y hacer preguntas gu&#237;a. No puede reescribir un m&#233;todo completo.</div>
+        <div class="prompt-box">Lenguaje accesible: responde en espa&#241;ol universitario claro.
+
+Soy estudiante de Estructura de Datos B&#225;sica implementando un BST. Tengo el siguiente problema con [NOMBRE DEL METODO]:
+
+Codigo que escribi: [PEGAR EL METODO]
+Resultado obtenido: [SALIDA O ERROR]
+Resultado esperado: [QUE DEBERIA RETORNAR]
+
+Por favor:
+1. Sin darme el codigo correcto: que tipo de error logico tiene mi implementacion?
+2. Hazme una sola pregunta que me ayude a encontrar el bug en mi propio codigo.
+3. Si mi buscar_rango no descarta ramas: que diferencia hace cuando el arbol tiene
+   1.000.000 nodos y el rango contiene solo 10 resultados?
+
+# IA-REFLEXION-A: [El equipo escribe que metodo le resulto mas dificil y por que]</div>
+        <div class="entregable-box">Los comentarios <code># COMPRENDE-1/2/3</code> y <code># IA-REFLEXION-A</code> deben estar completos. El c&#243;digo debe ejecutarse sin errores.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ====== REFLEXIONA ====== -->
+<section id="reflexiona">
+<div class="fase-section">
+  <div class="fase-header reflexiona">
+    <div class="fase-icon">&#129710;</div>
+    <div class="fase-info">
+      <h2>REFLEXIONA &#8212; Defensa Oral y An&#225;lisis Cr&#237;tico</h2>
+      <div class="bloom-tag">Bloom: Analizar &#183; Evaluar &#183; Defensa oral obligatoria &#183; 20 puntos</div>
+    </div>
+  </div>
+  <div class="fase-content">
+    <div class="objetivos-box">
+      <h4>&#127919; Al terminar esta fase el equipo ser&#225; capaz de:</h4>
+      <ul>
+        <li>Explicar verbalmente la invariante del BST y verificar su cumplimiento en un &#225;rbol dado</li>
+        <li>Justificar por qu&#233; insert en un BST correcto no puede violar la invariante</li>
+        <li>Comparar BST vs dict vs lista en escenarios concretos usando sus datos de benchmark</li>
+        <li>Identificar cu&#225;ndo un BST se degeneraría y describir la consecuencia en complejidad</li>
+      </ul>
+    </div>
+
+    <div class="context-box danger">
+      <div class="box-title">&#127908; Defensa oral &#8212; Regla no negociable</div>
+      Esta fase requiere defensa oral presencial o en video. Sin defensa oral la calificaci&#243;n de REFLEXIONA es cero, independientemente de la calidad del c&#243;digo escrito.
+    </div>
+
+    <h3 style="color:var(--primary);margin:1.5rem 0 1rem;">&#205;tems de Defensa Oral &#8212; D1 a D5</h3>
+
+    <div class="defensa-item"><div class="defensa-label">&#128269; D1 &#183; Verificaci&#243;n de invariante en vivo</div>El docente dibuja en la pizarra un &#225;rbol con 7 nodos donde algunos valores est&#225;n fuera de lugar. El equipo identifica en cu&#225;les nodos se viola la invariante BST y explica qu&#233; inserci&#243;n incorrecta pudo haberla producido.</div>
+    <div class="defensa-item"><div class="defensa-label">&#128260; D2 &#183; Traza de recorrido en tiempo real</div>El docente proporciona un BST de 8 nodos. El equipo traza en la pizarra los tres recorridos (in-order, pre-order, post-order) paso a paso, justificando en qu&#233; momento se agrega cada nodo.</div>
+    <div class="defensa-item"><div class="defensa-label">&#128202; D3 &#183; An&#225;lisis del benchmark propio</div>Con los datos del Reto 10, el equipo responde: &#191;a partir de qu&#233; <em>n</em> el BST supera al dict en b&#250;squeda por rango? &#191;Por qu&#233; el speedup no es constante sino que var&#237;a con <em>n</em>?</div>
+    <div class="defensa-item"><div class="defensa-label">&#9888;&#65039; D4 &#183; Diagn&#243;stico de &#225;rbol degenerado</div>El docente describe una secuencia de inserci&#243;n ordenada (ej. 6.0, 6.5, 7.0, 7.5, 8.0). El equipo dibuja el &#225;rbol resultante, calcula su altura, y argumenta por qu&#233; la complejidad de b&#250;squeda es O(n).</div>
+    <div class="defensa-item"><div class="defensa-label">&#127795; D5 &#183; Justificaci&#243;n de elecci&#243;n de estructura</div>La Ing. Sof&#237;a presenta dos escenarios: (A) "buscar pel&#237;culas por ID en menos de 1ms" y (B) "listar el cat&#225;logo del &#250;ltimo trimestre en orden cronol&#243;gico con inserciones frecuentes". El equipo justifica qu&#233; estructura usar&#237;a para cada uno.</div>
+
+    <div class="andamiaje-box">
+      <h4>&#129340; Andamiaje de tres niveles &#8212; Si el equipo se bloquea</h4>
+      <div class="nivel-rescate nivel-1"><div class="nivel-titulo">Nivel 1 &#8212; Pista conceptual</div>Revisar el diagrama ASCII de COMPRENDE y trazar el &#225;rbol manualmente. La invariante BST es verificable nodo por nodo.</div>
+      <div class="nivel-rescate nivel-2"><div class="nivel-titulo">Nivel 2 &#8212; Ejemplo guiado</div>Para el in-order en D2: empezar desde el nodo m&#225;s a la izquierda (el m&#237;nimo del &#225;rbol) y avanzar hacia la derecha.</div>
+      <div class="nivel-rescate nivel-0"><div class="nivel-titulo">Nivel 0 &#8212; Indicador de brecha cr&#237;tica</div>Si el equipo no puede responder D1 ni D3: hay una brecha en la comprensi&#243;n de la invariante. Volver a COMPRENDE, trazar 5 inserciones en papel, y solicitar revisi&#243;n con el docente.</div>
+    </div>
+
+    <div class="checklist-box">
+      <h4>&#9745;&#65039; Checklist de Autoevaluaci&#243;n &#8212; Antes de pasar a VALIDA</h4>
+      <div class="checklist-item"><input type="checkbox" id="s13_c1"><div class="check-text"><strong>insert funciona:</strong> al hacer <code>inorder()</code> sobre el cat&#225;logo de 15 t&#237;tulos, la lista sale ordenada por puntaje ascendente.<div class="check-diagnostico">&#9888;&#65039; Ojo: un inorder ordenado no garantiza que la <em>estructura</em> del &#225;rbol sea correcta &#8212; un &#225;rbol degenerado tambi&#233;n pasa T1. Usar <code>imprimir_arbol_2D(arbol.raiz)</code> para ver la forma real del &#225;rbol. Si <code>altura()</code> &gt; 10 con 15 nodos, el &#225;rbol est&#225; casi degenerado: revisar el orden de inserci&#243;n del CATALOGO_S13 y que _insert_rec retorna el nodo en todos los casos.</div></div></div>
+      <div class="checklist-item"><input type="checkbox" id="s13_c2"><div class="check-text"><strong>buscar funciona:</strong> <code>buscar(8.7)</code> retorna <code>('Oppenheimer', 'Drama')</code> y <code>buscar(5.0)</code> retorna <code>None</code>.<div class="check-diagnostico">Si retorna None para clave existente: verificar que las comparaciones usan &lt; y &gt; correctamente.</div></div></div>
+      <div class="checklist-item"><input type="checkbox" id="s13_c3"><div class="check-text"><strong>buscar_rango funciona:</strong> <code>buscar_rango(8.0, 9.0)</code> retorna exactamente los t&#237;tulos con puntaje entre 8.0 y 9.0 en orden ascendente.<div class="check-diagnostico">Si retorna de m&#225;s o de menos: revisar las tres condiciones de _rango_rec.</div></div></div>
+      <div class="checklist-item"><input type="checkbox" id="s13_c4"><div class="check-text"><strong>altura funciona:</strong> el &#225;rbol construido con CATALOGO_S13 tiene altura entre 4 y 8.<div class="check-diagnostico">Si retorna 0 o None: _altura_rec no retorna 0 cuando nodo es None.</div></div></div>
+      <div class="checklist-item"><input type="checkbox" id="s13_c5"><div class="check-text"><strong>Reto 10 ejecuta:</strong> el script imprime tiempos para n = 100, 1000, 5000, 10000 sin error.<div class="check-diagnostico">Si rango_dict o rango_lista retorna None: falta return expl&#237;cito.</div></div></div>
+      <div class="checklist-item"><input type="checkbox" id="s13_c6"><div class="check-text"><strong>Comentarios obligatorios completados:</strong> COMPRENDE-1/2/3, IA-REFLEXION-C, IA-REFLEXION-A, MID-CANONICO y DECISION.</div></div>
+    </div>
+
+    <div class="reto-ia">
+      <div class="reto-ia-header">
+        <div class="reto-numero">R</div>
+        <h4>Reto IA &#8212; REFLEXIONA &#183; Preparaci&#243;n para defensa oral</h4>
+        <span class="reto-badge esencial">IA</span>
+      </div>
+      <div class="reto-ia-body">
+        <div class="rol-ia"><strong>Rol de la IA en esta fase:</strong> Evaluador socr&#225;tico. Simula ser el docente y hace preguntas de D1&#8211;D5. No corrige directamente &#8212; hace preguntas de seguimiento.</div>
+        <div class="prompt-box">Lenguaje accesible: responde en espa&#241;ol universitario claro.
+
+Soy estudiante de Estructura de Datos Basica y debo defender oralmente mi BST. Por favor simula ser el docente evaluador:
+
+1. Empieza con D1: dibuja en texto un BST de 7 nodos donde se viole la invariante en al menos un nodo. Hazme identificar el nodo problematico.
+2. Despues de mi respuesta: hazme D3 sobre mi benchmark, pidiendo que explique por que el speedup cambia con n.
+3. Si mi respuesta a D3 no menciona la altura del arbol, la poda de ramas o el factor constante de O(1) del dict: hazme una pregunta de seguimiento especifica.
+
+No reveles las respuestas correctas hasta que yo haya intentado responder tres veces cada pregunta.
+
+# REFLEXIONA-1: [Que item de defensa le resulto mas dificil y por que]
+# REFLEXIONA-2: [A partir de que n el BST supera al dict segun su benchmark?]
+# REFLEXIONA-3: [Cuando elegiria el equipo un dict sobre un BST en StreamMX?]</div>
+        <div class="entregable-box">Los comentarios <code># REFLEXIONA-1/2/3</code> deben ser espec&#237;ficos con los datos reales del benchmark &#8212; no respuestas gen&#233;ricas.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ====== VALIDA ====== -->
+<section id="valida">
+<div class="fase-section">
+  <div class="fase-header valida">
+    <div class="fase-icon">&#9989;</div>
+    <div class="fase-info">
+      <h2>VALIDA &#8212; Casos de Prueba y Verificaci&#243;n Sistem&#225;tica</h2>
+      <div class="bloom-tag">Bloom: Evaluar &#183; Verificaci&#243;n de correctitud &#183; 10 puntos</div>
+    </div>
+  </div>
+  <div class="fase-content">
+    <div class="objetivos-box">
+      <h4>&#127919; Al terminar esta fase el equipo habr&#225; verificado:</h4>
+      <ul>
+        <li>Que insert mantiene la invariante BST en todos los casos</li>
+        <li>Que inorder produce exactamente la misma secuencia que <code>sorted()</code> sobre los mismos datos</li>
+        <li>Que buscar_rango no retorna elementos fuera del rango ni omite elementos dentro</li>
+        <li>Que buscar retorna None para claves inexistentes sin lanzar excepci&#243;n</li>
+      </ul>
+    </div>
+    <p style="margin-bottom:1.5rem;">Ejecutar cada caso de prueba y registrar el resultado en el comentario <code># VALIDA:</code> del archivo Python.</p>
+
+    <div class="caso-prueba">
+      <div class="ct-label">T1 &#183; Inserci&#243;n y in-order &#8212; invariante b&#225;sica</div>
+      <div class="ct-input">arbol = construir_bst(CATALOGO_S13)</div>
+      <div class="ct-input">claves_io = [c for c,v in arbol.inorder()]</div>
+      <div class="ct-input">claves_ok = sorted(p for p,t,g in CATALOGO_S13)</div>
+      <div class="ct-input">print(claves_io == claves_ok)</div>
+      <div class="ct-expected">&#9989; Esperado: True</div>
+      <div class="ct-nota">Si False: la invariante BST se viol&#243; durante la inserci&#243;n. Revisar que _insert_rec retorna el nodo en todos los casos.</div>
+    </div>
+
+    <div class="caso-prueba">
+      <div class="ct-label">T2 &#183; B&#250;squeda exacta &#8212; clave existente y no existente</div>
+      <div class="ct-input">assert arbol.buscar(9.1) == ("Origen", "Sci-Fi")</div>
+      <div class="ct-input">assert arbol.buscar(5.0) is None</div>
+      <div class="ct-input">assert arbol.buscar(6.5) == ("Avatar", "Accion")</div>
+      <div class="ct-expected">&#9989; Esperado: sin AssertionError</div>
+      <div class="ct-nota">Si buscar(9.1) retorna None: el &#225;rbol no tiene ese nodo (insert fall&#243;) o _buscar_rec tiene condici&#243;n invertida.</div>
+    </div>
+
+    <div class="caso-prueba">
+      <div class="ct-label">T3 &#183; &#193;rbol vac&#237;o &#8212; sin excepciones</div>
+      <div class="ct-input">av = BST()</div>
+      <div class="ct-input">assert av.buscar(7.0) is None</div>
+      <div class="ct-input">assert av.inorder() == []</div>
+      <div class="ct-input">assert av.buscar_rango(6.0, 9.0) == []</div>
+      <div class="ct-input">assert av.altura() == 0</div>
+      <div class="ct-expected">&#9989; Esperado: sin AssertionError &#8212; el &#225;rbol vac&#237;o maneja correctamente None</div>
+      <div class="ct-nota">Si lanza AttributeError: algún m&#233;todo accede a nodo.clave sin verificar si nodo es None.</div>
+    </div>
+
+    <div class="caso-prueba">
+      <div class="ct-label">T4 &#183; B&#250;squeda por rango &#8212; correctitud y completitud</div>
+      <div class="ct-input">en_rango = arbol.buscar_rango(8.0, 9.0)</div>
+      <div class="ct-input">claves_r = sorted(c for c,v in en_rango)</div>
+      <div class="ct-input">claves_e = sorted(p for p,t,g in CATALOGO_S13 if 8.0 &lt;= p &lt;= 9.0)</div>
+      <div class="ct-input">print(claves_r == claves_e)</div>
+      <div class="ct-expected">&#9989; Esperado: True &#8212; puntajes: 8.0, 8.2, 8.4, 8.7, 8.9, 9.0</div>
+      <div class="ct-nota">Si retorna de m&#225;s: condici&#243;n del rango incorrecta. Si retorna de menos: alguna rama no est&#225; siendo explorada. Revisar las tres condiciones de _rango_rec.</div>
+    </div>
+
+    <div class="caso-prueba">
+      <div class="ct-label">T5 &#183; Claves duplicadas &#8212; &#191;qu&#233; pasa cuando dos pel&#237;culas comparten puntaje?</div>
+      <div class="ct-input">## PRIMERO: comportamiento actual (sobrescribe)</div>
+      <div class="ct-input">a2 = BST()</div>
+      <div class="ct-input">a2.insert(7.5, ("Pelicula A", "Drama"))</div>
+      <div class="ct-input">a2.insert(7.5, ("Pelicula B", "Comedia"))  # sobrescribe</div>
+      <div class="ct-input">print(a2.buscar(7.5))    # ("Pelicula B", "Comedia") -- Pelicula A perdida</div>
+      <div class="ct-input">print(len(a2.inorder())) # 1 -- correcto, no duplica nodo</div>
+      <div class="ct-input"></div>
+      <div class="ct-input">## SEGUNDO: solucion con lista de peliculas por puntaje</div>
+      <div class="ct-input">## TODO: modificar _insert_rec para que, cuando clave == nodo.clave,</div>
+      <div class="ct-input">## si nodo.valor es una lista: agrega a la lista.</div>
+      <div class="ct-input">## si nodo.valor no es lista: convierte a lista y agrega el nuevo.</div>
+      <div class="ct-input">a3 = BST()</div>
+      <div class="ct-input">a3.insert(7.5, ("Pelicula A", "Drama"))</div>
+      <div class="ct-input">a3.insert(7.5, ("Pelicula B", "Comedia"))</div>
+      <div class="ct-input">print(a3.buscar(7.5))    # [("Pelicula A", "Drama"), ("Pelicula B", "Comedia")]</div>
+      <div class="ct-input">print(len(a3.inorder())) # 1 -- un solo nodo con puntaje 7.5</div>
+      <div class="ct-expected">&#9989; T5a (sobrescritura): buscar retorna Pelicula B y inorder tiene 1 elemento<br>&#9989; T5b (lista): buscar retorna lista con ambas peliculas e inorder sigue teniendo 1 nodo en puntaje 7.5</div>
+      <div class="ct-nota">&#128218; Reflexi&#243;n de dise&#241;o: en StreamMX los puntajes son float con un decimal &#8212; la colisi&#243;n real ocurre con puntajes como 7.5 ("El Laberinto del Fauno") y 7.5 ("La Se&#241;al") que ya existen en CATALOGO_S13. La decisi&#243;n entre "sobrescribir" y "lista de valores" es una decisi&#243;n de dise&#241;o, no un error. Documentar cu&#225;l elegiria el equipo y por qu&#233; en el comentario <code># DECISION:</code>.</div>
+    </div>
+
+    <div class="reto-ia">
+      <div class="reto-ia-header">
+        <div class="reto-numero">V</div>
+        <h4>Reto IA &#8212; VALIDA &#183; Diagn&#243;stico de errores guiado</h4>
+        <span class="reto-badge esencial">IA</span>
+      </div>
+      <div class="reto-ia-body">
+        <div class="rol-ia"><strong>Rol de la IA en esta fase:</strong> Inspector de calidad con restricci&#243;n. Puede diagnosticar el tipo de error y se&#241;alar la l&#237;nea. No puede reescribir la funci&#243;n completa.</div>
+        <div class="prompt-box">Lenguaje accesible: responde en espa&#241;ol universitario claro.
+
+Soy estudiante de Estructura de Datos Basica. Al ejecutar los casos de prueba de VALIDA obtuve:
+
+T1: [PASO / FALLO]
+T2: [PASO / FALLO]
+T3: [PASO / FALLO]
+T4: [PASO / FALLO]
+T5: [PASO / FALLO]
+
+Para los casos que fallaron:
+1. Sin darme el codigo correcto: que tipo de error logico podria causarlo?
+2. Hazme una pregunta que me lleve a encontrar el bug en mi propia implementacion.
+3. Si todos pasaron: disena un caso que podria romper una buscar_rango que no poda ramas.
+
+# IA-REFLEXION-V: [Que tipo de error encontro el equipo y como lo corrigio]
+# VALIDA: T1=___ T2=___ T3=___ T4=___ T5=___</div>
+        <div class="entregable-box">El comentario <code># VALIDA:</code> debe indicar qu&#233; casos pasaron al primer intento, cu&#225;les requirieron correcci&#243;n y una oraci&#243;n explicando el error encontrado.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ====== PROFUNDIZA ====== -->
+<section id="profundiza">
+<div class="fase-section">
+  <div class="fase-header profundiza">
+    <div class="fase-icon">&#128640;</div>
+    <div class="fase-info">
+      <h2>PROFUNDIZA &#8212; &#193;rbol Degenerado, HITO 3 y Frontera hacia S14</h2>
+      <div class="bloom-tag">Bloom: Evaluar &#183; Crear &#183; Reconocer l&#237;mites &#183; 10 puntos</div>
+    </div>
+  </div>
+  <div class="fase-content">
+    <div class="objetivos-box">
+      <h4>&#127919; Al terminar esta fase el equipo ser&#225; capaz de:</h4>
+      <ul>
+        <li>Demostrar emp&#237;ricamente que insertar en orden ordenado degenera el BST a O(n)</li>
+        <li>Articular por qu&#233; el BST b&#225;sico no ofrece garant&#237;as de O(log n) en el peor caso</li>
+        <li>Describir conceptualmente qu&#233; hace un &#225;rbol AVL para evitar la degeneraci&#243;n</li>
+        <li>Presentar el avance de HITO 3 con decisiones de dise&#241;o justificadas</li>
+      </ul>
+    </div>
+
+    <h3 style="color:var(--primary);margin:1.5rem 0 1rem;">El Problema del &#193;rbol Degenerado</h3>
+    <p style="margin-bottom:1rem;">El BST b&#225;sico tiene un tal&#243;n de Aquiles: su complejidad depende de la <strong>altura</strong>, y la altura depende del <strong>orden de inserci&#243;n</strong>. Si los datos llegan ya ordenados, el &#225;rbol se convierte en una lista enlazada disfrazada:</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;">
+      <div>
+        <div class="ascii-diagram" style="color:#4caf50;font-size:.8rem;">  Insercion aleatoria -&gt; balanceado
+  ---------------------------------
+  Datos: 8.0, 5.0, 9.0, 3.0, 7.0
+
+           [8.0]       h = 2
+          /     \
+       [5.0]   [9.0]
+       /    \
+    [3.0]  [7.0]
+
+  buscar(3.0): 3 comparaciones OK
+  O(log n) -- eficiente</div>
+      </div>
+      <div>
+        <div class="ascii-diagram" style="color:#f44336;font-size:.8rem;">  Insercion ordenada -&gt; degenerado
+  ---------------------------------
+  Datos: 3.0, 5.0, 7.0, 8.0, 9.0
+
+  [3.0]             h = 4
+     \
+    [5.0]
+       \
+      [7.0]
+         \
+        [8.0]
+           \
+          [9.0]
+
+  buscar(9.0): 5 comparaciones!
+  O(n) -- lista enlazada disfrazada</div>
+      </div>
+    </div>
+    <div class="diagrama-descripcion">
+      <strong>Descripci&#243;n del par:</strong> Izquierda: 5 valores insertados en orden aleatorio producen un &#225;rbol balanceado de altura 2 &#8212; buscar cualquier nodo requiere m&#225;ximo 3 comparaciones. Derecha: los mismos 5 valores insertados en orden ascendente producen un &#225;rbol degenerado de altura 4 &#8212; equivalente a una lista enlazada donde buscar el &#250;ltimo elemento requiere recorrer todos los anteriores.
+    </div>
+
+    <div class="verd">
+      <h4>&#9878;&#65039; Veredicto de ingenier&#237;a &#8212; &#191;Cu&#225;ndo usar BST vs dict?</h4>
+      <p style="margin-bottom:1rem;">Con los datos del benchmark y el an&#225;lisis del &#225;rbol degenerado, el equipo puede responder la pregunta real de la Ing. Sof&#237;a:</p>
+      <ul style="margin-left:1.5rem;">
+        <li style="margin-bottom:.5rem;"><strong>Usar dict:</strong> b&#250;squeda por clave exacta O(1) garantizado, sin necesidad de orden ni rango. Cat&#225;logo por ID de pel&#237;cula.</li>
+        <li style="margin-bottom:.5rem;"><strong>Usar BST:</strong> b&#250;squeda por rango, necesidad de recorrido ordenado din&#225;mico, inserciones frecuentes con consultas por valor. Cat&#225;logo por puntaje.</li>
+        <li style="margin-bottom:.5rem;"><strong>No usar BST b&#225;sico:</strong> cuando el orden de llegada de datos podr&#237;a estar ordenado &#8212; riesgo de degeneraci&#243;n. En ese caso: &#225;rbol AVL o <code>sortedcontainers.SortedList</code>.</li>
+      </ul>
+    </div>
+
+    <div class="hito-box">
+      <h3>&#127942; HITO 3 &#8212; Dise&#241;o de Integraci&#243;n + BST incorporado</h3>
+      <p style="margin-bottom:1rem;opacity:.9;"><strong>Entregable para esta semana:</strong> no se pide el proyecto completo funcionando. Se pide el dise&#241;o arquitect&#243;nico documentado y la incorporaci&#243;n del BST como primera estructura integrada al proyecto. El c&#243;digo funcional de las tres estructuras se completa en la Semana 14 (Taller Integrador).</p>
+      <div class="context-box info" style="margin-bottom:1.5rem;">
+        <div class="box-title">&#128172; &#191;Por qu&#233; dividido as&#237;?</div>
+        Aprender e implementar un BST desde cero ya es la carga cognitiva de toda una sesi&#243;n. El HITO 3 de S13 es el <em>mapa</em> del proyecto integrador; S14 es la <em>construcci&#243;n</em>. Un mapa s&#243;lido hace que la construcci&#243;n sea m&#225;s r&#225;pida.
+      </div>
+      <div class="pipeline-step"><div class="step-num">1</div><div><strong>Diagrama de arquitectura del sistema</strong><br><span style="opacity:.85;font-size:.95rem;">Un diagrama (puede ser a mano o en texto) que muestre qu&#233; estructuras usar&#225; el proyecto (m&#237;nimo 3), qu&#233; datos almacena cada una y qu&#233; operaci&#243;n resuelve. Ejemplo: "dict para lookup por ID → BST para b&#250;squeda por puntaje → cola de prioridad para recomendaciones". No se evalúa el c&#243;digo todav&#237;a, sino la claridad del dise&#241;o.</span></div></div>
+      <div class="pipeline-step"><div class="step-num">2</div><div><strong>BST integrado al proyecto (funcionando)</strong><br><span style="opacity:.85;font-size:.95rem;">El &#250;nico entregable de c&#243;digo obligatorio esta semana: el BST de Reto 9 ya est&#225; conectado al contexto de datos del proyecto propio (no al CATALOGO_S13). Las dem&#225;s estructuras pueden estar como stubs/placeholders con comentarios <code># TODO S14</code>.</span></div></div>
+      <div class="pipeline-step"><div class="step-num">3</div><div><strong>Comentarios <code># DECISION:</code> para cada estructura planeada</strong><br><span style="opacity:.85;font-size:.95rem;">Aunque las otras estructuras sean stubs, cada una debe tener su comentario DECISION explicando por qu&#233; se eligi&#243; y cu&#225;l es la complejidad esperada. Esto es lo que convierte el stub en dise&#241;o justificado, no en c&#243;digo vac&#237;o.</span></div></div>
+      <div class="pipeline-step"><div class="step-num">4</div><div><strong>Lista de funcionalidades pendientes para S14</strong><br><span style="opacity:.85;font-size:.95rem;">Un bloque de comentarios al inicio del archivo principal con los TODOs concretos que el equipo traer&#225; completados a S14. Esto sirve como contrato del equipo con el docente.</span></div></div>
+      <div class="pipeline-step"><div class="step-num">5</div><div><strong>Demo breve (3 min): BST del proyecto funcionando</strong><br><span style="opacity:.85;font-size:.95rem;">El equipo ejecuta en vivo el BST con datos propios del proyecto y muestra inorder() + buscar_rango() sobre esos datos. El docente hace una pregunta sobre la decisi&#243;n de dise&#241;o del diagrama.</span></div></div>
+      <div class="context-box tip" style="margin-top:1.5rem;">
+        <div class="box-title">&#9989; Qu&#233; se eval&#250;a en PROFUNDIZA esta semana</div>
+        (10 pts) Diagrama de arquitectura legible + BST con datos del proyecto funcionando + comentarios DECISION para cada estructura planeada + IA-REFLEXION-P. <strong>No</strong> se descuenta que las dem&#225;s estructuras sean stubs en S13 &#8212; eso es trabajo de S14.
+      </div>
+    </div>
+
+    <div class="corte-s13">
+      <h3>&#9878;&#65039; El BST b&#225;sico no garantiza O(log n) en el peor caso</h3>
+      <span class="arrow-big">&#8595;</span>
+      <p style="font-size:1.1rem;margin-bottom:1rem;">La pregunta que S14 responde:</p>
+      <p style="font-size:1.3rem;font-weight:700;color:#43e97b;">"&#191;C&#243;mo se integran todas las estructuras del curso en un sistema coherente<br>que resuelve un problema real de principio a fin?"</p>
+      <span class="arrow-big">&#8595;</span>
+      <p style="font-size:1.2rem;color:var(--accent);font-weight:700;">Semana 14 &#183; Taller de Proyecto Integrador</p>
+      <p style="opacity:.8;margin-top:.8rem;">Sesi&#243;n 100% pr&#225;ctica: finalizaci&#243;n, depuraci&#243;n y optimizaci&#243;n del proyecto. El equipo llega a S14 con el 60% funcionando (HITO 3) y la sesi&#243;n completa disponible para el 40% restante.</p>
+    </div>
+
+    <div class="reto-ia">
+      <div class="reto-ia-header">
+        <div class="reto-numero">P</div>
+        <h4>Reto IA &#8212; PROFUNDIZA &#183; Exploraci&#243;n de fronteras disciplinares</h4>
+        <span class="reto-badge esencial">IA</span>
+      </div>
+      <div class="reto-ia-body">
+        <div class="rol-ia"><strong>Rol de la IA en esta fase:</strong> Explorador de horizonte con l&#237;mite disciplinar. Puede explicar la intuici&#243;n de los BST auto-balanceados sin entrar en implementaci&#243;n &#8212; eso pertenece a Estructura de Datos Avanzada.</div>
+        <div class="prompt-box">Lenguaje accesible: responde en espa&#241;ol universitario claro.
+
+Soy estudiante de Estructura de Datos Basica. Implemente un BST basico y aprendi que puede degenerarse a O(n). Contexto StreamMX:
+
+El equipo de ingesta informa que los titulos nuevos llegan ordenados por fecha de estreno con puntaje creciente -- exactamente el peor caso para el BST basico.
+
+Por favor:
+1. Sin implementar codigo: explicame intuitivamente que hace un arbol AVL para evitar la degeneracion. Cual es el "truco" central? (Maximo 3 parrafos.)
+2. Existe en Python alguna libreria estandar o de terceros popular que proporcione un BST auto-balanceado? Para que nivel de uso es apropiada?
+3. Para el HITO 3: si el proyecto usa un BST basico con datos que podrian llegar ordenados, que estrategia de mitigacion (sin AVL) podria reducir el riesgo? Dame dos opciones con sus trade-offs.
+
+# IA-REFLEXION-P: [El equipo escribe cual estrategia de mitigacion elegiria para su HITO 3 y por que]</div>
+        <div class="entregable-box">El comentario <code># IA-REFLEXION-P</code> debe mencionar el caso de uso concreto del proyecto del equipo &#8212; no una respuesta gen&#233;rica.</div>
+      </div>
+    </div>
+
+    <div class="reto-opcional-wrapper">
+      <div class="reto-opcional-header">
+        <span style="font-size:1.5rem;">&#128300;</span>
+        <h4 style="flex:1;">Reto 11 &#8212; Eliminaci&#243;n en BST: los tres casos</h4>
+        <div class="badge-opcional">OPCIONAL</div>
+      </div>
+      <div class="reto-opcional-advertencia">
+        <strong>&#9888;&#65039; Nota disciplinar:</strong> Este reto cruza hacia contenido de <strong>Estructura de Datos Avanzada</strong>. La eliminaci&#243;n en BST no es evaluada en la r&#250;brica de S13. Su prop&#243;sito es ofrecer a equipos con dominio s&#243;lido una anticipaci&#243;n del nivel Avanzada.
+      </div>
+      <div class="reto-opcional-body">
+        <p style="margin-bottom:1rem;">La eliminaci&#243;n en BST tiene tres casos seg&#250;n el n&#250;mero de hijos del nodo a eliminar:</p>
+        <ul style="margin-left:1.5rem;margin-bottom:1rem;">
+          <li style="margin-bottom:.6rem;"><strong>Caso 1 &#8212; Nodo hoja:</strong> desconectar el nodo del padre. Sin implicaciones para la invariante.</li>
+          <li style="margin-bottom:.6rem;"><strong>Caso 2 &#8212; Un solo hijo:</strong> reemplazar el nodo con su &#250;nico hijo. La invariante se preserva porque el sub&#225;rbol hijo ya la satisfac&#237;a.</li>
+          <li style="margin-bottom:.6rem;"><strong>Caso 3 &#8212; Dos hijos:</strong> buscar el sucesor in-order (clave m&#237;nima del sub&#225;rbol derecho), copiar su clave y valor al nodo a eliminar, y luego eliminar el sucesor.</li>
+        </ul>
+        <div class="context-box tip"><div class="box-title">&#128161; Pista de implementaci&#243;n</div>Implementar primero un m&#233;todo auxiliar <code>_minimo(nodo)</code> que retorna el nodo con clave m&#237;nima del sub&#225;rbol rooteado en <code>nodo</code>. Ese es el sucesor in-order del nodo a eliminar.</div>
+        <div class="caso-prueba">
+          <div class="ct-label">Opcional T1 &#183; Eliminar hoja</div>
+          <div class="ct-input">arbol.eliminar(6.5)  # Avatar -- nodo hoja</div>
+          <div class="ct-expected">&#9989; arbol.buscar(6.5) is None y arbol.inorder() sigue ordenado sin 6.5</div>
+        </div>
+        <div class="caso-prueba">
+          <div class="ct-label">Opcional T2 &#183; Eliminar nodo con dos hijos</div>
+          <div class="ct-input">arbol.eliminar(8.0)  # Parasite -- nodo con hijos 7.8 y 8.2</div>
+          <div class="ct-expected">&#9989; arbol.buscar(8.0) is None y arbol.inorder() sigue ordenado y completo</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- RUBRICA -->
+<section id="rubrica">
+<div class="evaluacion-section">
+  <div class="evaluacion-header">
+    <h2>&#128202; R&#250;brica de Evaluaci&#243;n &#8212; Semana 13</h2>
+    <p style="opacity:.9;margin-top:.5rem;">Total: 100 puntos base + hasta 10 puntos adicionales (Reto 11)</p>
+  </div>
+  <div class="criterio-item">
+    <span class="fase-badge">COMPRENDE</span>
+    <div><strong>Comentarios COMPRENDE-1/2/3 completados en c&#243;digo</strong><br><small>Excelente (25): precisos, con vocabulario t&#233;cnico correcto y conexi&#243;n a StreamMX. Bien (22): correctos sin conexi&#243;n al contexto. Suficiente (15): incompletos o con imprecisiones. Insuficiente (&lt;12): ausentes o incorrectos.</small></div>
+    <span class="puntos">25 pts</span>
+  </div>
+  <div class="criterio-item">
+    <span class="fase-badge">APLICA</span>
+    <div><strong>Reto 9 + Reto 10: c&#243;digo funcional y benchmark con datos reales</strong><br><small>Excelente (35): todos los m&#233;todos implementados y casos T1&#8211;T5 pasan; benchmark ejecuta con MID-CANONICO y DECISION completados. Bien (31): todos los m&#233;todos pero falta alg&#250;n benchmark. Suficiente (21): insert + inorder + buscar; buscar_rango con errores parciales. Insuficiente (&lt;17): menos de 3 m&#233;todos funcionando.</small></div>
+    <span class="puntos">35 pts</span>
+  </div>
+  <div class="criterio-item">
+    <span class="fase-badge">REFLEXIONA</span>
+    <div><strong>Defensa oral (D1&#8211;D5) + comentarios REFLEXIONA-1/2/3</strong><br><small>Excelente (20): defensa oral responde con precisi&#243;n el &#237;tem seleccionado mencionando invariante, recorridos y benchmark propio. Bien (18): correcta sin mencionar benchmark. Suficiente (12): incompleta. Insuficiente (0): sin defensa oral.</small></div>
+    <span class="puntos">20 pts</span>
+  </div>
+  <div class="criterio-item">
+    <span class="fase-badge">VALIDA</span>
+    <div><strong>Casos T1&#8211;T5 ejecutados y comentario VALIDA: registrado</strong><br><small>Excelente (10): T1&#8211;T5 pasan al primer intento o con correcciones documentadas; T5b implementado con lista de pel&#237;culas y comentario DECISION justificando la elecci&#243;n de dise&#241;o. Bien (9): T1&#8211;T4 pasan, T5 solo parte a (sobrescritura). Suficiente (6): solo T1&#8211;T3 pasan. Insuficiente (&lt;5): menos de 3 casos pasan.</small></div>
+    <span class="puntos">10 pts</span>
+  </div>
+  <div class="criterio-item">
+    <span class="fase-badge">PROFUNDIZA</span>
+    <div><strong>IA-REFLEXION-P + avance HITO 3 con m&#237;nimo 3 estructuras integradas</strong><br><small>Excelente (10): IA-REFLEXION-P espec&#237;fica al proyecto propio; HITO 3 con m&#237;nimo 3 estructuras, comentarios DECISION y funcionalidades ejecutables. Bien (9): correcta pero HITO 3 incompleto. Suficiente (6): solo IA-REFLEXION-P. Insuficiente (&lt;5): ausente.</small></div>
+    <span class="puntos">10 pts</span>
+  </div>
+  <div class="criterio-item" style="background:#fff8e1;">
+    <span class="fase-badge" style="background:#ff8f00;">OPCIONAL</span>
+    <div><strong>Reto 11 &#8212; Eliminaci&#243;n en BST (3 casos)</strong><br><small>Los dos casos de prueba opcionales pasan sin error y el m&#233;todo eliminar mantiene la invariante BST.</small></div>
+    <span class="puntos" style="background:#ff8f00;color:#fff;">+10 pts</span>
+  </div>
+</div>
+</section>
+
+<!-- GLOSARIO -->
+<section id="glosario">
+<div class="glosario-section">
+  <div class="glosario-header">
+    <h2>&#128214; Glosario &#8212; Semana 13</h2>
+    <p style="opacity:.8;margin-top:.5rem;">Terminolog&#237;a esencial de &#225;rboles binarios de b&#250;squeda</p>
+  </div>
+  <div class="glosario-grid">
+    <dl class="termino-card"><dt>&#193;rbol Binario</dt><dd>Estructura jer&#225;rquica donde cada nodo tiene a lo sumo dos hijos (izquierdo y derecho). No impone restricci&#243;n sobre el orden de los valores.</dd></dl>
+    <dl class="termino-card"><dt>BST (&#193;rbol Binario de B&#250;squeda)</dt><dd>&#193;rbol binario donde, para todo nodo n: todos en el sub&#225;rbol izquierdo tienen clave &lt; n.clave y todos en el derecho tienen clave &gt; n.clave. La invariante debe sostenerse para todos los nodos.</dd></dl>
+    <dl class="termino-card"><dt>Ra&#237;z (Root)</dt><dd>El &#250;nico nodo del &#225;rbol que no tiene padre. Es el punto de entrada a todas las operaciones.</dd></dl>
+    <dl class="termino-card"><dt>Hoja (Leaf)</dt><dd>Nodo sin hijos (izq = None y der = None). Los recorridos terminan su recursi&#243;n al llegar a una hoja.</dd></dl>
+    <dl class="termino-card"><dt>Altura (Height)</dt><dd>Longitud del camino m&#225;s largo desde la ra&#237;z hasta una hoja. &#193;rbol vac&#237;o = 0; solo ra&#237;z = 1. Determina la complejidad de las operaciones.</dd></dl>
+    <dl class="termino-card"><dt>Profundidad (Depth)</dt><dd>N&#250;mero de aristas desde la ra&#237;z hasta un nodo espec&#237;fico. La ra&#237;z tiene profundidad 0. No confundir con altura.</dd></dl>
+    <dl class="termino-card"><dt>In-order (LNR)</dt><dd>Visita: sub&#225;rbol izquierdo &#8594; nodo &#8594; sub&#225;rbol derecho. En un BST produce los elementos en orden ascendente de clave.</dd></dl>
+    <dl class="termino-card"><dt>Pre-order (NLR)</dt><dd>Visita: nodo &#8594; izquierdo &#8594; derecho. El primer elemento es siempre la ra&#237;z; &#250;til para serializar o copiar el &#225;rbol.</dd></dl>
+    <dl class="termino-card"><dt>Post-order (LRN)</dt><dd>Visita: izquierdo &#8594; derecho &#8594; nodo. &#218;til para liberar memoria; el nodo se procesa despu&#233;s de sus hijos.</dd></dl>
+    <dl class="termino-card"><dt>&#193;rbol Degenerado</dt><dd>BST donde todos los nodos tienen solo un hijo, formando una cadena lineal. Altura = n; todas las operaciones son O(n). Ocurre al insertar datos en orden ya ordenado.</dd></dl>
+    <dl class="termino-card"><dt>B&#250;squeda por Rango</dt><dd>Retorna todos los nodos con clave en [minv, maxv]. En BST: O(log n + k) donde k es el n&#250;mero de resultados, gracias a la poda de ramas del &#225;rbol.</dd></dl>
+    <dl class="termino-card"><dt>Sucesor In-order</dt><dd>El nodo con clave m&#237;nima del sub&#225;rbol derecho de un nodo dado. Es el siguiente valor en orden ascendente; clave en la eliminaci&#243;n del caso de dos hijos.</dd></dl>
+    <dl class="termino-card aetl"><dt>Invariante</dt><dd>Propiedad que debe cumplirse en todo momento en una estructura de datos. La invariante del BST debe ser preservada por insert y eliminar en cada llamada recursiva.</dd></dl>
+    <dl class="termino-card aetl"><dt>&#193;rbol AVL</dt><dd>BST auto-balanceado que mantiene la diferencia de altura entre sub&#225;rboles en m&#225;ximo 1 mediante rotaciones. Garantiza O(log n) en todas las operaciones. Tema de Estructura de Datos Avanzada.</dd></dl>
+  </div>
+</div>
+</section>
+
+<!-- REFERENCIAS -->
+<section id="referencias">
+<div class="referencias-section">
+  <h3>&#128218; Referencias</h3>
+  <div class="referencia-item">Bandura, A. (1997). <em>Self-efficacy: The exercise of control</em>. W. H. Freeman.</div>
+  <div class="referencia-item">Bloom, B. S. (Ed.). (1956). <em>Taxonomy of educational objectives: Handbook I: Cognitive domain</em>. Longmans, Green.</div>
+  <div class="referencia-item">Cormen, T. H., Leiserson, C. E., Rivest, R. L., &amp; Stein, C. (2022). <em>Introduction to algorithms</em> (4th ed., cap. 12: Binary Search Trees). MIT Press.</div>
+  <div class="referencia-item">Knuth, D. E. (1998). <em>The art of computer programming, Vol. 3: Sorting and searching</em> (2nd ed., sec. 6.2.2). Addison-Wesley.</div>
+  <div class="referencia-item">Sedgewick, R., &amp; Wayne, K. (2011). <em>Algorithms</em> (4th ed., cap. 3.2: Binary Search Trees). Addison-Wesley Professional.</div>
+  <div class="referencia-item">Sweller, J. (1988). Cognitive load during problem solving. <em>Cognitive Science, 12</em>(2), 257&#8211;285. https://doi.org/10.1207/s15516709cog1202_4</div>
+  <div class="referencia-item">Vygotsky, L. S. (1978). <em>Mind in society: The development of higher psychological processes</em>. Harvard University Press.</div>
+  <div class="referencia-item">Zimmerman, B. J. (2000). Attaining self-regulation. En M. Boekaerts, P. R. Pintrich &amp; M. Zeidner (Eds.), <em>Handbook of self-regulation</em> (pp. 13&#8211;39). Academic Press.</div>
+</div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="modelo-badge">Modelo AETL &#8212; Taller Invertido</div>
+  <p>Estructura de Datos B&#225;sica &#183; Licenciatura en Sistemas Computacionales</p>
+  <p style="opacity:.8;margin-top:.5rem;">Universidad Aut&#243;noma de Nayarit &#183; Dr. Eligardo Cruz S&#225;nchez</p>
+  <p style="opacity:.6;margin-top:.5rem;font-size:.9rem;">Semana 13 de 15 &#183; Contin&#250;a en Semana 14: Taller de Proyecto Integrador</p>
+</footer>
+
+<script>
+const secciones=['comprende','aplica','reflexiona','valida','profundiza'];
+const pasos=document.querySelectorAll('.progress-step');
+function actualizarProgreso(){
+  let cur=0;
+  secciones.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el&&el.getBoundingClientRect().top<=window.innerHeight*.4) cur=i;
+  });
+  pasos.forEach((p,i)=>{
+    p.classList.remove('active','completed');
+    if(i<cur) p.classList.add('completed');
+    else if(i===cur) p.classList.add('active');
+  });
+}
+window.addEventListener('scroll',actualizarProgreso);
+actualizarProgreso();
+
+const cbs=document.querySelectorAll('.checklist-item input[type="checkbox"]');
+cbs.forEach(cb=>{
+  const sv=sessionStorage.getItem('s13_'+cb.id);
+  if(sv==='true') cb.checked=true;
+  cb.addEventListener('change',()=>{
+    sessionStorage.setItem('s13_'+cb.id,cb.checked);
+    const it=cb.closest('.checklist-item');
+    it.style.background=cb.checked?'#e8f5e9':'#fff';
+    it.style.borderLeft=cb.checked?'4px solid #28a745':'none';
+  });
+  if(cb.checked){
+    const it=cb.closest('.checklist-item');
+    it.style.background='#e8f5e9';
+    it.style.borderLeft='4px solid #28a745';
+  }
+});
+</script>
+</body>
+</html>
